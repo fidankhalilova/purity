@@ -1,0 +1,10 @@
+{
+  "HomePage": {
+    "title": "Rus world!",
+    "greeting": "Welcome to my app"
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About"
+  }
+}
