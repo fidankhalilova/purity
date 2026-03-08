@@ -6,5 +6,39 @@
   "Navigation": {
     "home": "Home",
     "about": "About"
+  },
+  "Footer": {
+    "helpCustomers": "Help Customers",
+    "shopCategories": "Shop Categories",
+    "explorePurity": "Explore Purity",
+    "subscribeTitle": "Subscribe with 10% Off!",
+    "subscribeDesc": "Get all the good stuff straight to your inbox, plus 10% off your first order.",
+    "emailPlaceholder": "Enter your email... *",
+    "subscribeBtn": "Subscribe",
+    "finePrint": "***By subscribing you agree to the",
+    "termsOfUse": "Terms of Use",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy.",
+    "viewOffers": "View our special offers.",
+    "claimOffers": "Claim Your Offers.",
+    "categories": [
+      "Exfoliation",
+      "Body and Hand",
+      "Best Sellers",
+      "Beauty Offers",
+      "Online Exclusives"
+    ],
+    "explore": [
+      "About Us",
+      "Contact Us",
+      "Our Blog",
+      "Shipping Policy",
+      "Terms of Service"
+    ],
+    "country": "United States (USD $)",
+    "countryFlag": "🇺🇸",
+    "poweredBy": "Powered by Shopify",
+    "termsOfService": "Terms of Service",
+    "shippingPolicy": "Shipping Policy"
   }
 }

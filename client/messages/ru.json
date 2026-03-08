@@ -1,10 +1,44 @@
 {
   "HomePage": {
-    "title": "Rus world!",
-    "greeting": "Welcome to my app"
+    "title": "Привет, мир!",
+    "greeting": "Добро пожаловать в моё приложение"
   },
   "Navigation": {
-    "home": "Home",
-    "about": "About"
+    "home": "Главная",
+    "about": "О нас"
+  },
+  "Footer": {
+    "helpCustomers": "Помощь Клиентам",
+    "shopCategories": "Категории Магазина",
+    "explorePurity": "Откройте Purity",
+    "subscribeTitle": "Подпишитесь со скидкой 10%!",
+    "subscribeDesc": "Получайте всё самое интересное прямо на почту, плюс скидка 10% на первый заказ.",
+    "emailPlaceholder": "Введите ваш e-mail... *",
+    "subscribeBtn": "Подписаться",
+    "finePrint": "***Подписываясь, вы соглашаетесь с",
+    "termsOfUse": "Условиями использования",
+    "and": "и",
+    "privacyPolicy": "Политикой конфиденциальности.",
+    "viewOffers": "Смотрите наши специальные предложения.",
+    "claimOffers": "Получить предложения.",
+    "categories": [
+      "Эксфолиация",
+      "Тело и Руки",
+      "Бестселлеры",
+      "Предложения по Красоте",
+      "Онлайн Эксклюзивы"
+    ],
+    "explore": [
+      "О нас",
+      "Связаться с нами",
+      "Наш Блог",
+      "Политика Доставки",
+      "Условия Обслуживания"
+    ],
+    "country": "Россия (RUB ₽)",
+    "countryFlag": "🇷🇺",
+    "poweredBy": "Работает на Shopify",
+    "termsOfService": "Условия Обслуживания",
+    "shippingPolicy": "Политика Доставки"
   }
 }

@@ -1,10 +1,44 @@
 {
   "HomePage": {
-    "title": "AZE world!",
-    "greeting": "Welcome to my app"
+    "title": "Salam dünya!",
+    "greeting": "Tətbiqimə xoş gəlmisiniz"
   },
   "Navigation": {
-    "home": "Home",
-    "about": "About"
+    "home": "Ana səhifə",
+    "about": "Haqqında"
+  },
+  "Footer": {
+    "helpCustomers": "Müştərilərə Kömək",
+    "shopCategories": "Mağaza Kateqoriyaları",
+    "explorePurity": "Purity-ni Kəşf Et",
+    "subscribeTitle": "10% Endirimle Abunə Olun!",
+    "subscribeDesc": "Bütün yenilikləri birbaşa poçtunuza alın, üstəlik ilk sifarişinizdə 10% endirim.",
+    "emailPlaceholder": "E-poçtunuzu daxil edin... *",
+    "subscribeBtn": "Abunə ol",
+    "finePrint": "***Abunə olaraq qəbul edirsiniz",
+    "termsOfUse": "İstifadə Şərtlərini",
+    "and": "və",
+    "privacyPolicy": "Məxfilik Siyasətini.",
+    "viewOffers": "Xüsusi təkliflərimizə baxın.",
+    "claimOffers": "Təklifləri əldə edin.",
+    "categories": [
+      "Eksfoliasiya",
+      "Bədən və Əl",
+      "Ən Çox Satılanlar",
+      "Gözəllik Təklifləri",
+      "Onlayn Eksklüzivlər"
+    ],
+    "explore": [
+      "Haqqımızda",
+      "Bizimlə əlaqə",
+      "Blogumuzu",
+      "Çatdırılma Siyasəti",
+      "Xidmət Şərtləri"
+    ],
+    "country": "Azərbaycan (AZN ₼)",
+    "countryFlag": "🇦🇿",
+    "poweredBy": "Shopify tərəfindən",
+    "termsOfService": "Xidmət Şərtləri",
+    "shippingPolicy": "Çatdırılma Siyasəti"
   }
 }
