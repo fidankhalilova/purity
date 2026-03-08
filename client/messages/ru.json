@@ -5,7 +5,17 @@
   },
   "Navigation": {
     "home": "Главная",
-    "about": "О нас"
+    "shop": "Магазин",
+    "shopItems": {
+      "foundation": "Тональный крем",
+      "lipColor": "Цвет губ",
+      "eye": "Глаза",
+      "blushBronzer": "Румяна & Бронзер"
+    },
+    "aboutUs": "О нас",
+    "blog": "Блог",
+    "contactUs": "Связаться с нами",
+    "faq": "ЧЗВ"
   },
   "Footer": {
     "helpCustomers": "Помощь Клиентам",

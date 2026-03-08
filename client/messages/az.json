@@ -5,7 +5,17 @@
   },
   "Navigation": {
     "home": "Ana səhifə",
-    "about": "Haqqında"
+    "shop": "Mağaza",
+    "shopItems": {
+      "foundation": "Tonal Krem",
+      "lipColor": "Dodaq Rəngi",
+      "eye": "Göz",
+      "blushBronzer": "Yanaq & Bronzer"
+    },
+    "aboutUs": "Haqqımızda",
+    "blog": "Bloq",
+    "contactUs": "Bizimlə Əlaqə",
+    "faq": "Suallar"
   },
   "Footer": {
     "helpCustomers": "Müştərilərə Kömək",

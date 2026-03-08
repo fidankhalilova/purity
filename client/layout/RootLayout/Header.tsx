@@ -11,43 +11,9 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-
-const menuItems = [
-  { name: "Home", href: "/" },
-  {
-    name: "Skin Care",
-    href: "/skin-care",
-    items: [
-      { name: "Cleansers", href: "/skin-care/cleansers" },
-      { name: "Moisturizers", href: "/skin-care/moisturizers" },
-      { name: "Serums", href: "/skin-care/serums" },
-      { name: "SPF & Sun Care", href: "/skin-care/spf" },
-    ],
-  },
-  {
-    name: "Makeup",
-    href: "/makeup",
-    items: [
-      { name: "Foundation", href: "/makeup/foundation" },
-      { name: "Lip Color", href: "/makeup/lip-color" },
-      { name: "Eye", href: "/makeup/eye" },
-      { name: "Blush & Bronzer", href: "/makeup/blush-bronzer" },
-    ],
-  },
-  {
-    name: "Pages",
-    href: "/pages",
-    items: [
-      { name: "About Us", href: "/pages/about" },
-      { name: "Blog", href: "/pages/blog" },
-      { name: "Contact", href: "/pages/contact" },
-      { name: "FAQ", href: "/pages/faq" },
-    ],
-  },
-  { name: "Build Your Bundle", href: "/bundle" },
-  { name: "Theme Features", href: "/theme-features" },
-];
+import { menuItems } from "@/constants/NavbarItems";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -56,6 +22,8 @@ export default function Navbar() {
     string | null
   >(null);
 
+  const t = useTranslations("Navigation");
+
   return (
     <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
       <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-6">
@@ -63,7 +31,7 @@ export default function Navbar() {
         <Link href="/">
           <img
             src="https://purity.nextsky.co/cdn/shop/files/logo_v2.1.svg?v=1755506437&width=100"
-            alt=""
+            alt="Purity logo"
           />
         </Link>
 
@@ -72,31 +40,35 @@ export default function Navbar() {
           <ul className="flex items-center gap-7">
             {menuItems.map((item) => (
               <li
-                key={item.name}
+                key={item.nameKey}
                 className="relative"
-                onMouseEnter={() => item.items && setActiveDropdown(item.name)}
+                onMouseEnter={() =>
+                  item.items && setActiveDropdown(item.nameKey)
+                }
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 {item.items ? (
                   <>
                     <button className="flex items-center gap-1 text-md font-medium text-gray-800 hover:text-black transition-colors">
-                      {item.name}
+                      {t(item.nameKey)}
                       <ChevronDown
                         size={13}
-                        className={`transition-transform duration-200 ${activeDropdown === item.name ? "rotate-180" : ""}`}
+                        className={`transition-transform duration-200 ${
+                          activeDropdown === item.nameKey ? "rotate-180" : ""
+                        }`}
                       />
                     </button>
-                    {activeDropdown === item.name && (
+                    {activeDropdown === item.nameKey && (
                       <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-48 bg-white border border-gray-100 shadow-lg rounded-sm z-50">
                         <ul className="py-2">
                           {item.items.map((subItem) => (
-                            <li key={subItem.name}>
+                            <li key={subItem.nameKey}>
                               <Link
                                 href={subItem.href}
                                 className="block px-5 py-2 text-md text-gray-700 hover:bg-gray-50 hover:text-black transition-colors"
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                {subItem.name}
+                                {t(subItem.nameKey)}
                               </Link>
                             </li>
                           ))}
@@ -109,7 +81,7 @@ export default function Navbar() {
                     href={item.href}
                     className="text-md font-medium text-gray-800 hover:text-black transition-colors"
                   >
-                    {item.name}
+                    {t(item.nameKey)}
                   </Link>
                 )}
               </li>
@@ -142,6 +114,7 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       <div
         className={`lg:hidden bg-white border-t border-gray-100 overflow-hidden transition-all duration-400 ${
           isMobileMenuOpen ? "max-h-150" : "max-h-0"
@@ -149,35 +122,39 @@ export default function Navbar() {
       >
         <ul className="px-6 py-4">
           {menuItems.map((item) => (
-            <li key={item.name}>
+            <li key={item.nameKey}>
               {item.items ? (
                 <div>
                   <button
                     onClick={() =>
                       setActiveMobileDropdown(
-                        activeMobileDropdown === item.name ? null : item.name,
+                        activeMobileDropdown === item.nameKey
+                          ? null
+                          : item.nameKey,
                       )
                     }
                     className="w-full flex items-center justify-between py-2.5 text-md font-medium text-gray-800"
                   >
-                    {item.name}
+                    {t(item.nameKey)}
                     <ChevronDown
                       size={13}
                       className={`transition-transform duration-400 ${
-                        activeMobileDropdown === item.name ? "rotate-180" : ""
+                        activeMobileDropdown === item.nameKey
+                          ? "rotate-180"
+                          : ""
                       }`}
                     />
                   </button>
                   <div
                     className={`overflow-hidden transition-all duration-400 ${
-                      activeMobileDropdown === item.name
+                      activeMobileDropdown === item.nameKey
                         ? "max-h-60"
                         : "max-h-0"
                     }`}
                   >
                     <ul className="pl-4 pb-2">
                       {item.items.map((subItem) => (
-                        <li key={subItem.name}>
+                        <li key={subItem.nameKey}>
                           <Link
                             href={subItem.href}
                             className="block py-2 text-md text-gray-600 hover:text-black"
@@ -186,7 +163,7 @@ export default function Navbar() {
                               setIsMobileMenuOpen(false);
                             }}
                           >
-                            {subItem.name}
+                            {t(subItem.nameKey)}
                           </Link>
                         </li>
                       ))}
@@ -199,7 +176,7 @@ export default function Navbar() {
                   className="block py-2.5 text-md font-medium text-gray-800 hover:text-black"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {item.name}
+                  {t(item.nameKey)}
                 </Link>
               )}
             </li>

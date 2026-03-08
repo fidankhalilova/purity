@@ -5,7 +5,17 @@
   },
   "Navigation": {
     "home": "Home",
-    "about": "About"
+    "shop": "Shop",
+    "shopItems": {
+      "foundation": "Foundation",
+      "lipColor": "Lip Color",
+      "eye": "Eye",
+      "blushBronzer": "Blush & Bronzer"
+    },
+    "aboutUs": "About Us",
+    "blog": "Blog",
+    "contactUs": "Contact Us",
+    "faq": "FAQ"
   },
   "Footer": {
     "helpCustomers": "Help Customers",
