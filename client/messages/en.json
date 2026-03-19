@@ -23,6 +23,36 @@
       }
     }
   },
+  "ContactPage": {
+    "Info": {
+      "title": "Contact Us",
+      "description": "Please use the below form. You can also call customer service on +1 (973) 3333-5555",
+      "boxTitle": "Got Help?",
+      "boxDesc": "Have a question? Please contact us using the customer support channels below.",
+      "supportTitle": "Support:",
+      "phone": "Phone: +1 (973) 435-3638",
+      "email": "Email: info@puritycosmetics.com",
+      "hours": "Opening hours: 8am to 7:30pm daily",
+      "followTitle": "Follow Us:"
+    },
+    "Form": {
+      "title": "Get in Touch",
+      "description": "Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.",
+      "namePlaceholder": "Name *",
+      "emailPlaceholder": "Email *",
+      "subjectPlaceholder": "Subject",
+      "commentPlaceholder": "Your comment *",
+      "submitBtn": "Submit",
+      "subjects": [
+        "General Enquiry",
+        "Order Support",
+        "Product Question",
+        "Returns & Refunds",
+        "Partnership",
+        "Other"
+      ]
+    }
+  },
   "Navigation": {
     "home": "Home",
     "shop": "Shop",
