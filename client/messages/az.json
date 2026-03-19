@@ -121,6 +121,138 @@
       ]
     }
   },
+  "FAQPage": {
+    "StickyFAQ": {
+      "badge": "Bizimlə Əlaqə",
+      "title": "Hələ Axtarırsınız?",
+      "description": "Sualınız var? Bizə e-poçt göndərin — tez kömək edərik.",
+      "namePlaceholder": "Ad *",
+      "emailPlaceholder": "E-poçt *",
+      "commentPlaceholder": "Şərhiniz *",
+      "submitBtn": "Göndər"
+    },
+    "Benefits": {
+      "shipping": {
+        "title": "Pulsuz Çatdırılma",
+        "desc": "Gömrük və vergilər daxil olmaqla, dünya üzrə pulsuz çatdırılma və iadədən zövq alın."
+      },
+      "moneyBack": {
+        "title": "100 Günlük Geri Qaytarma",
+        "desc": "100 gün ərzində pulsuz iade — məhsulun zədələnmədiyindən əmin olun."
+      },
+      "support": {
+        "title": "Onlayn Dəstək",
+        "desc": "Müştərilərə 7/24 dəstək göstəririk, suallarınızı göndərin, dərhal həll edərik."
+      }
+    },
+    "Sections": [
+      {
+        "title": "Çatdırılma",
+        "items": [
+          {
+            "question": "Çatdırılma nə qədər vaxt alır?",
+            "answer": "Sifarişlərimiz adətən yerinizə və seçdiyiniz çatdırılma üsuluna görə 3–7 iş günü ərzində çatır."
+          },
+          {
+            "question": "Çatdırılma ünvanımı dəyişə bilərəmmi?",
+            "answer": "Bəli, sifarişi verdikdən sonra 24 saat ərzində dəstək komandasımızla əlaqə saxlayaraq ünvanı yeniləyə bilərsiniz."
+          },
+          {
+            "question": "Sifarişimi necə izləyə bilərəm?",
+            "answer": "Sifarişiniz göndərildikdən sonra e-poçt vasitəsilə izləmə nömrəsi alacaqsınız."
+          },
+          {
+            "question": "Beynəlxalq çatdırılma təklif edirsinizmi?",
+            "answer": "Bəli, 50-dən çox ölkəyə çatdırılma edirik. Beynəlxalq çatdırılma adətən 7–14 iş günü çəkir."
+          }
+        ]
+      },
+      {
+        "title": "İade və Geri Ödəmə",
+        "items": [
+          {
+            "question": "İade siyasətiniz nədir?",
+            "answer": "Çatdırılmadan sonra 30 gün ərzində iade qəbul edirik. Məhsullar istifadə edilməmiş və orijinal qablaşdırmada olmalıdır."
+          },
+          {
+            "question": "İadəni necə başlada bilərəm?",
+            "answer": "Sifariş nömrəniz və iade səbəbinizlə dəstək komandasımızla əlaqə saxlayın."
+          },
+          {
+            "question": "Geri ödəməmi nə vaxt alacağam?",
+            "answer": "İadenizi aldıqdan və yoxladıqdan sonra 5–7 iş günü ərzində geri ödəmə ediləcək."
+          },
+          {
+            "question": "Məhsulu dəyişdirə bilərəmmi?",
+            "answer": "Bəli, fərqli ölçü və ya rəng üçün dəyişdirmə mümkündür."
+          }
+        ]
+      },
+      {
+        "title": "Məhsullar və Tərkib",
+        "items": [
+          {
+            "question": "Məhsullarınız zülmsüzdürmü?",
+            "answer": "Bəli, bütün Purity məhsulları 100% zülmsüzdür. İstehsalın heç bir mərhələsində heyvanlarda sınaq aparmırıq."
+          },
+          {
+            "question": "Məhsullar həssas dəri üçün uyğundurmu?",
+            "answer": "Əlbəttə. Formulalarımız dermatologlar tərəfindən sınaqdan keçirilmiş və həssas dəri nəzərə alınaraq hazırlanmışdır."
+          },
+          {
+            "question": "Tam tərkib siyahısını harada tapa bilərəm?",
+            "answer": "Hər məhsulun səhifəsində tam tərkib siyahısı mövcuddur."
+          },
+          {
+            "question": "Məhsullarınız veqandırmı?",
+            "answer": "Məhsullarımızın böyük əksəriyyəti vegandır. Hər məhsul səhifəsində vegan sertifikatı göstərilir."
+          }
+        ]
+      },
+      {
+        "title": "Sifarişlər və Ödənişlər",
+        "items": [
+          {
+            "question": "Hansı ödəniş üsullarını qəbul edirsiniz?",
+            "answer": "Visa, Mastercard, Amex, PayPal, Apple Pay, Google Pay və Shop Pay qəbul edirik."
+          },
+          {
+            "question": "Sifarişimi ləğv edə və ya dəyişdirə bilərəmmi?",
+            "answer": "Sifarişlər verilməsindən sonra 1 saat ərzində ləğv edilə və ya dəyişdirilə bilər."
+          },
+          {
+            "question": "Ödəniş məlumatlarım təhlükəsizdirnmi?",
+            "answer": "Bəli. Bütün əməliyyatlar SSL texnologiyası ilə şifrələnir."
+          },
+          {
+            "question": "Endirim və ya promo kodları təklif edirsinizmi?",
+            "answer": "Bəli! Xəbər bülletenimizdə abunə olun və ilk sifarişinizdə 10% endirim əldə edin."
+          }
+        ]
+      },
+      {
+        "title": "Hesab və Məxfilik",
+        "items": [
+          {
+            "question": "Sifariş vermək üçün hesab lazımdırmı?",
+            "answer": "Xeyr, qonaq kimi ödəniş edə bilərsiniz. Lakin hesab yaratmaq sifariş tarixçənizə giriş imkanı verir."
+          },
+          {
+            "question": "Şifrəmi necə sıfırlaya bilərəm?",
+            "answer": "Giriş səhifəsindəki 'Şifrəni unutdum' düyməsinə klikləyin və e-poçtunuzu daxil edin."
+          },
+          {
+            "question": "Şəxsi məlumatlarım necə istifadə olunur?",
+            "answer": "Məlumatlarınızı yalnız sifarişləri emal etmək üçün istifadə edirik. Üçüncü tərəflərə satmırıq."
+          },
+          {
+            "question": "Hesabımı necə silə bilərəm?",
+            "answer": "Dəstək komandasımızla əlaqə saxlayaraq hesabın silinməsini tələb edə bilərsiniz."
+          }
+        ]
+      }
+    ]
+  },
   "Navigation": {
     "home": "Ana səhifə",
     "shop": "Mağaza",
