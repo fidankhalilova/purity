@@ -91,6 +91,36 @@
       ]
     }
   },
+  "ContactPage": {
+    "Info": {
+      "title": "Bizimlə Əlaqə",
+      "description": "Aşağıdakı formu istifadə edin. Müştəri xidmətinə +1 (973) 3333-5555 nömrəsi ilə də zəng edə bilərsiniz.",
+      "boxTitle": "Kömək lazımdır?",
+      "boxDesc": "Sualınız var? Aşağıdakı dəstək kanallarından istifadə edərək bizimlə əlaqə saxlayın.",
+      "supportTitle": "Dəstək:",
+      "phone": "Telefon: +1 (973) 435-3638",
+      "email": "E-poçt: info@puritycosmetics.com",
+      "hours": "İş saatları: hər gün saat 8:00-dan 19:30-a qədər",
+      "followTitle": "Bizi İzləyin:"
+    },
+    "Form": {
+      "title": "Əlaqəyə Keçin",
+      "description": "Ümumi sorğularınızı aşağıdakı əlaqə formu vasitəsilə göndərin, tezliklə sizinlə əlaqə saxlayacağıq.",
+      "namePlaceholder": "Ad *",
+      "emailPlaceholder": "E-poçt *",
+      "subjectPlaceholder": "Mövzu",
+      "commentPlaceholder": "Şərhiniz *",
+      "submitBtn": "Göndər",
+      "subjects": [
+        "Ümumi Sorğu",
+        "Sifariş Dəstəyi",
+        "Məhsul Sualı",
+        "Qaytarma və Geri Ödəmə",
+        "Tərəfdaşlıq",
+        "Digər"
+      ]
+    }
+  },
   "Navigation": {
     "home": "Ana səhifə",
     "shop": "Mağaza",
