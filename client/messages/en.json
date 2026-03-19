@@ -253,6 +253,127 @@
       }
     ]
   },
+  "BlogPage": {
+    "grid": {
+      "title": "Beauty Inspirations",
+      "categories": [
+        "All Posts",
+        "Gifting",
+        "Holidays",
+        "Self-Care",
+        "Tips",
+        "Editor's Pick"
+      ],
+      "viewDetails": "View Details",
+      "editorsPick": "✦ Editor's Pick"
+    },
+    "posts": [
+      {
+        "category": "Tips",
+        "title": "Get The Look: Glow in 3 Steps",
+        "date": "01 May 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Achieve a natural, radiant glow with just three simple steps using our bestselling skincare lineup.",
+        "href": "/blog/glow-in-3-steps"
+      },
+      {
+        "category": "Self-Care",
+        "title": "Beginner's Guide to Skin Cycling",
+        "date": "27 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Skin cycling is the new skincare trend everyone's talking about. Here's how to start.",
+        "href": "/blog/skin-cycling"
+      },
+      {
+        "category": "Tips",
+        "title": "Best Way to Layer Your Products",
+        "date": "26 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Layering your skincare correctly makes all the difference. Learn the right order for maximum results.",
+        "href": "/blog/layer-your-products"
+      },
+      {
+        "category": "Gifting",
+        "title": "Top Sets for Holiday Self-Care",
+        "date": "31 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "The holidays are hectic—but your self-care doesn't have to be. Whether you're winding down solo or gifting glow to someone...",
+        "href": "/blog/holiday-self-care"
+      },
+      {
+        "category": "Holidays",
+        "title": "Your Winter Skincare Routine",
+        "date": "20 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Cold weather calls for extra care. Build a winter routine that keeps your skin soft, hydrated, and glowing.",
+        "href": "/blog/winter-skincare"
+      },
+      {
+        "category": "Editor's Pick",
+        "title": "The Products We Can't Stop Using",
+        "date": "10 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Our editors share their all-time favourite Purity products that never leave their bathroom shelves.",
+        "href": "/blog/editors-picks"
+      },
+      {
+        "category": "Tips",
+        "title": "Get The Look: Glow in 3 Steps",
+        "date": "01 May 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Achieve a natural, radiant glow with just three simple steps using our bestselling skincare lineup.",
+        "href": "/blog/glow-in-3-steps"
+      },
+      {
+        "category": "Self-Care",
+        "title": "Beginner's Guide to Skin Cycling",
+        "date": "27 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Skin cycling is the new skincare trend everyone's talking about. Here's how to start.",
+        "href": "/blog/skin-cycling"
+      },
+      {
+        "category": "Tips",
+        "title": "Best Way to Layer Your Products",
+        "date": "26 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Layering your skincare correctly makes all the difference. Learn the right order for maximum results.",
+        "href": "/blog/layer-your-products"
+      },
+      {
+        "category": "Gifting",
+        "title": "Top Sets for Holiday Self-Care",
+        "date": "31 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "The holidays are hectic—but your self-care doesn't have to be. Whether you're winding down solo or gifting glow to someone...",
+        "href": "/blog/holiday-self-care"
+      },
+      {
+        "category": "Holidays",
+        "title": "Your Winter Skincare Routine",
+        "date": "20 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Cold weather calls for extra care. Build a winter routine that keeps your skin soft, hydrated, and glowing.",
+        "href": "/blog/winter-skincare"
+      },
+      {
+        "category": "Editor's Pick",
+        "title": "The Products We Can't Stop Using",
+        "date": "10 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Our editors share their all-time favourite Purity products that never leave their bathroom shelves.",
+        "href": "/blog/editors-picks"
+      }
+    ],
+    "featured": {
+      "category": "Gifting",
+      "title": "Top Sets for Holiday Self-Care",
+      "date": "31 Mar 2025",
+      "author": "Olivia Bennett",
+      "excerpt": "The holidays are hectic—but your self-care doesn't have to be. Whether you're winding down solo or gifting glow to someone...",
+      "href": "/blog/holiday-self-care"
+    }
+  },
   "Navigation": {
     "home": "Home",
     "shop": "Shop",
