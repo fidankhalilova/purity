@@ -1,15 +1,16 @@
 import ProductCard from "@/components/ProductCard";
+import { useTranslations } from "next-intl";
 
 export default function OthersBought() {
+  const t = useTranslations("AboutUs.OthersBought");
   return (
     <div>
       <div>
         <h2 className="text-center text-4xl font-semibold text-gray-900 mb-4">
-          Others also bought
+          {t("title")}
         </h2>
         <p className="text-center text-sm text-gray-500 mb-12">
-          Check out similar products people are loving. Click to explore
-          trending styles.
+          {t("description")}
         </p>
       </div>
       <div className="grid grid-cols-4 gap-8">

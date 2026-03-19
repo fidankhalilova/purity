@@ -21,6 +21,74 @@
         "earthTitle": "Earth-Conscious",
         "earthDesc": "Our commitment to the planet is present in every step of our product's journey and process."
       }
+    },
+    "OthersBought": {
+      "title": "Others also bought",
+      "description": "Check out similar products people are loving. Click to explore trending styles."
+    },
+    "Timeline": {
+      "tag": "Our History",
+      "title": "Our Story in Time",
+      "slides": [
+        {
+          "date": "05/2017",
+          "title": "Where It All Began",
+          "desc": "Purity began with one simple question: what does sensitive skin need most?"
+        },
+        {
+          "date": "08/2019",
+          "title": "A Studio of Our Own",
+          "desc": "From a small kitchen to our first lab, each batch was crafted with care and purpose—not mass production."
+        },
+        {
+          "date": "07/2021",
+          "title": "10,000 Strong",
+          "desc": "Our first 10,000 customers became believers, shaping Purity's soul."
+        },
+        {
+          "date": "01/2023",
+          "title": "Beyond Borders",
+          "desc": "We grew into global markets with a commitment to clean, sustainable beauty."
+        }
+      ]
+    },
+    "Quote": {
+      "text": "Each of our products is a harmony of science, nature, and artistry — redefining what modern beauty truly means.",
+      "author": "Ava Collins / CEO and Founder",
+      "marquee": [
+        { "text": "Your Beauty" },
+        { "text": "Care for Your Beauty" },
+        { "text": "Beauty You Collection" },
+        { "text": "Glow Every Day" },
+        { "text": "Pure Skin Ritual" },
+        { "text": "Radiant You" }
+      ]
+    },
+    "PromoGrids": {
+      "leftTitle": "True Beauty \n Guided by Intention",
+      "leftDesc": "We believe beauty isn't shaped by trends, but by truth—how it feels, how it's made, and why it matters. Every formula is led by care, crafted with purpose, and grounded in deep respect for your skin and the planet.",
+      "leftBtn": "Explore Products",
+      "rightTitle": "Cruelty-free \n with Every Drop",
+      "rightDesc": "We believe beauty should never come at the cost of compassion. That's why every formula is 100% cruelty-free—carefully crafted without testing, without harm, and without compromise.",
+      "rightBtn": "Our Promise"
+    },
+    "BlogLine": {
+      "tag": "Where Trust Begins",
+      "title": "Built to Earn Your Trust",
+      "cards": [
+        {
+          "title": "Sustainable by Design",
+          "description": "Designed with sustainability in mind, using clean formulas, ethical sourcing, and recyclable packaging to care for both skin and planet."
+        },
+        {
+          "title": "Universal Adaptability",
+          "description": "Developed to work across all skin types, delivering targeted care that adapts, protects, and promotes visible balance and healthy radiance."
+        },
+        {
+          "title": "Ultra Gentle Care",
+          "description": "Formulated to be clean and ultra gentle, rebalancing the skin barrier, soothing, hydrating, and revitalizing all skin types with lasting comfort."
+        }
+      ]
     }
   },
   "Navigation": {
