@@ -3,12 +3,16 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Inter } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import "../globals.css";
 import RootLayout from "@/layout/RootLayout";
 import { LanguageProvider } from "@/context/LanguageContext";
 
-const inter = Inter({ subsets: ["latin", "cyrillic"] });
+const instrumentSans = Instrument_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-instrument-sans",
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -34,7 +38,7 @@ export default async function LocaleLayout(props: {
 
   return (
     <html lang={locale} dir="ltr" className="bg-white">
-      <body className={inter.className}>
+      <body className={`${instrumentSans.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <LanguageProvider>
             <RootLayout>{children}</RootLayout>

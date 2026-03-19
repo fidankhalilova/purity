@@ -3,6 +3,26 @@
     "title": "Salam dünya!",
     "greeting": "Tətbiqimə xoş gəlmisiniz"
   },
+  "AboutUs": {
+    "AboutBanner": {
+      "title": "Purity'nin Hekayəsi",
+      "description": "Niyyətlə başlayan və etibarla sona çatan dəri qayğısı — hər damcısında həssaslıqla, dürüstlüklə və məqsədlə hazırlanmışdır."
+    },
+    "OurVision": {
+      "tag": "Fəlsəfəmiz",
+      "title": "Özgüvənlə Parlayın",
+      "description": "Təmiz formulalarımız dərinizi qidalandırmaq, bərpa etmək və təbii parıltısını ortaya çıxarmaq üçün hazırlanıb — özgüvən həqiqi, əbədi gözəllik kimi əziyyətsiz və parlaq hiss etdirir.",
+      "body": "Hər formula qəsdən yaradılıb — həssas, effektiv və düşüncəlidir. Xammalın seçimindən qablaşdırmaya qədər heç nə tələsdirilmir. İnanırıq ki, gözəllik şəxsi, məsuliyyətli və əbədi olmalıdır — trend deyil, dizaynla yaradılır.",
+      "badges": {
+        "crueltyFreeTitle": "Heyvan Sınaqsız",
+        "crueltyFreeDesc": "Hər zaman və əbədi heyvan sınaqsızıq, çünki inanırıq ki, mərhəmət əsl gözəllikdir.",
+        "parabenFreeTitle": "Paraben Yoxdur",
+        "parabenFreeDesc": "Məhsullarımız hər zaman paraben yoxdur, çünki hamı üçün təmiz və təhlükəsiz gözəlliyə inanırıq.",
+        "earthTitle": "Ekoloji Şüurlu",
+        "earthDesc": "Planetə bağlılığımız məhsulumuzun hər addımında və prosesindədir."
+      }
+    }
+  },
   "Navigation": {
     "home": "Ana səhifə",
     "shop": "Mağaza",

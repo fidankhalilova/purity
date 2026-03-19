@@ -3,6 +3,26 @@
     "title": "Hello world!",
     "greeting": "Welcome to my app"
   },
+  "AboutUs": {
+    "AboutBanner": {
+      "title": "Purity's Story",
+      "description": "Skincare that begins with intention and ends with trust—crafted gently, honestly, and with purpose in every drop."
+    },
+    "OurVision": {
+      "tag": "Our Philosophy",
+      "title": "Glow with Confidence",
+      "description": "Our clean formulas are designed to nourish, restore, and reveal your skin's natural glow—so confidence feels as effortless and radiant as true, timeless beauty itself.",
+      "body": "Every formula is intentional—gentle, effective, and thoughtful. From sourcing to packaging, nothing is rushed. We believe beauty should be personal, responsible, and timeless—crafted by design, not by trend.",
+      "badges": {
+        "crueltyFreeTitle": "Cruelty-Free",
+        "crueltyFreeDesc": "We're cruelty-free, always and forever, because we believe compassion is the true beauty.",
+        "parabenFreeTitle": "Paraben-Free",
+        "parabenFreeDesc": "Products paraben-free, always and forever, because we believe in clean, safe beauty for all.",
+        "earthTitle": "Earth-Conscious",
+        "earthDesc": "Our commitment to the planet is present in every step of our product's journey and process."
+      }
+    }
+  },
   "Navigation": {
     "home": "Home",
     "shop": "Shop",
