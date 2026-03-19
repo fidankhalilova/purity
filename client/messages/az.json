@@ -253,6 +253,127 @@
       }
     ]
   },
+  "BlogPage": {
+    "grid": {
+      "title": "Gözəllik İlhamları",
+      "categories": [
+        "Bütün Yazılar",
+        "Hədiyyə",
+        "Bayramlar",
+        "Özünə Qayğı",
+        "İpuçları",
+        "Redaktorun Seçimi"
+      ],
+      "viewDetails": "Ətraflı Bax",
+      "editorsPick": "✦ Redaktorun Seçimi"
+    },
+    "posts": [
+      {
+        "category": "İpuçları",
+        "title": "Görünüşü Əldə Et: 3 Addımda Parıltı",
+        "date": "01 May 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Bestseller dəri qayğısı məhsullarımızla sadəcə üç addımda təbii parıltı əldə edin.",
+        "href": "/blog/glow-in-3-steps"
+      },
+      {
+        "category": "Özünə Qayğı",
+        "title": "Dəri Dövriyyəsinə Başlanğıc Bələdçisi",
+        "date": "27 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dəri dövriyyəsi hamının danışdığı yeni trend. Necə başlamaq olar.",
+        "href": "/blog/skin-cycling"
+      },
+      {
+        "category": "İpuçları",
+        "title": "Məhsulları Layihələndirməyin Ən Yaxşı Yolu",
+        "date": "26 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dəri qayğısını düzgün qatlamaq böyük fərq yaradır. Maksimum nəticə üçün düzgün ardıcıllığı öyrənin.",
+        "href": "/blog/layer-your-products"
+      },
+      {
+        "category": "Hədiyyə",
+        "title": "Bayram Özünə Qayğısı üçün Ən Yaxşı Dəstlər",
+        "date": "31 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Bayramlar həyəcanlıdır, lakin özünüzə qayğınız belə olmaq məcburiyyətində deyil.",
+        "href": "/blog/holiday-self-care"
+      },
+      {
+        "category": "Bayramlar",
+        "title": "Qış Dəri Qayğısı Rutininiz",
+        "date": "20 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Soyuq hava əlavə qayğı tələb edir. Dərinizi yumşaq, nəmli və parlaq saxlayan qış rutini qurun.",
+        "href": "/blog/winter-skincare"
+      },
+      {
+        "category": "Redaktorun Seçimi",
+        "title": "İstifadəni Dayandıra Bilmədiyimiz Məhsullar",
+        "date": "10 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Redaktorlarımız vannaotaqlarından heç vaxt çıxarmadıqları sevimli Purity məhsullarını paylaşır.",
+        "href": "/blog/editors-picks"
+      },
+      {
+        "category": "İpuçları",
+        "title": "Görünüşü Əldə Et: 3 Addımda Parıltı",
+        "date": "01 May 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Bestseller dəri qayğısı məhsullarımızla sadəcə üç addımda təbii parıltı əldə edin.",
+        "href": "/blog/glow-in-3-steps"
+      },
+      {
+        "category": "Özünə Qayğı",
+        "title": "Dəri Dövriyyəsinə Başlanğıc Bələdçisi",
+        "date": "27 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dəri dövriyyəsi hamının danışdığı yeni trend. Necə başlamaq olar.",
+        "href": "/blog/skin-cycling"
+      },
+      {
+        "category": "İpuçları",
+        "title": "Məhsulları Layihələndirməyin Ən Yaxşı Yolu",
+        "date": "26 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dəri qayğısını düzgün qatlamaq böyük fərq yaradır. Maksimum nəticə üçün düzgün ardıcıllığı öyrənin.",
+        "href": "/blog/layer-your-products"
+      },
+      {
+        "category": "Hədiyyə",
+        "title": "Bayram Özünə Qayğısı üçün Ən Yaxşı Dəstlər",
+        "date": "31 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Bayramlar həyəcanlıdır, lakin özünüzə qayğınız belə olmaq məcburiyyətində deyil.",
+        "href": "/blog/holiday-self-care"
+      },
+      {
+        "category": "Bayramlar",
+        "title": "Qış Dəri Qayğısı Rutininiz",
+        "date": "20 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Soyuq hava əlavə qayğı tələb edir. Dərinizi yumşaq, nəmli və parlaq saxlayan qış rutini qurun.",
+        "href": "/blog/winter-skincare"
+      },
+      {
+        "category": "Redaktorun Seçimi",
+        "title": "İstifadəni Dayandıra Bilmədiyimiz Məhsullar",
+        "date": "10 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Redaktorlarımız vannaotaqlarından heç vaxt çıxarmadıqları sevimli Purity məhsullarını paylaşır.",
+        "href": "/blog/editors-picks"
+      }
+    ],
+    "featured": {
+      "category": "Hədiyyə",
+      "title": "Bayram Özünə Qayğısı üçün Ən Yaxşı Dəstlər",
+      "date": "31 Mar 2025",
+      "author": "Olivia Bennett",
+      "excerpt": "Bayramlar həyəcanlıdır, lakin özünüzə qayğınız belə olmaq məcburiyyətində deyil.",
+      "href": "/blog/holiday-self-care"
+    }
+  },
   "Navigation": {
     "home": "Ana səhifə",
     "shop": "Mağaza",
