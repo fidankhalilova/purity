@@ -15,6 +15,7 @@ export const menuItems: MenuItem[] = [
     nameKey: "shop",
     href: "/shop",
     items: [
+      { nameKey: "shopItems.allProducts", href: "/shop" },
       { nameKey: "shopItems.foundation", href: "/shop" },
       { nameKey: "shopItems.lipColor", href: "/shop" },
       { nameKey: "shopItems.eye", href: "/shop" },

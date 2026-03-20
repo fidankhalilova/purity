@@ -394,10 +394,47 @@
       "submitBtn": "Post Comment"
     }
   },
+  "ShopPage": {
+    "banner": {
+      "breadcrumbHome": "Home",
+      "title": "Skincare",
+      "description": "Elevate your skincare routine with essentials that cleanse, treat, and nourish for radiant, healthy skin."
+    },
+    "filters": {
+      "availability": "Availability",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "price": "Price",
+      "highestPrice": "The highest price is $585.00",
+      "color": "Color",
+      "size": "Size",
+      "brand": "Brand",
+      "category": "Category",
+      "concern": "Concern",
+      "formulation": "Formulation",
+      "sale": "On Sale",
+      "saleDesc": "Show only discounted products",
+      "newArrivals": "New Arrivals",
+      "newArrivalsDesc": "Show only new products",
+      "clearAll": "Clear all filters"
+    },
+    "products": {
+      "count": "products",
+      "sortBy": "Sort by:",
+      "sortOptions": [
+        "Best selling",
+        "Price: Low to High",
+        "Price: High to Low",
+        "Newest",
+        "Top Rated"
+      ]
+    }
+  },
   "Navigation": {
     "home": "Home",
     "shop": "Shop",
     "shopItems": {
+      "allProducts": "All Products",
       "foundation": "Foundation",
       "lipColor": "Lip Color",
       "eye": "Eye",

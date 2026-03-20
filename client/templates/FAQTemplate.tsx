@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import Breadcrumb from "@/components/BreadCrumb";
 import StickyFAQ from "@/components/StickyFAQ";
-import StickyLayout from "@/components/StickyLayout";
+import StickyLayout from "@/layout/StickyLayout/StickyLayout";
 import OurBenefits from "@/sections/FAQ/OurBenefits";
 import Questions from "@/sections/FAQ/Questions";
 
