@@ -16,7 +16,7 @@ export default function BlogTemplate() {
   return (
     <div className="container mx-auto px-6 py-4">
       <Breadcrumb />
-      <div className="flex flex-col gap-6 sm:gap-12 mt-2">
+      <div className="flex flex-col gap-6 sm:gap-12">
         <BlogCard_One
           {...featured}
           image="https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720"

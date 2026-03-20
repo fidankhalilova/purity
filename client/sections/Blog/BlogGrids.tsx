@@ -30,16 +30,14 @@ export default function BlogGrid() {
 
   const allPosts = (t.raw("posts") as any[]).map((post, i) => ({
     ...post,
-    image: postImages[i],
+    image: postImages[i % postImages.length],
   }));
 
-  // Read initial state from URL
   const urlPage = Number(searchParams?.get("page")) || 1;
   const urlCategory = searchParams?.get("category") || categories[0];
   const [active, setActive] = useState(urlCategory);
   const [page, setPage] = useState(urlPage);
 
-  // Sync state when URL changes (e.g. browser back/forward)
   useEffect(() => {
     setPage(Number(searchParams?.get("page")) || 1);
     setActive(searchParams?.get("category") || categories[0]);
@@ -98,12 +96,12 @@ export default function BlogGrid() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {paginated.map((post) => (
-          <BlogCard key={post.href} {...post} />
+        {paginated.map((post, i) => (
+          <BlogCard key={`${post.href}-${i}`} {...post} />
         ))}
       </div>
 
-      {totalPages >= 1 && filtered.length > POSTS_PER_PAGE && (
+      {filtered.length > POSTS_PER_PAGE && (
         <Pagination totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </section>
