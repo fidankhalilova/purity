@@ -394,10 +394,47 @@
       "submitBtn": "Şərh Göndər"
     }
   },
+  "ShopPage": {
+    "banner": {
+      "breadcrumbHome": "Ana Səhifə",
+      "title": "Dəri Qayğısı",
+      "description": "Təmizləyən, müalicə edən və qidalandıran əsas vasitələrlə dəri qayğısı rutininizi yüksəldin."
+    },
+    "filters": {
+      "availability": "Mövcudluq",
+      "inStock": "Stokda var",
+      "outOfStock": "Stokda yoxdur",
+      "price": "Qiymət",
+      "highestPrice": "Ən yüksək qiymət $585.00-dır",
+      "color": "Rəng",
+      "size": "Ölçü",
+      "brand": "Brend",
+      "category": "Kateqoriya",
+      "concern": "Narahatlıq",
+      "formulation": "Formulasiya",
+      "sale": "Endirimli",
+      "saleDesc": "Yalnız endirimli məhsulları göstər",
+      "newArrivals": "Yeni Gələnlər",
+      "newArrivalsDesc": "Yalnız yeni məhsulları göstər",
+      "clearAll": "Bütün filterləri təmizlə"
+    },
+    "products": {
+      "count": "məhsul",
+      "sortBy": "Sıralama:",
+      "sortOptions": [
+        "Ən çox satılan",
+        "Qiymət: Azdan çoxa",
+        "Qiymət: Çoxdan aza",
+        "Ən yeni",
+        "Ən yüksək reytinq"
+      ]
+    }
+  },
   "Navigation": {
     "home": "Ana səhifə",
     "shop": "Mağaza",
     "shopItems": {
+      "allProducts": "Bütün Məhsullar",
       "foundation": "Tonal Krem",
       "lipColor": "Dodaq Rəngi",
       "eye": "Göz",
