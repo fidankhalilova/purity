@@ -494,6 +494,119 @@
     "whyUsDesc": "Dərinizin ehtiyac duyduğu hər şey — gündəlik qayğınıza uyğunlaşdırılmış.",
     "thisItem": "Bu məhsul"
   },
+  "AccountPage": {
+    "sidebar": {
+      "profile": "Profilim",
+      "orders": "Sifarişlər",
+      "wishlist": "İstək Siyahısı",
+      "basket": "Səbət",
+      "settings": "Parametrlər",
+      "signOut": "Çıxış",
+      "memberSince": "2023-cü ildən üzv"
+    },
+    "profile": {
+      "title": "Profilim",
+      "subtitle": "Şəxsi məlumatlarınızı idarə edin",
+      "editProfile": "Profili Redaktə Et",
+      "cancel": "Ləğv et",
+      "saveChanges": "Dəyişiklikləri Saxla",
+      "successMessage": "✓ Profil uğurla yeniləndi",
+      "avatar": "Şəkli dəyiş",
+      "personalInfo": "Şəxsi Məlumat",
+      "fullName": "Tam Ad",
+      "emailAddress": "E-poçt Ünvanı",
+      "phoneNumber": "Telefon Nömrəsi",
+      "birthday": "Doğum tarixi",
+      "gender": "Cins",
+      "genderOptions": {
+        "female": "Qadın",
+        "male": "Kişi",
+        "other": "Bildirmək istəmirəm"
+      },
+      "savedAddresses": "Saxlanılmış Ünvanlar",
+      "addNew": "+ Yeni əlavə et",
+      "default": "Əsas",
+      "edit": "Redaktə",
+      "remove": "Sil"
+    },
+    "orders": {
+      "title": "Sifarişlərim",
+      "total": "sifariş",
+      "viewDetails": "Ətraflı Bax",
+      "reorder": "Yenidən Sifariş Et",
+      "trackOrder": "Sifarişi İzlə",
+      "status": {
+        "delivered": "Çatdırıldı",
+        "shipped": "Göndərildi",
+        "processing": "Emal edilir",
+        "cancelled": "Ləğv edildi"
+      },
+      "qty": "Miqdar"
+    },
+    "wishlist": {
+      "title": "İstək Siyahısı",
+      "savedItems": "saxlanılmış məhsul",
+      "outOfStock": "Stokda yoxdur",
+      "addToCart": "Səbətə əlavə et",
+      "emptyTitle": "İstək siyahınız boşdur",
+      "emptyDesc": "Sevdiyiniz məhsulları sonra tapmaq üçün saxlayın",
+      "exploreProducts": "Məhsulları Kəşf Et"
+    },
+    "basket": {
+      "title": "Səbətim",
+      "items": "məhsul",
+      "orderSummary": "Sifariş Xülasəsi",
+      "subtotal": "Aralıq cəm",
+      "discount": "Endirim (10%)",
+      "shipping": "Çatdırılma",
+      "free": "Pulsuz",
+      "total": "Cəmi",
+      "promoPlaceholder": "Promo kod",
+      "apply": "Tətbiq et",
+      "promoApplied": "✓ Promo kod tətbiq edildi!",
+      "checkout": "Ödəniş",
+      "continueShopping": "Alışverişə davam et",
+      "emptyTitle": "Səbətiniz boşdur",
+      "emptyDesc": "Başlamaq üçün məhsul əlavə edin",
+      "shopNow": "İndi Al"
+    },
+    "settings": {
+      "title": "Parametrlər",
+      "subtitle": "Hesab seçimlərini idarə edin",
+      "notifications": {
+        "title": "Bildirişlər",
+        "orders": "Sifariş yenilikləri",
+        "ordersDesc": "Çatdırılma bildirişləri",
+        "promotions": "Promosyonlar və təkliflər",
+        "promotionsDesc": "Endirimlər, satışlar və xüsusi tədbirlər",
+        "newsletter": "Xəbər bülleteni",
+        "newsletterDesc": "Həftəlik gözəllik məsləhətləri",
+        "sms": "SMS bildirişləri",
+        "smsDesc": "Sifariş yenilikləri üçün SMS"
+      },
+      "password": {
+        "title": "Şifrəni Dəyiş",
+        "current": "Cari şifrə",
+        "new": "Yeni şifrə",
+        "confirm": "Yeni şifrəni təsdiq edin",
+        "update": "Şifrəni Yenilə"
+      },
+      "language": {
+        "title": "Dil və Region",
+        "label": "Göstərilən Dil"
+      },
+      "danger": {
+        "title": "Təhlükəli Zona",
+        "deleteTitle": "Hesabı Sil",
+        "deleteDesc": "Hesabınızı və bütün məlumatlarınızı həmişəlik silin. Bu geri alına bilməz.",
+        "deleteBtn": "Hesabı Sil",
+        "confirmTitle": "Əminsinizmi?",
+        "confirmDesc": "Bu, hesabınızı, sifariş tarixçənizi, istək siyahınızı və bütün şəxsi məlumatlarınızı həmişəlik siləcək.",
+        "cancelBtn": "Ləğv et",
+        "confirmBtn": "Bəli, Hesabımı Sil"
+      }
+    }
+  },
   "Navigation": {
     "home": "Ana səhifə",
     "shop": "Mağaza",

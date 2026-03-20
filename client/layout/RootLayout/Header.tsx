@@ -96,14 +96,19 @@ export default function Navbar() {
             <Search size={20} />
           </button>
           <button className="relative">
-            <Settings size={20} />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />
+            <Link href="/account/settings">
+              <Settings size={20} />
+            </Link>
           </button>
           <button className="hidden sm:block">
-            <User size={20} />
+            <Link href="/account/profile">
+              <User size={20} />
+            </Link>
           </button>
           <button>
-            <ShoppingBag size={20} />
+            <Link href="/account/basket">
+              <ShoppingBag size={20} />
+            </Link>
           </button>
           <button
             className="lg:hidden"
