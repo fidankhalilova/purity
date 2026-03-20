@@ -494,6 +494,119 @@
     "whyUsDesc": "Everything your skin needs, shown in every touch — tailored to your daily care.",
     "thisItem": "This item"
   },
+  "AccountPage": {
+    "sidebar": {
+      "profile": "My Profile",
+      "orders": "Orders",
+      "wishlist": "Wishlist",
+      "basket": "Basket",
+      "settings": "Settings",
+      "signOut": "Sign Out",
+      "memberSince": "Member since 2023"
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Manage your personal information",
+      "editProfile": "Edit Profile",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "successMessage": "✓ Profile updated successfully",
+      "avatar": "Change photo",
+      "personalInfo": "Personal Information",
+      "fullName": "Full Name",
+      "emailAddress": "Email Address",
+      "phoneNumber": "Phone Number",
+      "birthday": "Birthday",
+      "gender": "Gender",
+      "genderOptions": {
+        "female": "Female",
+        "male": "Male",
+        "other": "Prefer not to say"
+      },
+      "savedAddresses": "Saved Addresses",
+      "addNew": "+ Add new",
+      "default": "Default",
+      "edit": "Edit",
+      "remove": "Remove"
+    },
+    "orders": {
+      "title": "My Orders",
+      "total": "orders total",
+      "viewDetails": "View Details",
+      "reorder": "Reorder",
+      "trackOrder": "Track Order",
+      "status": {
+        "delivered": "Delivered",
+        "shipped": "Shipped",
+        "processing": "Processing",
+        "cancelled": "Cancelled"
+      },
+      "qty": "Qty"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "savedItems": "saved items",
+      "outOfStock": "Out of stock",
+      "addToCart": "Add to Cart",
+      "emptyTitle": "Your wishlist is empty",
+      "emptyDesc": "Save products you love to find them later",
+      "exploreProducts": "Explore Products"
+    },
+    "basket": {
+      "title": "My Basket",
+      "items": "items",
+      "orderSummary": "Order Summary",
+      "subtotal": "Subtotal",
+      "discount": "Discount (10%)",
+      "shipping": "Shipping",
+      "free": "Free",
+      "total": "Total",
+      "promoPlaceholder": "Promo code",
+      "apply": "Apply",
+      "promoApplied": "✓ Promo code applied!",
+      "checkout": "Checkout",
+      "continueShopping": "Continue shopping",
+      "emptyTitle": "Your basket is empty",
+      "emptyDesc": "Add some products to get started",
+      "shopNow": "Shop Now"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account preferences",
+      "notifications": {
+        "title": "Notifications",
+        "orders": "Order updates",
+        "ordersDesc": "Shipping and delivery notifications",
+        "promotions": "Promotions & offers",
+        "promotionsDesc": "Discounts, sales and special events",
+        "newsletter": "Newsletter",
+        "newsletterDesc": "Weekly beauty tips and new arrivals",
+        "sms": "SMS notifications",
+        "smsDesc": "Text messages for order updates"
+      },
+      "password": {
+        "title": "Change Password",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Confirm new password",
+        "update": "Update Password"
+      },
+      "language": {
+        "title": "Language & Region",
+        "label": "Display Language"
+      },
+      "danger": {
+        "title": "Danger Zone",
+        "deleteTitle": "Delete Account",
+        "deleteDesc": "Permanently delete your account and all data. This cannot be undone.",
+        "deleteBtn": "Delete Account",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDesc": "This will permanently delete your account, order history, wishlist, and all personal data. This action cannot be reversed.",
+        "cancelBtn": "Cancel",
+        "confirmBtn": "Yes, Delete My Account"
+      }
+    }
+  },
   "Navigation": {
     "home": "Home",
     "shop": "Shop",
