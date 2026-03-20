@@ -76,7 +76,7 @@ export default function BlogGrid() {
   );
 
   return (
-    <section className="py-16">
+    <section className="pb-12 pt-8">
       <h2 className="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-10">
         {t("grid.title")}
       </h2>
