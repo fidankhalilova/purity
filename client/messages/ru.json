@@ -274,7 +274,7 @@
         "date": "01 May 2025",
         "author": "Olivia Bennett",
         "excerpt": "Достигните естественного сияния всего за три простых шага с нашими бестселлерами.",
-        "href": "/blog/glow-in-3-steps"
+        "href": "glow-in-3-steps"
       },
       {
         "category": "Забота о себе",
@@ -282,7 +282,7 @@
         "date": "27 Apr 2025",
         "author": "Olivia Bennett",
         "excerpt": "Цикличность кожи — это новый тренд в уходе за кожей. Вот как начать.",
-        "href": "/blog/skin-cycling"
+        "href": "skin-cycling"
       },
       {
         "category": "Советы",
@@ -290,7 +290,7 @@
         "date": "26 Apr 2025",
         "author": "Olivia Bennett",
         "excerpt": "Правильное нанесение средств по уходу за кожей имеет большое значение.",
-        "href": "/blog/layer-your-products"
+        "href": "layer-your-products"
       },
       {
         "category": "Подарки",
@@ -298,15 +298,15 @@
         "date": "31 Mar 2025",
         "author": "Olivia Bennett",
         "excerpt": "Праздники суматошны — но ваш уход за собой не обязан быть таким.",
-        "href": "/blog/holiday-self-care"
+        "href": "holiday-self-care"
       },
       {
         "category": "Праздники",
         "title": "Ваш Зимний Уход за Кожей",
         "date": "20 Mar 2025",
         "author": "Olivia Bennett",
-        "excerpt": "Холодная погода требует дополнительного ухода. Создайте зимний ритуал для мягкой и сияющей кожи.",
-        "href": "/blog/winter-skincare"
+        "excerpt": "Холодная погода требует дополнительного ухода.",
+        "href": "winter-skincare"
       },
       {
         "category": "Выбор редактора",
@@ -314,55 +314,55 @@
         "date": "10 Mar 2025",
         "author": "Olivia Bennett",
         "excerpt": "Наши редакторы делятся любимыми продуктами Purity, которые никогда не покидают их полки.",
-        "href": "/blog/editors-picks"
-      },
-      {
-        "category": "Советы",
-        "title": "Создай Образ: Сияние за 3 Шага",
-        "date": "01 May 2025",
-        "author": "Olivia Bennett",
-        "excerpt": "Достигните естественного сияния всего за три простых шага с нашими бестселлерами.",
-        "href": "/blog/glow-in-2-steps"
+        "href": "editors-picks"
       },
       {
         "category": "Забота о себе",
-        "title": "Руководство по Цикличности Кожи",
-        "date": "27 Apr 2025",
+        "title": "Утренние Ритуалы, Которые Работают",
+        "date": "05 Feb 2025",
         "author": "Olivia Bennett",
-        "excerpt": "Цикличность кожи — это новый тренд в уходе за кожей. Вот как начать.",
-        "href": "/blog/skinn-cycling"
+        "excerpt": "Начните день с намерением. Эти простые утренние шаги преобразят вашу кожу.",
+        "href": "morning-rituals"
       },
       {
         "category": "Советы",
-        "title": "Лучший Способ Наносить Продукты",
-        "date": "26 Apr 2025",
+        "title": "Как Читать Этикетки Средств Ухода",
+        "date": "28 Jan 2025",
         "author": "Olivia Bennett",
-        "excerpt": "Правильное нанесение средств по уходу за кожей имеет большое значение.",
-        "href": "/blog/layer-yourr-products"
+        "excerpt": "Запутались в списках ингредиентов? Мы объясним, на что обращать внимание.",
+        "href": "read-skincare-labels"
       },
       {
         "category": "Подарки",
-        "title": "Лучшие Наборы для Праздничного Ухода",
-        "date": "31 Mar 2025",
+        "title": "Гид по Подаркам на День Святого Валентина",
+        "date": "10 Jan 2025",
         "author": "Olivia Bennett",
-        "excerpt": "Праздники суматошны — но ваш уход за собой не обязан быть таким.",
-        "href": "/blog/holidayy-self-care"
+        "excerpt": "Покажите заботу подарком, который ощущается роскошно и полезен для кожи.",
+        "href": "valentines-gift-guide"
       },
       {
         "category": "Праздники",
-        "title": "Ваш Зимний Уход за Кожей",
-        "date": "20 Mar 2025",
+        "title": "Летнее Сияние: Сезонный Переход",
+        "date": "02 Jan 2025",
         "author": "Olivia Bennett",
-        "excerpt": "Холодная погода требует дополнительного ухода. Создайте зимний ритуал для мягкой и сияющей кожи.",
-        "href": "/blog/winterr-skincare"
+        "excerpt": "С изменением сезонов должен меняться и ваш уход.",
+        "href": "summer-glow-routine"
       },
       {
         "category": "Выбор редактора",
-        "title": "Продукты, которые Мы Не Можем Перестать Использовать",
-        "date": "10 Mar 2025",
+        "title": "5 Сывороток, Стоящих Своих Денег",
+        "date": "20 Dec 2024",
         "author": "Olivia Bennett",
-        "excerpt": "Наши редакторы делятся любимыми продуктами Purity, которые никогда не покидают их полки.",
-        "href": "/blog/eeditors-picks"
+        "excerpt": "Не все сыворотки одинаковы. Наши редакторы протестировали десятки.",
+        "href": "serums-worth-splurge"
+      },
+      {
+        "category": "Советы",
+        "title": "SPF Каждый День: Вот Почему",
+        "date": "12 Dec 2024",
+        "author": "Olivia Bennett",
+        "excerpt": "Солнцезащитный крем — не только для солнечных дней.",
+        "href": "spf-every-day"
       }
     ],
     "featured": {
@@ -371,7 +371,27 @@
       "date": "31 Mar 2025",
       "author": "Olivia Bennett",
       "excerpt": "Праздники суматошны — но ваш уход за собой не обязан быть таким.",
-      "href": "/blog/holidaay-self-care"
+      "href": "holiday-self-care"
+    }
+  },
+  "BlogDetail": {
+    "comments": "Комментарии",
+    "tags": "Теги:",
+    "share": "Поделиться:",
+    "olderPost": "Старая запись",
+    "newerPost": "Новая запись",
+    "tip": "Совет:",
+    "beforeYouGo": {
+      "title": "Прежде чем уйти...",
+      "description": "Несколько отобранных статей для вдохновения на следующий момент заботы о себе."
+    },
+    "leaveComment": {
+      "title": "Оставить комментарий",
+      "description": "Комментарии должны быть одобрены перед публикацией. * обязательное поле.",
+      "namePlaceholder": "Имя *",
+      "emailPlaceholder": "Эл. почта *",
+      "commentPlaceholder": "Ваш комментарий *",
+      "submitBtn": "Отправить комментарий"
     }
   },
   "Navigation": {

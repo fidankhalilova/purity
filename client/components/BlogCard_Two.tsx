@@ -1,3 +1,5 @@
+"use client";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,9 +20,11 @@ export default function BlogCard({
   image,
   href,
 }: BlogCardProps) {
+  const locale = useLocale();
+  const fullHref = href.startsWith("/") ? href : `/${locale}/blog/${href}`;
+
   return (
-    <Link href={href} className="group flex flex-col gap-4">
-      {/* Image */}
+    <Link href={fullHref} className="group flex flex-col gap-4">
       <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden">
         <Image
           src={image}
@@ -29,8 +33,6 @@ export default function BlogCard({
           className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
         />
       </div>
-
-      {/* Meta */}
       <div className="flex flex-col gap-2">
         <span className="self-start bg-[#c0392b] text-white text-xs font-medium px-3 py-1 rounded-full">
           {category}
