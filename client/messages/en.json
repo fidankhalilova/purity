@@ -863,5 +863,98 @@
       "registerWithGoogle": "Register with Google",
       "orDivider": "Or"
     }
+  },
+  "CheckoutPage": {
+    "title": "Checkout",
+    "breadcrumb": "Checkout",
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email address",
+      "phone": "Phone number"
+    },
+    "shipping": {
+      "title": "Shipping Address",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "address": "Address",
+      "apartment": "Apartment, suite, etc. (optional)",
+      "city": "City",
+      "country": "Country",
+      "zip": "ZIP / Postal code",
+      "countries": [
+        "Azerbaijan",
+        "United States",
+        "United Kingdom",
+        "Germany",
+        "France",
+        "Turkey",
+        "Russia"
+      ]
+    },
+    "delivery": {
+      "title": "Delivery Method",
+      "standard": "Standard Delivery",
+      "standardDesc": "5–7 business days",
+      "standardPrice": "Free",
+      "express": "Express Delivery",
+      "expressDesc": "2–3 business days",
+      "expressPrice": "$12.00"
+    },
+    "payment": {
+      "title": "Payment",
+      "cardNumber": "Card number",
+      "cardName": "Name on card",
+      "expiry": "Expiry date",
+      "cvv": "CVV",
+      "secure": "Your payment info is encrypted and secure."
+    },
+    "summary": {
+      "title": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "free": "Free",
+      "discount": "Discount",
+      "total": "Total",
+      "promoPlaceholder": "Promo code",
+      "apply": "Apply",
+      "promoApplied": "✓ Promo applied!",
+      "placeOrder": "Place Order",
+      "items": "items",
+      "taxes": "Taxes included",
+      "processing": "Processing..."
+    },
+    "orderSuccess": {
+      "title": "Order Confirmed!",
+      "desc": "Thank you for your purchase. Your order has been placed and is being processed.",
+      "orderNumber": "Order number",
+      "estimatedDelivery": "Estimated delivery",
+      "viewOrders": "View My Orders",
+      "continueShopping": "Continue Shopping",
+      "whatHappensNext": "What happens next?",
+      "steps": [
+        {
+          "title": "Order Processing",
+          "desc": "We're preparing your items for shipment."
+        },
+        {
+          "title": "Shipped",
+          "desc": "You'll receive a tracking number via email."
+        },
+        { "title": "Delivered", "desc": "Your order arrives at your door." }
+      ]
+    },
+    "orderFail": {
+      "title": "Payment Failed",
+      "desc": "We couldn't process your payment. Please check your details and try again.",
+      "tryAgain": "Try Again",
+      "viewOrders": "View My Orders",
+      "reasons": "Common reasons for failure:",
+      "reasonsList": [
+        "Incorrect card details",
+        "Insufficient funds",
+        "Card declined by bank",
+        "Network error during payment"
+      ]
+    }
   }
 }
