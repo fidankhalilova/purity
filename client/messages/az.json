@@ -881,5 +881,98 @@
       "registerWithGoogle": "Google ilə qeydiyyat",
       "orDivider": "Və ya"
     }
+  },
+  "CheckoutPage": {
+    "title": "Ödəniş",
+    "breadcrumb": "Ödəniş",
+    "contact": {
+      "title": "Əlaqə Məlumatları",
+      "email": "E-poçt ünvanı",
+      "phone": "Telefon nömrəsi"
+    },
+    "shipping": {
+      "title": "Çatdırılma Ünvanı",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "address": "Ünvan",
+      "apartment": "Mənzil, ofis və s. (isteğe bağlı)",
+      "city": "Şəhər",
+      "country": "Ölkə",
+      "zip": "Poçt indeksi",
+      "countries": [
+        "Azərbaycan",
+        "ABŞ",
+        "Böyük Britaniya",
+        "Almaniya",
+        "Fransa",
+        "Türkiyə",
+        "Rusiya"
+      ]
+    },
+    "delivery": {
+      "title": "Çatdırılma Üsulu",
+      "standard": "Standart Çatdırılma",
+      "standardDesc": "5–7 iş günü",
+      "standardPrice": "Pulsuz",
+      "express": "Ekspress Çatdırılma",
+      "expressDesc": "2–3 iş günü",
+      "expressPrice": "$12.00"
+    },
+    "payment": {
+      "title": "Ödəniş",
+      "cardNumber": "Kart nömrəsi",
+      "cardName": "Kartdakı ad",
+      "expiry": "Son istifadə tarixi",
+      "cvv": "CVV",
+      "secure": "Ödəniş məlumatlarınız şifrələnmiş və təhlükəsizdir."
+    },
+    "summary": {
+      "title": "Sifariş Xülasəsi",
+      "subtotal": "Aralıq cəm",
+      "shipping": "Çatdırılma",
+      "free": "Pulsuz",
+      "discount": "Endirim",
+      "total": "Cəmi",
+      "promoPlaceholder": "Promo kod",
+      "apply": "Tətbiq et",
+      "promoApplied": "✓ Promo tətbiq edildi!",
+      "placeOrder": "Sifariş Ver",
+      "items": "məhsul",
+      "taxes": "Vergilər daxildir",
+      "processing": "Emal olunur..."
+    },
+    "orderSuccess": {
+      "title": "Sifariş Təsdiqləndi!",
+      "desc": "Alışınız üçün təşəkkür edirik. Sifarişiniz qəbul edildi və emal olunur.",
+      "orderNumber": "Sifariş nömrəsi",
+      "estimatedDelivery": "Təxmini çatdırılma",
+      "viewOrders": "Sifarişlərimə Bax",
+      "continueShopping": "Alış-verişə davam et",
+      "whatHappensNext": "Bundan sonra nə baş verir?",
+      "steps": [
+        {
+          "title": "Sifariş Emalı",
+          "desc": "Məhsullarınızı göndərilməyə hazırlayırıq."
+        },
+        {
+          "title": "Göndərildi",
+          "desc": "E-poçt vasitəsilə izləmə nömrəsi alacaqsınız."
+        },
+        { "title": "Çatdırıldı", "desc": "Sifarişiniz qapınıza çatır." }
+      ]
+    },
+    "orderFail": {
+      "title": "Ödəniş Uğursuz Oldu",
+      "desc": "Ödənişinizi emal edə bilmədik. Məlumatlarınızı yoxlayın və yenidən cəhd edin.",
+      "tryAgain": "Yenidən Cəhd Et",
+      "viewOrders": "Sifarişlərimə Bax",
+      "reasons": "Uğursuzluğun ümumi səbəbləri:",
+      "reasonsList": [
+        "Yanlış kart məlumatları",
+        "Balans kifayət deyil",
+        "Kart bank tərəfindən rədd edildi",
+        "Ödəniş zamanı şəbəkə xətası"
+      ]
+    }
   }
 }
