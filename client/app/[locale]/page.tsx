@@ -1,11 +1,4 @@
-import { useTranslations } from "next-intl";
+import HomeTemplate from "@/templates/HomeTemplate";
 export default function HomePage() {
-  const t = useTranslations("HomePage");
-
-  return (
-    <main>
-      <h1>{t("title")}</h1>
-      <p>{t("greeting")}</p>
-    </main>
-  );
+  return <HomeTemplate />;
 }

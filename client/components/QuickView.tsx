@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 
 type Product = {
@@ -15,7 +16,7 @@ type Product = {
   colors?: { name: string; hex: string }[];
 };
 
-export default function QuickView({
+function QuickViewContent({
   product,
   onClose,
 }: {
@@ -41,11 +42,11 @@ export default function QuickView({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      className="fixed inset-0 z-999 flex items-center justify-center bg-black/40 px-4"
       onClick={onClose}
     >
       <div
-        className="relative bg-white rounded-2xl overflow-hidden w-full max-w-3xl flex flex-col sm:flex-row"
+        className="relative bg-white rounded-2xl overflow-hidden w-full max-w-3xl flex flex-col sm:flex-row max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close */}
@@ -72,14 +73,11 @@ export default function QuickView({
             fill
             className="object-cover"
           />
-
           {product.discount && (
             <span className="absolute top-3 left-3 bg-[#e8392a] text-white text-xs font-semibold px-3 py-1 rounded-full">
               {product.discount}
             </span>
           )}
-
-          {/* Mobile: bottom-right — Desktop: top-right */}
           <span className="absolute bottom-3 right-3 sm:top-3 sm:bottom-auto bg-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
             <span className="text-yellow-400">★</span>
             <span className="text-gray-800">{product.rating.toFixed(1)}</span>
@@ -88,7 +86,6 @@ export default function QuickView({
 
         {/* Info */}
         <div className="flex flex-col gap-4 p-7 overflow-y-auto">
-          {/* Tags */}
           <div className="flex gap-2 flex-wrap">
             {product.tags.map((tag) => (
               <span
@@ -100,12 +97,10 @@ export default function QuickView({
             ))}
           </div>
 
-          {/* Name */}
           <h2 className="text-xl font-bold text-gray-900 leading-snug">
             {product.name}
           </h2>
 
-          {/* Price */}
           <div className="flex items-baseline gap-2">
             <span
               className={`text-lg font-semibold ${product.originalPrice ? "text-[#e8392a]" : "text-gray-900"}`}
@@ -119,14 +114,12 @@ export default function QuickView({
             )}
           </div>
 
-          {/* Description */}
           {product.description && (
             <p className="text-sm text-gray-500 leading-relaxed line-clamp-3">
               {product.description}
             </p>
           )}
 
-          {/* Size options */}
           {product.sizes && product.sizes.length > 0 && (
             <div className="flex flex-col gap-2">
               <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -150,7 +143,6 @@ export default function QuickView({
             </div>
           )}
 
-          {/* Color options */}
           {product.colors && product.colors.length > 0 && (
             <div className="flex flex-col gap-2">
               <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -180,7 +172,6 @@ export default function QuickView({
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex flex-col gap-2 mt-auto pt-2">
             <button className="w-full bg-[#1f473e] text-white py-3 rounded-xl text-sm font-medium hover:bg-[#163830] transition-colors">
               Add to cart
@@ -192,5 +183,26 @@ export default function QuickView({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function QuickView({
+  product,
+  onClose,
+}: {
+  product: Product;
+  onClose: () => void;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <QuickViewContent product={product} onClose={onClose} />,
+    document.body,
   );
 }
