@@ -857,6 +857,11 @@
       "breadcrumb": "Account",
       "successTitle": "Check your email",
       "successDesc": "If an account exists for that email, we've sent password reset instructions."
+    },
+    "google": {
+      "loginWithGoogle": "Login with Google",
+      "registerWithGoogle": "Register with Google",
+      "orDivider": "Or"
     }
   }
 }

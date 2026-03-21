@@ -7,13 +7,17 @@ import Breadcrumb from "@/components/BreadCrumb";
 import GoogleButton from "@/components/GoogleButton";
 import OrDivider from "@/components/OrDivider";
 
-export default function LoginTemplate() {
-  const t = useTranslations("AuthPages.login");
+export default function RegisterTemplate() {
+  const t = useTranslations("AuthPages.register");
   const tg = useTranslations("AuthPages.google");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
 
   const inputClass =
     "w-full px-5 py-4 border border-gray-200 rounded-full text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors bg-white";
@@ -35,7 +39,7 @@ export default function LoginTemplate() {
           </div>
 
           {/* Google button */}
-          <GoogleButton label={tg("loginWithGoogle")} />
+          <GoogleButton label={tg("registerWithGoogle")} />
 
           {/* Divider */}
           <OrDivider label={tg("orDivider")} />
@@ -43,10 +47,24 @@ export default function LoginTemplate() {
           {/* Form */}
           <div className="flex flex-col gap-4">
             <input
+              type="text"
+              placeholder={t("firstName")}
+              value={form.firstName}
+              onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+              className={inputClass}
+            />
+            <input
+              type="text"
+              placeholder={t("lastName")}
+              value={form.lastName}
+              onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+              className={inputClass}
+            />
+            <input
               type="email"
               placeholder={t("email")}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
               className={inputClass}
             />
 
@@ -54,8 +72,8 @@ export default function LoginTemplate() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder={t("password")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
                 className={`${inputClass} pr-12`}
               />
               <button
@@ -74,26 +92,18 @@ export default function LoginTemplate() {
             <p className="text-xs text-gray-400 px-1">{t("security")}</p>
 
             <button className="w-full py-4 bg-[#1f473e] text-white font-semibold text-sm rounded-full hover:bg-[#163830] transition-colors mt-2">
-              {t("signIn")}
+              {t("createBtn")}
             </button>
           </div>
 
-          {/* Footer links */}
-          <div className="flex flex-col items-center gap-2 text-sm">
-            <p className="text-gray-500">
-              {t("noAccount")}{" "}
-              <Link
-                href={`/${locale}/account/register`}
-                className="font-semibold text-gray-900 underline underline-offset-2 hover:text-[#1f473e] transition-colors"
-              >
-                {t("createAccount")}
-              </Link>
-            </p>
+          {/* Footer */}
+          <div className="flex items-center justify-center gap-1 text-sm">
+            <span className="text-gray-500">{t("hasAccount")}</span>
             <Link
-              href={`/${locale}/account/reset-password`}
+              href={`/${locale}/account/login`}
               className="font-semibold text-gray-900 underline underline-offset-2 hover:text-[#1f473e] transition-colors"
             >
-              {t("forgotPassword")}
+              {t("login")}
             </Link>
           </div>
         </div>

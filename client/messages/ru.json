@@ -895,6 +895,11 @@
       "breadcrumb": "Аккаунт",
       "successTitle": "Проверьте почту",
       "successDesc": "Если аккаунт с таким e-mail существует, мы отправили инструкции по сбросу пароля."
+    },
+    "google": {
+      "loginWithGoogle": "Войти через Google",
+      "registerWithGoogle": "Зарегистрироваться через Google",
+      "orDivider": "Или"
     }
   }
 }

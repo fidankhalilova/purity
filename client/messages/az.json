@@ -875,6 +875,11 @@
       "breadcrumb": "Hesab",
       "successTitle": "E-poçtunuzu yoxlayın",
       "successDesc": "Həmin e-poçt üçün hesab mövcuddursa, şifrə sıfırlama təlimatlarını göndərdik."
+    },
+    "google": {
+      "loginWithGoogle": "Google ilə daxil ol",
+      "registerWithGoogle": "Google ilə qeydiyyat",
+      "orDivider": "Və ya"
     }
   }
 }
