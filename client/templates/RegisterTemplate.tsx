@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Eye, EyeOff } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
+import GoogleButton from "@/components/GoogleButton";
+import OrDivider from "@/components/OrDivider";
 
 export default function RegisterTemplate() {
   const t = useTranslations("AuthPages.register");
+  const tg = useTranslations("AuthPages.google");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({
@@ -21,7 +24,7 @@ export default function RegisterTemplate() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-4 md:py-6">
-      <Breadcrumb overrideLastLabel={t("breadcrumb")} />
+      <Breadcrumb />
 
       <div className="flex flex-col items-center justify-center min-h-[70vh] py-10">
         <div className="w-full max-w-md flex flex-col gap-8">
@@ -34,6 +37,12 @@ export default function RegisterTemplate() {
               {t("desc")}
             </p>
           </div>
+
+          {/* Google button */}
+          <GoogleButton label={tg("registerWithGoogle")} />
+
+          {/* Divider */}
+          <OrDivider label={tg("orDivider")} />
 
           {/* Form */}
           <div className="flex flex-col gap-4">

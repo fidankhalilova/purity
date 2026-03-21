@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Eye, EyeOff } from "lucide-react";
 import Breadcrumb from "@/components/BreadCrumb";
+import GoogleButton from "@/components/GoogleButton";
+import OrDivider from "@/components/OrDivider";
 
 export default function LoginTemplate() {
   const t = useTranslations("AuthPages.login");
+  const tg = useTranslations("AuthPages.google");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -30,6 +33,12 @@ export default function LoginTemplate() {
               {t("desc")}
             </p>
           </div>
+
+          {/* Google button */}
+          <GoogleButton label={tg("loginWithGoogle")} />
+
+          {/* Divider */}
+          <OrDivider label={tg("orDivider")} />
 
           {/* Form */}
           <div className="flex flex-col gap-4">
