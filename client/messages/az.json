@@ -839,5 +839,42 @@
     "poweredBy": "Shopify tərəfindən",
     "termsOfService": "Xidmət Şərtləri",
     "shippingPolicy": "Çatdırılma Siyasəti"
+  },
+  "AuthPages": {
+    "login": {
+      "title": "Daxil ol",
+      "desc": "Sifariş tarixçənizə və digər fərdiləşdirilmiş xüsusiyyətlərə daxil olmaq üçün hesabınıza giriş edin.",
+      "email": "E-poçt *",
+      "password": "Şifrə *",
+      "security": "*Məlumatlarınız şifrələnmiş və qorunur.",
+      "signIn": "Daxil ol",
+      "noAccount": "Hesabınız yoxdur?",
+      "createAccount": "Hesab yarat",
+      "forgotPassword": "Şifrənizi unutmusunuz?",
+      "breadcrumb": "Hesab"
+    },
+    "register": {
+      "title": "Hesab Yarat",
+      "desc": "İcmamıza qoşulmaq və eksklüziv təkliflərə, mükafatlara və kontentə giriş əldə etmək üçün yeni hesab yaradın.",
+      "firstName": "Ad *",
+      "lastName": "Soyad *",
+      "email": "E-poçt *",
+      "password": "Şifrə *",
+      "security": "*Məlumatlarınız şifrələnmiş və qorunur.",
+      "createBtn": "Hesab Yarat",
+      "hasAccount": "Artıq hesabınız var?",
+      "login": "Daxil ol",
+      "breadcrumb": "Hesab Yarat"
+    },
+    "reset": {
+      "title": "Şifrəni sıfırla",
+      "desc": "Şifrənizi sıfırlamaq üçün təlimatlar almaq üçün e-poçtunuzu daxil edin.",
+      "email": "E-poçt *",
+      "submit": "Göndər",
+      "backToLogin": "Girişə qayıt",
+      "breadcrumb": "Hesab",
+      "successTitle": "E-poçtunuzu yoxlayın",
+      "successDesc": "Həmin e-poçt üçün hesab mövcuddursa, şifrə sıfırlama təlimatlarını göndərdik."
+    }
   }
 }

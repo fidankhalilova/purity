@@ -821,5 +821,42 @@
     "poweredBy": "Powered by Shopify",
     "termsOfService": "Terms of Service",
     "shippingPolicy": "Shipping Policy"
+  },
+  "AuthPages": {
+    "login": {
+      "title": "Login",
+      "desc": "Login to your account to access your order history and other personalized features.",
+      "email": "Email *",
+      "password": "Password *",
+      "security": "*Your information is securely encrypted and protected.",
+      "signIn": "Sign In",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create account",
+      "forgotPassword": "Forgot your password?",
+      "breadcrumb": "Account"
+    },
+    "register": {
+      "title": "Create Account",
+      "desc": "Create a new account to join our community and get access to exclusive offers, rewards and content.",
+      "firstName": "First name *",
+      "lastName": "Last name *",
+      "email": "Email *",
+      "password": "Password *",
+      "security": "*Your information is securely encrypted and protected.",
+      "createBtn": "Create Account",
+      "hasAccount": "Already has an account?",
+      "login": "Login",
+      "breadcrumb": "Create Account"
+    },
+    "reset": {
+      "title": "Reset password",
+      "desc": "Enter your e-mail below to receive instructions to reset your password.",
+      "email": "Email *",
+      "submit": "Submit",
+      "backToLogin": "Back to Login",
+      "breadcrumb": "Account",
+      "successTitle": "Check your email",
+      "successDesc": "If an account exists for that email, we've sent password reset instructions."
+    }
   }
 }
