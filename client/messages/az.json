@@ -1,7 +1,191 @@
 {
   "HomePage": {
-    "title": "Salam dünya!",
-    "greeting": "Tətbiqimə xoş gəlmisiniz"
+    "hero": {
+      "slides": [
+        {
+          "tag": "Həssas Dəri",
+          "titleLine1": "Sakit Dəri",
+          "titleLine2": "Bütün Gün ",
+          "titleItalic": "Nəmləndirici",
+          "desc": "Hialuronik + Seramidlər. Bariyer-təhlükəsiz nəmləndirici.",
+          "btnText": "Alış-verişə başla",
+          "btnHref": "/shop"
+        },
+        {
+          "tag": "Yağ Kontrolu",
+          "titleLine1": "Bərabər Ton",
+          "titleLine2": "Botanik",
+          "titleItalic": "al Qarışıq",
+          "desc": "Skvalane + Qara Çay. Yağ nəzarəti bərabər ton.",
+          "btnText": "Alış-verişə başla",
+          "btnHref": "/shop"
+        },
+        {
+          "tag": "Məsamə Qayğısı",
+          "titleLine1": "Təmiz Dəri",
+          "titleLine2": "Məsamə",
+          "titleItalic": "Bulanıq Görünüş",
+          "desc": "Niasinamid + Sink. Yağ nəzarəti hamar görünüş.",
+          "btnText": "Alış-verişə başla",
+          "btnHref": "/shop"
+        }
+      ]
+    },
+    "marquee": {
+      "items": [
+        "Davamlı Gözəllik",
+        "Yumşaq Amma Effektiv",
+        "Təmiz Təhlükəsiz Tərkiblər",
+        "Dərin Nəmləndirici",
+        "Hədəflənmiş Məsamə Qayğısı",
+        "Hər Dəri Növü"
+      ]
+    },
+    "topSellers": {
+      "title": "Ən Çox Satılanlar",
+      "tabs": ["Ən Çox Satılan", "Trend", "Dəyər Dəstləri"]
+    },
+    "skinConcerns": {
+      "tag": "Uyğununuzu Tapın",
+      "title": "Dəri Problemlərinə Görə Alış-veriş",
+      "concerns": [
+        "Nəmləndirici",
+        "Parıltı",
+        "Məsamə Qayğısı",
+        "Yaşlanma Əleyhinə",
+        "Həssas Dəri",
+        "Yağ Nəzarəti"
+      ]
+    },
+    "cleanseYourSkin": {
+      "tag": "Sadə Addımlar",
+      "title": "Dərinizi Təmizləyin",
+      "steps": [
+        "Addım 1. Təmizləyici",
+        "Addım 2. Tonik",
+        "Addım 3. Serum",
+        "Addım 4. Müalicə"
+      ]
+    },
+    "featuredBanner": {
+      "tag": "Yeni Gələn",
+      "title": "Parıltı Redaksiyası",
+      "desc": "Ən yeni kolleksiyamızı kəşf edin — dəriniz üçün hazırlanmış, həyatınız üçün dizayn edilmişdir.",
+      "btnText": "İndi Kəşf Et"
+    },
+    "featuredBrands": {
+      "title": "Seçilmiş Brendlər",
+      "desc": "Satdığımız brendlərin loqolarını kəşf edin — orijinal, lisenziyalı və bu gün mövcuddur."
+    },
+    "exclusiveDeals": {
+      "badge": "✦ Gözəllik Təklifləri",
+      "title": "Eksklüziv Endirimlər!",
+      "desc": "Bütün yeniliklərimizi və təkliflərimizi almaq üçün abunə olun və ilk alışınızda 10% endirim əldə edin.",
+      "signIn": "Daxil ol",
+      "createAccount": "Hesab yarat"
+    },
+    "helpCenter": {
+      "tag": "Onlayn Dəstək",
+      "title": "Yardım Mərkəzi!",
+      "desc": "Məhsul təfərrüatlarından tutmuş geri qaytarma və mübadiləyə qədər suallarınıza sürətli həllər tapın.",
+      "visitBtn": "Yardım Mərkəzinə keçin",
+      "faqs": [
+        {
+          "q": "Çatdırılma nə qədər vaxt aparır?",
+          "a": "Sifarişlərimiz adətən 3–7 iş günü ərzində çatdırılır. Bayramlar, hava şəraiti və alış-veriş mövsümləri çatdırılma müddətinə təsir edə bilər."
+        },
+        {
+          "q": "Pulumu nə vaxt geri alacağam?",
+          "a": "Geri qaytarılan məhsulu aldıqdan sonra 5–10 iş günü ərzində ödəniş geri qaytarılır. Ödəniş həyata keçirildikdən sonra e-poçt bildirişi alacaqsınız."
+        },
+        {
+          "q": "Sifarişimi necə izləyə bilərəm?",
+          "a": "Sifarişiniz göndərildikdən sonra e-poçt vasitəsilə izləmə nömrəsi alacaqsınız."
+        },
+        {
+          "q": "Hədiyyə kartları təklif edirsinizmi?",
+          "a": "Bəli! Müxtəlif məbləğlərdə rəqəmsal hədiyyə kartlarımız mövcuddur. E-poçt vasitəsilə çatdırılır."
+        },
+        {
+          "q": "Beynəlxalq çatdırılma var?",
+          "a": "Bəli, əksər ölkələrə çatdırılma edirik. Müddət 7–14 iş günü arasında dəyişir."
+        }
+      ]
+    },
+    "findYourSolutions": {
+      "tag": "Parıltı Buradan Başlayır",
+      "title": "Həllinizi Tapın",
+      "iHave": "Məndə",
+      "skin": "dəri var",
+      "topConcernIs": "və əsas dəri problemim",
+      "seeBtn": "Həllərimi Gör",
+      "skinTypeBtn": "Dəri növüm nədir?",
+      "skinTypes": [
+        "Quru",
+        "Balanslaşdırılmış",
+        "Həssas",
+        "Yağlı",
+        "Kombinasiya"
+      ],
+      "concerns": {
+        "Quru": ["Yoğun Nəmləndirici", "Bariyer Xilas", "Parıltılı Görünüş"],
+        "Balanslaşdırılmış": [
+          "Gündəlik Əsaslar",
+          "Təbii Parıltı",
+          "Hamar Parlaqlıq"
+        ],
+        "Həssas": ["Bariyer Xilas", "Bariyer Dəstəyi", "Sakit Təmizlik"],
+        "Yağlı": ["Yağ Kontrolu", "Məsamə Aydınlığı", "Sızanaqlara Qarşı"],
+        "Kombinasiya": ["Çox Maskalaşdırma", "Məsamə Susuzluğu", "Hidra Balans"]
+      }
+    },
+    "spotless": {
+      "title": "1 Həftədə Ləkəsiz",
+      "desc": "Anti-Aging Serum ilə görünən dərəcədə hamar, parlaq dəri. 🍀",
+      "viewBtn": "Məhsula Bax",
+      "leftBenefits": [
+        "Xətləri Hamarlaşdırır",
+        "Kollagen Artırır",
+        "Yaşlanma Qalxanı"
+      ],
+      "rightBenefits": [
+        "Dərini Parıldadır",
+        "48s Nəmləndirici",
+        "Sürətli Sorulma"
+      ]
+    },
+    "communityStories": {
+      "tag": "Göründüyü Kimi",
+      "title": "İcma Hekayələri"
+    },
+    "whatTheyAreSaying": {
+      "tag": "17k+ Müştəri Tərəfindən Sevilir",
+      "title": "Onlar Nə Deyir"
+    },
+    "editorChoice": {
+      "tag": "Məhdud Müddətli Redaksiya",
+      "title": "Redaktorun",
+      "titleHighlight": "Seçim Dəsti",
+      "addAllToCart": "Hamısını səbətə əlavə et",
+      "viewGuide": "İstifadə Bələdçisinə Bax",
+      "addToCart": "Səbətə əlavə et",
+      "color": "Rəng"
+    },
+    "exploreCollections": {
+      "tag": "Özünə Qayğı Məhsulu",
+      "title": "Kəşf Et",
+      "titleHighlight": "Kolleksiyalar"
+    },
+    "chooseYourShade": {
+      "title": "Çalarınızı",
+      "titleHighlight": "Seçin",
+      "skinTones": ["Açıq Dəri", "İşıqlı Dəri", "Orta Dəri", "Tünd Dəri"]
+    },
+    "testimonials": {
+      "tag": "Həqiqi Nəticələr",
+      "title": "Müştərilərimiz Nə Deyir"
+    },
+    "instagramTitle": "Səyahətimizdə Bizi İzləyin"
   },
   "AboutUs": {
     "AboutBanner": {
