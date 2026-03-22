@@ -31,39 +31,106 @@ export default function AdminSidebarLayout({
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
-        <div className="flex flex-col gap-1">
-          {adminTabs.map(({ id, label, icon: Icon, description }) => {
-            const isActive = activeSection === id;
-            return (
-              <Link
-                key={id}
-                href={`/admin/${id}`}
-                onClick={() => setMobileOpen(false)}
-                className={`group flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-all duration-150 ${
-                  isActive
-                    ? "bg-white text-[#1f473e]"
-                    : "text-white/70 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                <Icon
-                  className={`w-4 h-4 shrink-0 ${isActive ? "text-[#1f473e]" : "text-white/60 group-hover:text-white"}`}
-                />
-                <div className="min-w-0">
-                  <p
-                    className={`text-sm font-semibold leading-none ${isActive ? "text-[#1f473e]" : ""}`}
-                  >
-                    {label}
+        {(() => {
+          const grouped: Record<string, typeof adminTabs> = {};
+          const ungrouped: typeof adminTabs = [];
+
+          adminTabs.forEach((tab) => {
+            if (tab.group) {
+              if (!grouped[tab.group]) grouped[tab.group] = [];
+              grouped[tab.group].push(tab);
+            } else {
+              ungrouped.push(tab);
+            }
+          });
+
+          return (
+            <div className="flex flex-col gap-1">
+              {ungrouped
+                .filter((t) => t.id === "dashboard")
+                .map(({ id, label, icon: Icon, description }) => {
+                  const isActive = activeSection === id;
+                  return (
+                    <Link
+                      key={id}
+                      href={`/admin/${id}`}
+                      onClick={() => setMobileOpen(false)}
+                      className={`group flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-all duration-150 ${isActive ? "bg-white text-[#1f473e]" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+                    >
+                      <Icon
+                        className={`w-4 h-4 shrink-0 ${isActive ? "text-[#1f473e]" : "text-white/60 group-hover:text-white"}`}
+                      />
+                      <div className="min-w-0">
+                        <p
+                          className={`text-sm font-semibold leading-none ${isActive ? "text-[#1f473e]" : ""}`}
+                        >
+                          {label}
+                        </p>
+                        <p
+                          className={`text-xs mt-0.5 truncate ${isActive ? "text-[#1f473e]/60" : "text-white/40"}`}
+                        >
+                          {description}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+
+              {Object.entries(grouped).map(([group, tabs]) => (
+                <div key={group} className="mt-3">
+                  <p className="text-xs font-semibold text-white/30 uppercase tracking-widest px-3 mb-1">
+                    {group}
                   </p>
-                  <p
-                    className={`text-xs mt-0.5 truncate ${isActive ? "text-[#1f473e]/60" : "text-white/40"}`}
-                  >
-                    {description}
-                  </p>
+                  {tabs.map(({ id, label, icon: Icon, description }) => {
+                    const isActive = activeSection === id;
+                    return (
+                      <Link
+                        key={id}
+                        href={`/admin/${id}`}
+                        onClick={() => setMobileOpen(false)}
+                        className={`group flex items-center gap-3 px-3 py-2 rounded-2xl transition-all duration-150 ${isActive ? "bg-white text-[#1f473e]" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+                      >
+                        <Icon
+                          className={`w-4 h-4 shrink-0 ${isActive ? "text-[#1f473e]" : "text-white/60 group-hover:text-white"}`}
+                        />
+                        <div className="min-w-0">
+                          <p
+                            className={`text-sm font-semibold leading-none ${isActive ? "text-[#1f473e]" : ""}`}
+                          >
+                            {label}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
-              </Link>
-            );
-          })}
-        </div>
+              ))}
+
+              {ungrouped
+                .filter((t) => t.id === "settings")
+                .map(({ id, label, icon: Icon }) => {
+                  const isActive = activeSection === id;
+                  return (
+                    <Link
+                      key={id}
+                      href={`/admin/${id}`}
+                      onClick={() => setMobileOpen(false)}
+                      className={`group flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-all duration-150 mt-3 ${isActive ? "bg-white text-[#1f473e]" : "text-white/70 hover:bg-white/10 hover:text-white"}`}
+                    >
+                      <Icon
+                        className={`w-4 h-4 shrink-0 ${isActive ? "text-[#1f473e]" : "text-white/60 group-hover:text-white"}`}
+                      />
+                      <p
+                        className={`text-sm font-semibold ${isActive ? "text-[#1f473e]" : ""}`}
+                      >
+                        {label}
+                      </p>
+                    </Link>
+                  );
+                })}
+            </div>
+          );
+        })()}
       </nav>
 
       {/* Footer */}

@@ -1,35 +1,18 @@
 export type User = {
+  _id: string;
   name: string;
   email: string;
-  phone?: string;
-  avatar?: string;
-  joinedDate: string;
+  role: "customer" | "admin";
+  status: "active" | "blocked";
+  totalSpent: number;
+  orderCount: number;
+  joined: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
-export type Order = {
-  id: string;
-  date: string;
-  status: "delivered" | "processing" | "shipped" | "cancelled";
-  total: string;
-  items: { name: string; image: string; qty: number; price: string }[];
-};
-
-export type WishlistItem = {
-  id: string;
-  name: string;
-  price: string;
-  originalPrice?: string;
-  image: string;
-  href: string;
-  inStock: boolean;
-};
-
-export type CartItem = {
-  id: string;
-  name: string;
-  price: string;
-  image: string;
-  qty: number;
-  size?: string;
-  color?: string;
+export type ApiResponse<T = any> = {
+  success: boolean;
+  data?: T;
+  message?: string;
 };

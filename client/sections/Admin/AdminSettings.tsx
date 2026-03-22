@@ -1,209 +1,198 @@
 "use client";
 import { useState } from "react";
-import { Plus, Pencil, Trash2 } from "lucide-react";
-import AdminTable, { Column } from "@/components/Admin/AdminTable";
-import AdminModal from "@/components/Admin/AdminModal";
-import AdminPageHeader from "@/components/Admin/AdminPageHeader";
-import AdminBadge from "@/components/Admin/AdminBadge";
-
-type BlogPost = {
-  id: string;
-  title: string;
-  author: string;
-  category: string;
-  date: string;
-  status: "published" | "draft";
-};
-
-const initialPosts: BlogPost[] = [
-  {
-    id: "1",
-    title: "Glow in 3 Steps",
-    author: "Admin",
-    category: "Tips",
-    date: "Mar 01, 2026",
-    status: "published",
-  },
-  {
-    id: "2",
-    title: "Best Eye Patches 2026",
-    author: "Admin",
-    category: "Reviews",
-    date: "Feb 15, 2026",
-    status: "published",
-  },
-  {
-    id: "3",
-    title: "Skincare Routine Guide",
-    author: "Admin",
-    category: "Guide",
-    date: "Jan 10, 2026",
-    status: "draft",
-  },
-];
+import { Save } from "lucide-react";
 
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors";
 
-export default function AdminBlog() {
-  const [posts, setPosts] = useState(initialPosts);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<BlogPost | null>(null);
-  const [form, setForm] = useState<Partial<BlogPost>>({});
+export default function AdminSettings() {
+  const [saved, setSaved] = useState(false);
+  const [settings, setSettings] = useState({
+    storeName: "Purity",
+    storeEmail: "hello@purity.com",
+    currency: "USD",
+    timezone: "UTC",
+    freeShippingThreshold: "175",
+    taxRate: "0",
+    maintenanceMode: false,
+    reviewsEnabled: true,
+    guestCheckout: true,
+  });
 
-  const openAdd = () => {
-    setEditing(null);
-    setForm({ status: "draft", author: "Admin" });
-    setModalOpen(true);
-  };
-  const openEdit = (p: BlogPost) => {
-    setEditing(p);
-    setForm(p);
-    setModalOpen(true);
-  };
-  const handleDelete = (id: string) =>
-    setPosts(posts.filter((p) => p.id !== id));
   const handleSave = () => {
-    if (editing)
-      setPosts(
-        posts.map((p) =>
-          p.id === editing.id ? ({ ...p, ...form } as BlogPost) : p,
-        ),
-      );
-    else setPosts([...posts, { ...form, id: String(Date.now()) } as BlogPost]);
-    setModalOpen(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   };
 
-  const columns: Column<BlogPost>[] = [
-    {
-      key: "title",
-      label: "Title",
-      sortable: true,
-      render: (row) => (
-        <span className="font-semibold text-gray-900">{row.title}</span>
-      ),
-    },
-    { key: "author", label: "Author" },
-    {
-      key: "category",
-      label: "Category",
-      render: (row) => <AdminBadge label={row.category} color="blue" />,
-    },
-    { key: "date", label: "Date", sortable: true },
-    {
-      key: "status",
-      label: "Status",
-      render: (row) => (
-        <AdminBadge
-          label={row.status}
-          color={row.status === "published" ? "green" : "gray"}
-        />
-      ),
-    },
-    {
-      key: "actions",
-      label: "",
-      width: "w-20",
-      render: (row) => (
-        <div className="flex gap-2">
-          <button
-            onClick={() => openEdit(row)}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
-          >
-            <Pencil className="w-3.5 h-3.5 text-gray-500" />
-          </button>
-          <button
-            onClick={() => handleDelete(row.id)}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-red-50 transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5 text-red-400" />
-          </button>
-        </div>
-      ),
-    },
-  ];
+  const Toggle = ({
+    value,
+    onChange,
+  }: {
+    value: boolean;
+    onChange: () => void;
+  }) => (
+    <button
+      onClick={onChange}
+      className={`w-11 h-6 rounded-full transition-colors relative shrink-0 ${value ? "bg-[#1f473e]" : "bg-gray-200"}`}
+    >
+      <div
+        className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform shadow-sm ${value ? "translate-x-5" : "translate-x-0.5"}`}
+      />
+    </button>
+  );
+
+  const Section = ({
+    title,
+    children,
+  }: {
+    title: string;
+    children: React.ReactNode;
+  }) => (
+    <div className="bg-white rounded-3xl border border-gray-100 p-6 flex flex-col gap-5">
+      <h3 className="font-bold text-gray-900 text-base">{title}</h3>
+      {children}
+    </div>
+  );
+
+  const Field = ({
+    label,
+    children,
+  }: {
+    label: string;
+    children: React.ReactNode;
+  }) => (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
 
   return (
-    <div>
-      <AdminPageHeader
-        title="Blog Posts"
-        subtitle={`${posts.length} posts`}
-        action={
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#1f473e] text-white text-sm font-semibold rounded-full hover:bg-[#163830] transition-colors"
-          >
-            <Plus className="w-4 h-4" /> Add Post
-          </button>
-        }
-      />
-      <AdminTable
-        columns={columns}
-        data={posts}
-        searchKeys={["title", "author", "category"]}
-      />
+    <div className="flex flex-col gap-6 max-w-2xl">
+      {saved && (
+        <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-2xl border border-green-100">
+          ✓ Settings saved successfully
+        </div>
+      )}
 
-      <AdminModal
-        title={editing ? "Edit Post" : "Add Post"}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSave}
-      >
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Title
-            </label>
-            <input
-              value={form.title ?? ""}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className={inputClass}
-              placeholder="Post title"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Author
-              </label>
-              <input
-                value={form.author ?? ""}
-                onChange={(e) => setForm({ ...form, author: e.target.value })}
-                className={inputClass}
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Category
-              </label>
-              <input
-                value={form.category ?? ""}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-                className={inputClass}
-                placeholder="Tips, Guide..."
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Status
-            </label>
+      <Section title="Store Information">
+        <Field label="Store Name">
+          <input
+            value={settings.storeName}
+            onChange={(e) =>
+              setSettings({ ...settings, storeName: e.target.value })
+            }
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Store Email">
+          <input
+            value={settings.storeEmail}
+            onChange={(e) =>
+              setSettings({ ...settings, storeEmail: e.target.value })
+            }
+            className={inputClass}
+          />
+        </Field>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="Currency">
             <select
-              value={form.status ?? "draft"}
+              value={settings.currency}
               onChange={(e) =>
-                setForm({
-                  ...form,
-                  status: e.target.value as BlogPost["status"],
-                })
+                setSettings({ ...settings, currency: e.target.value })
               }
               className={inputClass}
             >
-              <option value="draft">Draft</option>
-              <option value="published">Published</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="AZN">AZN (₼)</option>
             </select>
-          </div>
+          </Field>
+          <Field label="Timezone">
+            <select
+              value={settings.timezone}
+              onChange={(e) =>
+                setSettings({ ...settings, timezone: e.target.value })
+              }
+              className={inputClass}
+            >
+              <option value="UTC">UTC</option>
+              <option value="Asia/Baku">Asia/Baku</option>
+              <option value="Europe/London">Europe/London</option>
+            </select>
+          </Field>
         </div>
-      </AdminModal>
+      </Section>
+
+      <Section title="Shipping & Tax">
+        <Field label="Free Shipping Threshold ($)">
+          <input
+            type="number"
+            value={settings.freeShippingThreshold}
+            onChange={(e) =>
+              setSettings({
+                ...settings,
+                freeShippingThreshold: e.target.value,
+              })
+            }
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Tax Rate (%)">
+          <input
+            type="number"
+            value={settings.taxRate}
+            onChange={(e) =>
+              setSettings({ ...settings, taxRate: e.target.value })
+            }
+            className={inputClass}
+          />
+        </Field>
+      </Section>
+
+      <Section title="Features">
+        {[
+          {
+            key: "maintenanceMode" as const,
+            label: "Maintenance Mode",
+            desc: "Hide the store from visitors",
+          },
+          {
+            key: "reviewsEnabled" as const,
+            label: "Customer Reviews",
+            desc: "Allow customers to leave reviews",
+          },
+          {
+            key: "guestCheckout" as const,
+            label: "Guest Checkout",
+            desc: "Allow checkout without account",
+          },
+        ].map(({ key, label, desc }) => (
+          <div key={key} className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium text-gray-900">{label}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
+            </div>
+            <Toggle
+              value={settings[key]}
+              onChange={() =>
+                setSettings({ ...settings, [key]: !settings[key] })
+              }
+            />
+          </div>
+        ))}
+      </Section>
+
+      <button
+        onClick={handleSave}
+        className="self-start flex items-center gap-2 px-6 py-3 bg-[#1f473e] text-white text-sm font-semibold rounded-full hover:bg-[#163830] transition-colors"
+      >
+        <Save className="w-4 h-4" />
+        Save Settings
+      </button>
     </div>
   );
 }
