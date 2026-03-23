@@ -6,7 +6,6 @@ const getAllBrands = async (req, res) => {
     try {
         const brands = await Brand.find().sort({ createdAt: -1 });
 
-        // Get product count for each brand
         const brandsWithCount = await Promise.all(
             brands.map(async (brand) => {
                 const productCount = await Product.countDocuments({ brand: brand._id });
@@ -48,7 +47,6 @@ const createBrand = async (req, res) => {
     try {
         const { name, country, logo, website, description, isFeatured, isActive } = req.body;
 
-        // Check if brand already exists
         const existingBrand = await Brand.findOne({ name });
         if (existingBrand) {
             return res.status(400).json({ success: false, message: 'Brand already exists' });
@@ -82,7 +80,6 @@ const updateBrand = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Brand not found' });
         }
 
-        // Check if name is being changed and already exists
         if (name && name !== brand.name) {
             const existingBrand = await Brand.findOne({ name });
             if (existingBrand) {
@@ -155,12 +152,11 @@ const deleteBrand = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Brand not found' });
         }
 
-        // Check if brand has products
         const productCount = await Product.countDocuments({ brand: brand._id });
         if (productCount > 0) {
             return res.status(400).json({
                 success: false,
-                message: `Cannot delete brand. It has ${productCount} products associated. Please reassign or delete the products first.`
+                message: `Cannot delete brand. It has ${productCount} products associated.`
             });
         }
 

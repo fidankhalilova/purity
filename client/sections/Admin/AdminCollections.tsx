@@ -1,14 +1,16 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Plus, Pencil, Trash2, Loader2, Upload, X } from "lucide-react";
 import AdminTable, { Column } from "@/components/Admin/AdminTable";
 import AdminModal from "@/components/Admin/AdminModal";
 import AdminPageHeader from "@/components/Admin/AdminPageHeader";
 import AdminBadge from "@/components/Admin/AdminBadge";
 import Image from "next/image";
 import { collectionService } from "@/services/collectionService";
+import { uploadService } from "@/services/uploadService";
 import { Collection } from "@/types/product";
 import { toast } from "react-hot-toast";
+import { getImageUrl } from "@/utils/imageUrl";
 
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors";
@@ -20,6 +22,8 @@ export default function AdminCollections() {
   const [editing, setEditing] = useState<Collection | null>(null);
   const [form, setForm] = useState<Partial<Collection>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadCollections();
@@ -38,6 +42,24 @@ export default function AdminCollections() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const url = await uploadService.uploadCollectionImage(file);
+      setForm({ ...form, image: url });
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const openAdd = () => {
     setEditing(null);
     setForm({ isActive: true });
@@ -52,7 +74,6 @@ export default function AdminCollections() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this collection?")) return;
-
     try {
       setSubmitting(true);
       await collectionService.delete(id);
@@ -69,7 +90,6 @@ export default function AdminCollections() {
   const handleSave = async () => {
     try {
       setSubmitting(true);
-
       if (editing) {
         await collectionService.update(editing._id, form);
         toast.success("Collection updated successfully");
@@ -77,7 +97,6 @@ export default function AdminCollections() {
         await collectionService.create(form);
         toast.success("Collection created successfully");
       }
-
       await loadCollections();
       setModalOpen(false);
     } catch (error) {
@@ -97,11 +116,10 @@ export default function AdminCollections() {
         <div className="flex items-center gap-3">
           <div className="relative w-10 h-10 shrink-0 rounded-xl overflow-hidden bg-[#f0ebe2]">
             {row.image && (
-              <Image
-                src={row.image}
+              <img
+                src={getImageUrl(row.image)}
                 alt={row.name}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             )}
           </div>
@@ -211,13 +229,53 @@ export default function AdminCollections() {
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Image URL
+              Image
             </label>
+            <div className="flex gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                ref={fileInputRef}
+                className="hidden"
+                id="image-upload"
+              />
+              <label
+                htmlFor="image-upload"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-200 transition-colors"
+              >
+                {uploading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                Upload Image
+              </label>
+              {form.image && (
+                <div className="flex items-center gap-2">
+                  <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-gray-200">
+                    <img
+                      src={getImageUrl(form.image)}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, image: "" })}
+                    className="p-1 hover:bg-red-50 rounded-full transition-colors"
+                  >
+                    <X className="w-4 h-4 text-red-400" />
+                  </button>
+                </div>
+              )}
+            </div>
             <input
+              type="text"
               value={form.image ?? ""}
               onChange={(e) => setForm({ ...form, image: e.target.value })}
               className={inputClass}
-              placeholder="https://..."
+              placeholder="Or enter image URL manually"
             />
           </div>
           <div className="flex flex-col gap-1.5">

@@ -2,15 +2,25 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
 
-export default function GlowIngredients({
-  product,
-}: {
-  product: ProductDetail;
-}) {
+interface GlowIngredient {
+  tag: string;
+  subtitle: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+interface GlowIngredientsProps {
+  ingredients: GlowIngredient[];
+}
+
+export default function GlowIngredients({ ingredients }: GlowIngredientsProps) {
   const t = useTranslations("ProductDetail");
   const [active, setActive] = useState(0);
+
+  if (!ingredients || ingredients.length === 0) return null;
 
   return (
     <section className="py-12 md:py-16 px-4 md:px-6">
@@ -26,10 +36,10 @@ export default function GlowIngredients({
 
         {/* Mobile — stacked */}
         <div className="flex flex-col gap-3 md:hidden">
-          {product.glowIngredients.map((item, i) => (
+          {ingredients.map((item, i) => (
             <div key={i} className="relative rounded-2xl overflow-hidden h-48">
               <Image
-                src={item.image}
+                src={getImageUrl(item.image)}
                 alt={item.title}
                 fill
                 className="object-cover"
@@ -56,7 +66,7 @@ export default function GlowIngredients({
 
         {/* Desktop — flex expand */}
         <div className="hidden md:flex gap-4" style={{ height: "420px" }}>
-          {product.glowIngredients.map((item, i) => (
+          {ingredients.map((item, i) => (
             <div
               key={i}
               onMouseEnter={() => setActive(i)}
@@ -64,7 +74,7 @@ export default function GlowIngredients({
               style={{ flex: active === i ? "2 1 0%" : "1 1 0%" }}
             >
               <Image
-                src={item.image}
+                src={getImageUrl(item.image)}
                 alt={item.title}
                 fill
                 className="object-cover transition-transform duration-500 hover:scale-105"

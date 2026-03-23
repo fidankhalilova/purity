@@ -1,52 +1,107 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { Trash2, ShoppingCart, Tag } from "lucide-react";
+import { Trash2, ShoppingCart, Tag, Loader2 } from "lucide-react";
+import { getImageUrl } from "@/utils/imageUrl";
+import { toast } from "react-hot-toast";
 
-const initialCart = [
-  {
-    id: "1",
-    name: "Dark Circle Patch",
-    price: "$75.00",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=900",
-    qty: 1,
-    size: "30ml",
-  },
-  {
-    id: "2",
-    name: "Pore Detox Scrub",
-    price: "$70.00",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-    qty: 2,
-    size: "100ml",
-  },
-  {
-    id: "3",
-    name: "Brighten Serum",
-    price: "$160.00",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-    qty: 1,
-  },
-];
+interface CartItem {
+  id: string;
+  name: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  qty: number;
+  size?: string;
+  color?: string;
+}
 
 export default function BasketSection() {
   const t = useTranslations("AccountPage.basket");
   const locale = useLocale();
-  const [items, setItems] = useState(initialCart);
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [promo, setPromo] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
-  const updateQty = (id: string, qty: number) => {
-    if (qty < 1) return;
-    setItems(items.map((i) => (i.id === id ? { ...i, qty } : i)));
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  const loadCart = async () => {
+    try {
+      setLoading(true);
+      // TODO: Replace with actual cart API call
+      // For now using mock data
+      setTimeout(() => {
+        setItems([
+          {
+            id: "1",
+            name: "Dark Circle Patch",
+            price: "$75.00",
+            image:
+              "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=900",
+            qty: 1,
+            size: "30ml",
+          },
+          {
+            id: "2",
+            name: "Pore Detox Scrub",
+            price: "$70.00",
+            image:
+              "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
+            qty: 2,
+            size: "100ml",
+          },
+          {
+            id: "3",
+            name: "Brighten Serum",
+            price: "$160.00",
+            image:
+              "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
+            qty: 1,
+          },
+        ]);
+        setLoading(false);
+      }, 500);
+    } catch (error) {
+      console.error("Error loading cart:", error);
+      toast.error("Failed to load cart");
+      setLoading(false);
+    }
   };
-  const remove = (id: string) => setItems(items.filter((i) => i.id !== id));
+
+  const updateQty = async (id: string, qty: number) => {
+    if (qty < 1) return;
+    try {
+      setUpdating(true);
+      // TODO: API call to update quantity
+      setItems(items.map((i) => (i.id === id ? { ...i, qty } : i)));
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      toast.error("Failed to update quantity");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const removeItem = async (id: string) => {
+    try {
+      setUpdating(true);
+      // TODO: API call to remove item
+      setItems(items.filter((i) => i.id !== id));
+      toast.success("Item removed from cart");
+    } catch (error) {
+      console.error("Error removing item:", error);
+      toast.error("Failed to remove item");
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const subtotal = items.reduce(
     (sum, item) => sum + parseFloat(item.price.replace("$", "")) * item.qty,
@@ -54,6 +109,14 @@ export default function BasketSection() {
   );
   const discount = promoApplied ? subtotal * 0.1 : 0;
   const total = subtotal - discount;
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -88,7 +151,7 @@ export default function BasketSection() {
             >
               <div className="relative w-16 h-16 shrink-0 rounded-2xl overflow-hidden bg-[#f0ebe2]">
                 <Image
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.name}
                   fill
                   className="object-contain p-2"
@@ -108,7 +171,8 @@ export default function BasketSection() {
               <div className="flex items-center gap-2 border border-gray-200 rounded-full px-3 py-1.5 shrink-0">
                 <button
                   onClick={() => updateQty(item.id, item.qty - 1)}
-                  className="text-gray-500 hover:text-gray-900"
+                  disabled={updating}
+                  className="text-gray-500 hover:text-gray-900 disabled:opacity-50"
                 >
                   <svg
                     className="w-3 h-3"
@@ -125,7 +189,8 @@ export default function BasketSection() {
                 </span>
                 <button
                   onClick={() => updateQty(item.id, item.qty + 1)}
-                  className="text-gray-500 hover:text-gray-900"
+                  disabled={updating}
+                  className="text-gray-500 hover:text-gray-900 disabled:opacity-50"
                 >
                   <svg
                     className="w-3 h-3"
@@ -139,8 +204,9 @@ export default function BasketSection() {
                 </button>
               </div>
               <button
-                onClick={() => remove(item.id)}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors shrink-0"
+                onClick={() => removeItem(item.id)}
+                disabled={updating}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 transition-colors shrink-0 disabled:opacity-50"
               >
                 <Trash2 className="w-3.5 h-3.5 text-gray-400" />
               </button>

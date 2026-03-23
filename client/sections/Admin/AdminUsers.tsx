@@ -1,16 +1,26 @@
+// sections/Admin/AdminUsers.tsx
 "use client";
 import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
 import AdminTable, { Column } from "@/components/Admin/AdminTable";
 import AdminModal from "@/components/Admin/AdminModal";
 import AdminPageHeader from "@/components/Admin/AdminPageHeader";
 import AdminBadge from "@/components/Admin/AdminBadge";
 import { userService } from "@/services/userService";
-import { User } from "@/types/user";
+import { User, NotificationSettings } from "@/types/user";
 import { toast } from "react-hot-toast";
 
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors";
+
+// Default notification settings
+const defaultNotificationSettings: NotificationSettings = {
+  orderUpdates: true,
+  shippingDelivery: true,
+  promotionsOffers: true,
+  newsletter: false,
+  smsNotifications: false,
+};
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,6 +29,16 @@ export default function AdminUsers() {
   const [editing, setEditing] = useState<User | null>(null);
   const [form, setForm] = useState<Partial<User & { password: string }>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+
+  // Get token directly from localStorage
+  const getToken = () => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("accessToken");
+    }
+    return null;
+  };
 
   useEffect(() => {
     loadUsers();
@@ -27,7 +47,8 @@ export default function AdminUsers() {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const data = await userService.getAll();
+      const token = getToken();
+      const data = await userService.getAll(token);
       setUsers(data);
     } catch (error) {
       console.error("Error loading users:", error);
@@ -39,7 +60,13 @@ export default function AdminUsers() {
 
   const openAdd = () => {
     setEditing(null);
-    setForm({ role: "customer", status: "active" });
+    setForm({
+      role: "customer",
+      status: "active",
+      gender: "other",
+      displayLanguage: "en",
+      notificationSettings: { ...defaultNotificationSettings },
+    });
     setModalOpen(true);
   };
 
@@ -48,8 +75,15 @@ export default function AdminUsers() {
     setForm({
       name: user.name,
       email: user.email,
+      phone: user.phone,
+      birthday: user.birthday?.split("T")[0] || "",
+      gender: user.gender,
       role: user.role,
       status: user.status,
+      displayLanguage: user.displayLanguage,
+      notificationSettings: user.notificationSettings || {
+        ...defaultNotificationSettings,
+      },
     });
     setModalOpen(true);
   };
@@ -58,7 +92,8 @@ export default function AdminUsers() {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       setSubmitting(true);
-      await userService.delete(id);
+      const token = getToken();
+      await userService.delete(id, token);
       toast.success("User deleted successfully");
       await loadUsers();
     } catch (error) {
@@ -73,7 +108,8 @@ export default function AdminUsers() {
     const newStatus = currentStatus === "active" ? "blocked" : "active";
     try {
       setSubmitting(true);
-      await userService.updateStatus(id, newStatus);
+      const token = getToken();
+      await userService.updateStatus(id, newStatus, token);
       toast.success(
         `User ${newStatus === "active" ? "activated" : "blocked"} successfully`,
       );
@@ -89,20 +125,37 @@ export default function AdminUsers() {
   const handleSave = async () => {
     try {
       setSubmitting(true);
+      const token = getToken();
+
+      // Ensure notificationSettings has all required fields
+      const dataToSave = {
+        ...form,
+        notificationSettings: {
+          orderUpdates: form.notificationSettings?.orderUpdates ?? true,
+          shippingDelivery: form.notificationSettings?.shippingDelivery ?? true,
+          promotionsOffers: form.notificationSettings?.promotionsOffers ?? true,
+          newsletter: form.notificationSettings?.newsletter ?? false,
+          smsNotifications:
+            form.notificationSettings?.smsNotifications ?? false,
+        },
+      };
 
       if (editing) {
-        await userService.update(editing._id, form);
+        await userService.update(editing._id, dataToSave, token);
         toast.success("User updated successfully");
       } else {
-        if (!form.password) {
+        if (!dataToSave.password) {
           toast.error("Password is required");
           return;
         }
-        await userService.create(form as User & { password: string });
+        await userService.create(
+          dataToSave as User & { password: string },
+          token,
+        );
         toast.success("User created successfully");
       }
 
-      await loadUsers(); // Refresh the list
+      await loadUsers();
       setModalOpen(false);
     } catch (error) {
       console.error("Error saving user:", error);
@@ -112,11 +165,49 @@ export default function AdminUsers() {
     }
   };
 
+  const updateNotificationSetting = (
+    key: keyof NotificationSettings,
+    value: boolean,
+  ) => {
+    setForm({
+      ...form,
+      notificationSettings: {
+        orderUpdates: form.notificationSettings?.orderUpdates ?? true,
+        shippingDelivery: form.notificationSettings?.shippingDelivery ?? true,
+        promotionsOffers: form.notificationSettings?.promotionsOffers ?? true,
+        newsletter: form.notificationSettings?.newsletter ?? false,
+        smsNotifications: form.notificationSettings?.smsNotifications ?? false,
+        [key]: value,
+      },
+    });
+  };
+
   const formatTotalSpent = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: "USD",
     }).format(amount);
+  };
+
+  const formatDate = (date: string | undefined) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const genderLabels: Record<string, string> = {
+    male: "Male",
+    female: "Female",
+    other: "Other",
+  };
+
+  const languageLabels: Record<string, string> = {
+    en: "English",
+    az: "Azerbaijani",
+    ru: "Russian",
   };
 
   const columns: Column<User>[] = [
@@ -130,6 +221,11 @@ export default function AdminUsers() {
           <p className="text-xs text-gray-400">{row.email}</p>
         </div>
       ),
+    },
+    {
+      key: "phone",
+      label: "Phone",
+      render: (row) => <span className="text-sm">{row.phone || "-"}</span>,
     },
     {
       key: "joined",
@@ -180,9 +276,18 @@ export default function AdminUsers() {
     {
       key: "actions",
       label: "",
-      width: "w-20",
+      width: "w-32",
       render: (row) => (
         <div className="flex gap-2">
+          <button
+            onClick={() =>
+              setExpandedUserId(expandedUserId === row._id ? null : row._id)
+            }
+            disabled={submitting}
+            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50"
+          >
+            <Eye className="w-3.5 h-3.5 text-gray-500" />
+          </button>
           <button
             onClick={() => openEdit(row)}
             disabled={submitting}
@@ -201,6 +306,140 @@ export default function AdminUsers() {
       ),
     },
   ];
+
+  // Expanded row component for detailed view
+  const renderExpandedRow = (user: User) => (
+    <div className="bg-gray-50 p-4 rounded-xl mt-2 border border-gray-100">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            Personal Info
+          </p>
+          <div className="mt-2 space-y-1">
+            <p className="text-sm">
+              <span className="font-medium">Name:</span> {user.name}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Email:</span> {user.email}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Phone:</span> {user.phone || "-"}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Birthday:</span>{" "}
+              {formatDate(user.birthday)}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Gender:</span>{" "}
+              {genderLabels[user.gender || "other"]}
+            </p>
+          </div>
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            Account Info
+          </p>
+          <div className="mt-2 space-y-1">
+            <p className="text-sm">
+              <span className="font-medium">Role:</span> {user.role}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Status:</span> {user.status}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Language:</span>{" "}
+              {languageLabels[user.displayLanguage || "en"]}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Total Spent:</span>{" "}
+              {formatTotalSpent(user.totalSpent)}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Order Count:</span>{" "}
+              {user.orderCount}
+            </p>
+            <p className="text-sm">
+              <span className="font-medium">Last Login:</span>{" "}
+              {formatDate(user.lastLogin)}
+            </p>
+          </div>
+        </div>
+        <div className="md:col-span-2">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            Addresses ({user.addresses?.length || 0})
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {user.addresses && user.addresses.length > 0 ? (
+              user.addresses.map((addr, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white p-3 rounded-lg border border-gray-200 text-sm"
+                >
+                  <p className="font-medium">
+                    {addr.label}{" "}
+                    {addr.isDefault && (
+                      <span className="text-xs bg-[#1f473e]/10 text-[#1f473e] px-2 py-0.5 rounded-full ml-1">
+                        Default
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-gray-600 text-xs mt-1">
+                    {addr.street}, {addr.city}, {addr.state} {addr.zipCode}
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    {addr.country} | {addr.phone}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-400">No addresses saved</p>
+            )}
+          </div>
+        </div>
+        <div className="md:col-span-2">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            Notification Settings
+          </p>
+          <div className="mt-2 flex flex-wrap gap-3">
+            {user.notificationSettings?.orderUpdates && (
+              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                Order Updates
+              </span>
+            )}
+            {user.notificationSettings?.shippingDelivery && (
+              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                Shipping & Delivery
+              </span>
+            )}
+            {user.notificationSettings?.promotionsOffers && (
+              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                Promotions & Offers
+              </span>
+            )}
+            {user.notificationSettings?.newsletter && (
+              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                Newsletter
+              </span>
+            )}
+            {user.notificationSettings?.smsNotifications && (
+              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                SMS
+              </span>
+            )}
+            {!user.notificationSettings?.orderUpdates &&
+              !user.notificationSettings?.shippingDelivery &&
+              !user.notificationSettings?.promotionsOffers &&
+              !user.notificationSettings?.newsletter &&
+              !user.notificationSettings?.smsNotifications && (
+                <span className="text-sm text-gray-400">
+                  No notifications enabled
+                </span>
+              )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -228,7 +467,7 @@ export default function AdminUsers() {
       <AdminTable
         columns={columns}
         data={users}
-        searchKeys={["name", "email"]}
+        searchKeys={["name", "email", "phone"]}
       />
 
       <AdminModal
@@ -237,47 +476,134 @@ export default function AdminUsers() {
         onClose={() => setModalOpen(false)}
         onSave={handleSave}
       >
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Name *
-            </label>
-            <input
-              value={form.name ?? ""}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className={inputClass}
-              placeholder="John Doe"
-              required
-            />
+        <div className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto px-1">
+          {/* Basic Info */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Name *
+              </label>
+              <input
+                value={form.name ?? ""}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className={inputClass}
+                placeholder="John Doe"
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Email *
+              </label>
+              <input
+                type="email"
+                value={form.email ?? ""}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className={inputClass}
+                placeholder="user@example.com"
+                required
+              />
+            </div>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Email *
-            </label>
-            <input
-              type="email"
-              value={form.email ?? ""}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              className={inputClass}
-              placeholder="user@example.com"
-              required
-            />
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Phone
+              </label>
+              <input
+                type="tel"
+                value={form.phone ?? ""}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className={inputClass}
+                placeholder="+1 (555) 000-1234"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Birthday
+              </label>
+              <input
+                type="date"
+                value={form.birthday ?? ""}
+                onChange={(e) => setForm({ ...form, birthday: e.target.value })}
+                className={inputClass}
+              />
+            </div>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Gender
+              </label>
+              <select
+                value={form.gender ?? "other"}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    gender: e.target.value as "male" | "female" | "other",
+                  })
+                }
+                className={inputClass}
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Language
+              </label>
+              <select
+                value={form.displayLanguage ?? "en"}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    displayLanguage: e.target.value as "en" | "az" | "ru",
+                  })
+                }
+                className={inputClass}
+              >
+                <option value="en">English</option>
+                <option value="az">Azerbaijani</option>
+                <option value="ru">Russian</option>
+              </select>
+            </div>
+          </div>
+
           {!editing && (
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Password *
               </label>
-              <input
-                type="password"
-                value={form.password ?? ""}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className={inputClass}
-                placeholder="••••••"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={form.password ?? ""}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  className={`${inputClass} pr-10`}
+                  placeholder="••••••"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
           )}
+
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
@@ -314,6 +640,79 @@ export default function AdminUsers() {
                 <option value="active">Active</option>
                 <option value="blocked">Blocked</option>
               </select>
+            </div>
+          </div>
+
+          {/* Notification Settings */}
+          <div className="border-t border-gray-100 pt-3">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Notification Settings
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={form.notificationSettings?.orderUpdates ?? true}
+                  onChange={(e) =>
+                    updateNotificationSetting("orderUpdates", e.target.checked)
+                  }
+                  className="rounded border-gray-300 text-[#1f473e] focus:ring-[#1f473e]"
+                />
+                Order Updates
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={form.notificationSettings?.shippingDelivery ?? true}
+                  onChange={(e) =>
+                    updateNotificationSetting(
+                      "shippingDelivery",
+                      e.target.checked,
+                    )
+                  }
+                  className="rounded border-gray-300 text-[#1f473e] focus:ring-[#1f473e]"
+                />
+                Shipping & Delivery
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={form.notificationSettings?.promotionsOffers ?? true}
+                  onChange={(e) =>
+                    updateNotificationSetting(
+                      "promotionsOffers",
+                      e.target.checked,
+                    )
+                  }
+                  className="rounded border-gray-300 text-[#1f473e] focus:ring-[#1f473e]"
+                />
+                Promotions & Offers
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={form.notificationSettings?.newsletter ?? false}
+                  onChange={(e) =>
+                    updateNotificationSetting("newsletter", e.target.checked)
+                  }
+                  className="rounded border-gray-300 text-[#1f473e] focus:ring-[#1f473e]"
+                />
+                Newsletter
+              </label>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={form.notificationSettings?.smsNotifications ?? false}
+                  onChange={(e) =>
+                    updateNotificationSetting(
+                      "smsNotifications",
+                      e.target.checked,
+                    )
+                  }
+                  className="rounded border-gray-300 text-[#1f473e] focus:ring-[#1f473e]"
+                />
+                SMS Notifications
+              </label>
             </div>
           </div>
         </div>

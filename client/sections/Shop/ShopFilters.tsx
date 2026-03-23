@@ -1,61 +1,183 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { SlidersHorizontal, X } from "lucide-react";
-
-const filterData = {
-  colors: [
-    { name: "Blue", hex: "#4A6FA5", count: 1 },
-    { name: "Pink", hex: "#F4A7B9", count: 1 },
-    { name: "Red", hex: "#E8392A", count: 1 },
-    { name: "Purple", hex: "#9B59B6", count: 2 },
-    { name: "Yellow", hex: "#F1C40F", count: 1 },
-  ],
-  sizes: [
-    { label: "30ml", count: 4 },
-    { label: "50ml", count: 6 },
-    { label: "100ml", count: 8 },
-    { label: "200ml", count: 3 },
-  ],
-  brands: [
-    { label: "Gently", count: 8 },
-    { label: "Elanique", count: 6 },
-    { label: "Purity", count: 10 },
-    { label: "Lumière", count: 4 },
-    { label: "Dermasoft", count: 3 },
-  ],
-  categories: [
-    { label: "Cleanser", count: 7 },
-    { label: "Serum", count: 9 },
-    { label: "Moisturiser", count: 6 },
-    { label: "Eye Care", count: 4 },
-    { label: "Toner", count: 3 },
-    { label: "Sunscreen", count: 2 },
-  ],
-  concerns: [
-    { label: "Acne", count: 5 },
-    { label: "Dark Spots", count: 6 },
-    { label: "Hydration", count: 10 },
-    { label: "Anti-Aging", count: 7 },
-    { label: "Sensitivity", count: 4 },
-    { label: "Brightening", count: 8 },
-  ],
-  formulations: [
-    { label: "Gel", count: 5 },
-    { label: "Cream", count: 9 },
-    { label: "Oil", count: 3 },
-    { label: "Foam", count: 4 },
-    { label: "Mist", count: 2 },
-    { label: "Balm", count: 3 },
-  ],
-};
+import { collectionService } from "@/services/collectionService";
+import { tagService } from "@/services/tagService";
+import { skinConcernService } from "@/services/skinConcernService";
+import { formulationService } from "@/services/formulationService";
+import { brandService } from "@/services/brandService";
+import { productColorService } from "@/services/productColorService";
+import { productSizeService } from "@/services/productSizeService";
+import { productService } from "@/services/productService";
 
 export default function ShopFilters() {
   const t = useTranslations("ShopPage.filters");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Filter data from API
+  const [categories, setCategories] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
+  const [colors, setColors] = useState<any[]>([]);
+  const [sizes, setSizes] = useState<any[]>([]);
+  const [concerns, setConcerns] = useState<any[]>([]);
+  const [formulations, setFormulations] = useState<any[]>([]);
+  const [tags, setTags] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Counts for each filter
+  const [counts, setCounts] = useState({
+    onSale: 0,
+    newArrivals: 0,
+    inStock: 0,
+    outOfStock: 0,
+    categories: {} as Record<string, number>,
+    brands: {} as Record<string, number>,
+    colors: {} as Record<string, number>,
+    sizes: {} as Record<string, number>,
+    concerns: {} as Record<string, number>,
+    formulations: {} as Record<string, number>,
+  });
+
+  useEffect(() => {
+    loadFilterData();
+    loadFilterCounts();
+  }, []);
+
+  const loadFilterData = async () => {
+    try {
+      const [
+        categoriesData,
+        brandsData,
+        colorsData,
+        sizesData,
+        concernsData,
+        formulationsData,
+        tagsData,
+      ] = await Promise.all([
+        collectionService.getAll(),
+        brandService.getAll(),
+        productColorService.getAll(),
+        productSizeService.getAll(),
+        skinConcernService.getAll(),
+        formulationService.getAll(),
+        tagService.getAll(),
+      ]);
+
+      setCategories(categoriesData.filter((c) => c.isActive));
+      setBrands(brandsData.filter((b) => b.isActive));
+      setColors(colorsData);
+      setSizes(sizesData);
+      setConcerns(concernsData);
+      setFormulations(formulationsData.filter((f) => f.isActive));
+      setTags(tagsData);
+    } catch (error) {
+      console.error("Error loading filters:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadFilterCounts = async () => {
+    try {
+      // Get all products to calculate counts
+      const { products } = await productService.getAll(1, 1000);
+
+      // Calculate counts
+      const onSaleCount = products.filter(
+        (p) => p.originalPrice && p.originalPrice !== "",
+      ).length;
+      const newArrivalsCount = products.filter((p) => {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return p.createdAt && new Date(p.createdAt) >= thirtyDaysAgo;
+      }).length;
+      const inStockCount = products.filter((p) => p.inStock).length;
+      const outOfStockCount = products.filter((p) => !p.inStock).length;
+
+      // Category counts (by collection name)
+      const categoryCounts: Record<string, number> = {};
+      products.forEach((p) => {
+        if (p.collection && typeof p.collection === "object") {
+          const name = p.collection.name;
+          categoryCounts[name] = (categoryCounts[name] || 0) + 1;
+        }
+      });
+
+      // Brand counts
+      const brandCounts: Record<string, number> = {};
+      products.forEach((p) => {
+        if (p.brand && typeof p.brand === "object") {
+          const name = p.brand.name;
+          brandCounts[name] = (brandCounts[name] || 0) + 1;
+        }
+      });
+
+      // Color counts
+      const colorCounts: Record<string, number> = {};
+      products.forEach((p) => {
+        if (p.productColors && Array.isArray(p.productColors)) {
+          p.productColors.forEach((c: any) => {
+            if (c.name) {
+              colorCounts[c.name] = (colorCounts[c.name] || 0) + 1;
+            }
+          });
+        }
+      });
+
+      // Size counts
+      const sizeCounts: Record<string, number> = {};
+      products.forEach((p) => {
+        if (p.productSizes && Array.isArray(p.productSizes)) {
+          p.productSizes.forEach((s: any) => {
+            if (s.size) {
+              sizeCounts[s.size] = (sizeCounts[s.size] || 0) + 1;
+            }
+          });
+        }
+      });
+
+      // Concern counts
+      const concernCounts: Record<string, number> = {};
+      products.forEach((p) => {
+        if (p.skinConcerns && Array.isArray(p.skinConcerns)) {
+          p.skinConcerns.forEach((c: any) => {
+            const name = typeof c === "object" ? c.name : c;
+            if (name) {
+              concernCounts[name] = (concernCounts[name] || 0) + 1;
+            }
+          });
+        }
+      });
+
+      // Formulation counts
+      const formulationCounts: Record<string, number> = {};
+      products.forEach((p) => {
+        if (p.formulation && typeof p.formulation === "object") {
+          const name = p.formulation.name;
+          formulationCounts[name] = (formulationCounts[name] || 0) + 1;
+        }
+      });
+
+      setCounts({
+        onSale: onSaleCount,
+        newArrivals: newArrivalsCount,
+        inStock: inStockCount,
+        outOfStock: outOfStockCount,
+        categories: categoryCounts,
+        brands: brandCounts,
+        colors: colorCounts,
+        sizes: sizeCounts,
+        concerns: concernCounts,
+        formulations: formulationCounts,
+      });
+    } catch (error) {
+      console.error("Error loading filter counts:", error);
+    }
+  };
 
   const availability = searchParams?.get("availability") || "";
   const priceMin = Number(searchParams?.get("priceMin")) || 0;
@@ -72,8 +194,11 @@ export default function ShopFilters() {
     searchParams?.get("concerns")?.split(",").filter(Boolean) || [];
   const selectedFormulations =
     searchParams?.get("formulations")?.split(",").filter(Boolean) || [];
+  const selectedTags =
+    searchParams?.get("tags")?.split(",").filter(Boolean) || [];
   const onSale = searchParams?.get("sale") === "true";
   const newArrivals = searchParams?.get("new") === "true";
+  const collectionFilter = searchParams?.get("collection") || "";
   const closedSections =
     searchParams?.get("closed")?.split(",").filter(Boolean) || [];
 
@@ -85,8 +210,10 @@ export default function ShopFilters() {
     ...selectedCategories,
     ...selectedConcerns,
     ...selectedFormulations,
+    ...selectedTags,
     onSale ? "sale" : "",
     newArrivals ? "new" : "",
+    collectionFilter ? "collection" : "",
   ].filter(Boolean).length;
 
   const isOpen = (id: string) => !closedSections.includes(id);
@@ -100,6 +227,16 @@ export default function ShopFilters() {
     },
     [searchParams, router],
   );
+
+  const clearAllFilters = useCallback(() => {
+    // Clear all filter parameters and keep only the page
+    const params = new URLSearchParams();
+    // Keep page parameter if needed
+    const page = searchParams?.get("page");
+    if (page) params.set("page", page);
+    router.push(`?${params.toString()}`, { scroll: false });
+    setMobileOpen(false);
+  }, [router, searchParams]);
 
   const toggleSection = (id: string) => {
     const updated = isOpen(id)
@@ -126,7 +263,8 @@ export default function ShopFilters() {
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
-  const hasActiveFilters = activeCount > 0 || priceMin > 0 || priceMax < 585;
+  const hasActiveFilters =
+    activeCount > 0 || priceMin > 0 || priceMax < 585 || !!collectionFilter;
 
   const SectionHeader = ({ id, label }: { id: string; label: string }) => (
     <button
@@ -189,20 +327,22 @@ export default function ShopFilters() {
 
   const FilterContent = () => (
     <div className="flex flex-col divide-y divide-gray-100">
-      {/* Deals */}
+      {/* Deals - Now using Tags */}
       <div className="py-5">
         <SectionHeader id="deals" label="Deals" />
         {isOpen("deals") && (
           <div className="mt-4 flex flex-col gap-3">
+            {/* Sale filter */}
             <CheckboxRow
               label={t("sale")}
-              count={12}
+              count={counts.onSale}
               checked={onSale}
               onChange={() => updateURL("sale", onSale ? "" : "true")}
             />
+            {/* New Arrivals filter */}
             <CheckboxRow
               label={t("newArrivals")}
-              count={8}
+              count={counts.newArrivals}
               checked={newArrivals}
               onChange={() => updateURL("new", newArrivals ? "" : "true")}
             />
@@ -215,77 +355,69 @@ export default function ShopFilters() {
         <SectionHeader id="availability" label={t("availability")} />
         {isOpen("availability") && (
           <div className="mt-4 flex flex-col gap-3">
-            {[
-              { label: t("inStock"), count: 30 },
-              { label: t("outOfStock"), count: 1 },
-            ].map((item) => (
-              <div
-                key={item.label}
-                onClick={() =>
-                  toggleSingle("availability", availability, item.label)
-                }
-                className="flex items-center justify-between cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      availability === item.label
-                        ? "border-gray-900 bg-gray-900"
-                        : "border-gray-300 group-hover:border-gray-500"
-                    }`}
-                  >
-                    {availability === item.label && (
-                      <div className="w-2 h-2 rounded-full bg-white" />
-                    )}
-                  </div>
-                  <span className="text-sm text-gray-600">{item.label}</span>
-                </div>
-                <span className="text-sm text-gray-400">{item.count}</span>
-              </div>
-            ))}
+            <CheckboxRow
+              label={t("inStock")}
+              count={counts.inStock}
+              checked={availability === "inStock"}
+              onChange={() =>
+                toggleSingle("availability", availability, "inStock")
+              }
+            />
+            <CheckboxRow
+              label={t("outOfStock")}
+              count={counts.outOfStock}
+              checked={availability === "outOfStock"}
+              onChange={() =>
+                toggleSingle("availability", availability, "outOfStock")
+              }
+            />
           </div>
         )}
       </div>
 
       {/* Category */}
-      <div className="py-5">
-        <SectionHeader id="category" label={t("category")} />
-        {isOpen("category") && (
-          <div className="mt-4 flex flex-col gap-3">
-            {filterData.categories.map((item) => (
-              <CheckboxRow
-                key={item.label}
-                label={item.label}
-                count={item.count}
-                checked={selectedCategories.includes(item.label)}
-                onChange={() =>
-                  toggleMulti("categories", selectedCategories, item.label)
-                }
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {categories.length > 0 && (
+        <div className="py-5">
+          <SectionHeader id="category" label={t("category")} />
+          {isOpen("category") && (
+            <div className="mt-4 flex flex-col gap-3">
+              {categories.map((item) => (
+                <CheckboxRow
+                  key={item._id}
+                  label={item.name}
+                  count={counts.categories[item.name] || 0}
+                  checked={selectedCategories.includes(item.name)}
+                  onChange={() =>
+                    toggleMulti("categories", selectedCategories, item.name)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Brand */}
-      <div className="py-5">
-        <SectionHeader id="brand" label={t("brand")} />
-        {isOpen("brand") && (
-          <div className="mt-4 flex flex-col gap-3">
-            {filterData.brands.map((item) => (
-              <CheckboxRow
-                key={item.label}
-                label={item.label}
-                count={item.count}
-                checked={selectedBrands.includes(item.label)}
-                onChange={() =>
-                  toggleMulti("brands", selectedBrands, item.label)
-                }
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {brands.length > 0 && (
+        <div className="py-5">
+          <SectionHeader id="brand" label={t("brand")} />
+          {isOpen("brand") && (
+            <div className="mt-4 flex flex-col gap-3">
+              {brands.map((item) => (
+                <CheckboxRow
+                  key={item._id}
+                  label={item.name}
+                  count={counts.brands[item.name] || 0}
+                  checked={selectedBrands.includes(item.name)}
+                  onChange={() =>
+                    toggleMulti("brands", selectedBrands, item.name)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Price */}
       <div className="py-5">
@@ -331,102 +463,114 @@ export default function ShopFilters() {
       </div>
 
       {/* Color */}
-      <div className="py-5">
-        <SectionHeader id="color" label={t("color")} />
-        {isOpen("color") && (
-          <div className="mt-4 flex flex-col gap-3">
-            {filterData.colors.map((color) => (
-              <div
-                key={color.name}
-                onClick={() =>
-                  toggleMulti("colors", selectedColors, color.name)
-                }
-                className="flex items-center justify-between cursor-pointer group"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-7 h-7 rounded-full border-2 transition-all ${
-                      selectedColors.includes(color.name)
-                        ? "border-gray-900 scale-110"
-                        : "border-transparent"
-                    }`}
-                    style={{
-                      backgroundColor: color.hex,
-                      boxShadow: "0 0 0 1px #e5e7eb",
-                    }}
-                  />
-                  <span className="text-sm text-gray-600">{color.name}</span>
+      {colors.length > 0 && (
+        <div className="py-5">
+          <SectionHeader id="color" label={t("color")} />
+          {isOpen("color") && (
+            <div className="mt-4 flex flex-col gap-3">
+              {colors.map((color) => (
+                <div
+                  key={color._id}
+                  onClick={() =>
+                    toggleMulti("colors", selectedColors, color.name)
+                  }
+                  className="flex items-center justify-between cursor-pointer group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-7 h-7 rounded-full border-2 transition-all ${
+                        selectedColors.includes(color.name)
+                          ? "border-gray-900 scale-110"
+                          : "border-transparent"
+                      }`}
+                      style={{
+                        backgroundColor: color.hexCode,
+                        boxShadow: "0 0 0 1px #e5e7eb",
+                      }}
+                    />
+                    <span className="text-sm text-gray-600">{color.name}</span>
+                  </div>
+                  <span className="text-sm text-gray-400">
+                    {counts.colors[color.name] || 0}
+                  </span>
                 </div>
-                <span className="text-sm text-gray-400">{color.count}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Size */}
-      <div className="py-5">
-        <SectionHeader id="size" label={t("size")} />
-        {isOpen("size") && (
-          <div className="mt-4 flex flex-col gap-3">
-            {filterData.sizes.map((size) => (
-              <CheckboxRow
-                key={size.label}
-                label={size.label}
-                count={size.count}
-                checked={selectedSizes.includes(size.label)}
-                onChange={() => toggleMulti("sizes", selectedSizes, size.label)}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {sizes.length > 0 && (
+        <div className="py-5">
+          <SectionHeader id="size" label={t("size")} />
+          {isOpen("size") && (
+            <div className="mt-4 flex flex-col gap-3">
+              {sizes.map((size) => (
+                <CheckboxRow
+                  key={size._id}
+                  label={size.size}
+                  count={counts.sizes[size.size] || 0}
+                  checked={selectedSizes.includes(size.size)}
+                  onChange={() =>
+                    toggleMulti("sizes", selectedSizes, size.size)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Concern */}
-      <div className="py-5">
-        <SectionHeader id="concern" label={t("concern")} />
-        {isOpen("concern") && (
-          <div className="mt-4 flex flex-col gap-3">
-            {filterData.concerns.map((item) => (
-              <CheckboxRow
-                key={item.label}
-                label={item.label}
-                count={item.count}
-                checked={selectedConcerns.includes(item.label)}
-                onChange={() =>
-                  toggleMulti("concerns", selectedConcerns, item.label)
-                }
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {concerns.length > 0 && (
+        <div className="py-5">
+          <SectionHeader id="concern" label={t("concern")} />
+          {isOpen("concern") && (
+            <div className="mt-4 flex flex-col gap-3">
+              {concerns.map((item) => (
+                <CheckboxRow
+                  key={item._id}
+                  label={item.name}
+                  count={counts.concerns[item.name] || 0}
+                  checked={selectedConcerns.includes(item.name)}
+                  onChange={() =>
+                    toggleMulti("concerns", selectedConcerns, item.name)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Formulation */}
-      <div className="py-5">
-        <SectionHeader id="formulation" label={t("formulation")} />
-        {isOpen("formulation") && (
-          <div className="mt-4 flex flex-col gap-3">
-            {filterData.formulations.map((item) => (
-              <CheckboxRow
-                key={item.label}
-                label={item.label}
-                count={item.count}
-                checked={selectedFormulations.includes(item.label)}
-                onChange={() =>
-                  toggleMulti("formulations", selectedFormulations, item.label)
-                }
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {formulations.length > 0 && (
+        <div className="py-5">
+          <SectionHeader id="formulation" label={t("formulation")} />
+          {isOpen("formulation") && (
+            <div className="mt-4 flex flex-col gap-3">
+              {formulations.map((item) => (
+                <CheckboxRow
+                  key={item._id}
+                  label={item.name}
+                  count={counts.formulations[item.name] || 0}
+                  checked={selectedFormulations.includes(item.name)}
+                  onChange={() =>
+                    toggleMulti("formulations", selectedFormulations, item.name)
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Clear all */}
       {hasActiveFilters && (
         <div className="py-5">
           <button
-            onClick={() => router.push("?", { scroll: false })}
+            onClick={clearAllFilters}
             className="text-sm text-gray-500 underline hover:text-gray-900 transition-colors"
           >
             {t("clearAll")}
@@ -435,6 +579,14 @@ export default function ShopFilters() {
       )}
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="w-8 h-8 border-4 border-gray-200 border-t-[#1f473e] rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -455,7 +607,7 @@ export default function ShopFilters() {
 
         {hasActiveFilters && (
           <button
-            onClick={() => router.push("?", { scroll: false })}
+            onClick={clearAllFilters}
             className="flex items-center gap-1.5 px-4 py-3.5 border border-gray-200 rounded-2xl text-sm text-gray-500 hover:border-gray-400 transition-colors"
           >
             <X className="w-3.5 h-3.5" />
@@ -472,20 +624,14 @@ export default function ShopFilters() {
       {/* Mobile modal */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden flex items-end">
-          {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50"
             onClick={() => setMobileOpen(false)}
           />
-
-          {/* Modal sheet — slides up from bottom */}
           <div className="relative w-full bg-white rounded-t-3xl flex flex-col max-h-[90vh] animate-in slide-in-from-bottom duration-300">
-            {/* Handle */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 rounded-full bg-gray-300" />
             </div>
-
-            {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <span className="font-bold text-gray-900 text-lg">Filters</span>
               <button
@@ -495,20 +641,13 @@ export default function ShopFilters() {
                 <X className="w-4 h-4 text-gray-600" />
               </button>
             </div>
-
-            {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto px-6">
               <FilterContent />
             </div>
-
-            {/* Footer actions */}
             <div className="px-6 py-4 border-t border-gray-100 flex gap-3">
               {hasActiveFilters && (
                 <button
-                  onClick={() => {
-                    router.push("?", { scroll: false });
-                    setMobileOpen(false);
-                  }}
+                  onClick={clearAllFilters}
                   className="flex-1 py-3.5 border border-gray-200 text-gray-700 text-sm font-medium rounded-2xl hover:bg-gray-50 transition-colors"
                 >
                   Clear all

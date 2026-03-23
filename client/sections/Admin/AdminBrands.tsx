@@ -1,14 +1,15 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Loader2, Star, Eye, EyeOff } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Plus, Pencil, Trash2, Loader2, Star, Upload, X } from "lucide-react";
 import AdminTable, { Column } from "@/components/Admin/AdminTable";
 import AdminModal from "@/components/Admin/AdminModal";
 import AdminPageHeader from "@/components/Admin/AdminPageHeader";
 import AdminBadge from "@/components/Admin/AdminBadge";
-import Image from "next/image";
 import { brandService } from "@/services/brandService";
+import { uploadService } from "@/services/uploadService";
 import { Brand } from "@/types/brand";
 import { toast } from "react-hot-toast";
+import { getImageUrl } from "@/utils/imageUrl";
 
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors";
@@ -20,6 +21,8 @@ export default function AdminBrands() {
   const [editing, setEditing] = useState<Brand | null>(null);
   const [form, setForm] = useState<Partial<Brand>>({});
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadBrands();
@@ -35,6 +38,24 @@ export default function AdminBrands() {
       toast.error("Failed to load brands");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      const url = await uploadService.uploadBrandLogo(file);
+      setForm({ ...form, logo: url });
+      toast.success("Logo uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading logo:", error);
+      toast.error("Failed to upload logo");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -127,11 +148,14 @@ export default function AdminBrands() {
       render: (row) => (
         <div className="relative w-10 h-10 rounded-full overflow-hidden bg-gray-100">
           {row.logo && (
-            <Image
-              src={row.logo}
+            <img
+              src={getImageUrl(row.logo)}
               alt={row.name}
-              fill
-              className="object-cover"
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                console.error("Image failed to load:", row.logo);
+                e.currentTarget.style.display = "none";
+              }}
             />
           )}
         </div>
@@ -278,14 +302,60 @@ export default function AdminBrands() {
           </div>
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Logo URL *
+              Logo *
             </label>
+            <div className="flex gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                ref={fileInputRef}
+                className="hidden"
+                id="logo-upload"
+              />
+              <label
+                htmlFor="logo-upload"
+                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-200 transition-colors disabled:opacity-50"
+              >
+                {uploading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Upload className="w-4 h-4" />
+                )}
+                Upload Logo
+              </label>
+              {form.logo && (
+                <div className="flex items-center gap-2">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200 bg-gray-50">
+                    <img
+                      src={getImageUrl(form.logo)}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.error(
+                          "Preview image failed to load:",
+                          form.logo,
+                        );
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, logo: "" })}
+                    className="p-1 hover:bg-red-50 rounded-full transition-colors"
+                  >
+                    <X className="w-4 h-4 text-red-400" />
+                  </button>
+                </div>
+              )}
+            </div>
             <input
+              type="text"
               value={form.logo ?? ""}
               onChange={(e) => setForm({ ...form, logo: e.target.value })}
               className={inputClass}
-              placeholder="https://..."
-              required
+              placeholder="Or enter URL manually"
             />
           </div>
           <div className="flex flex-col gap-1.5">

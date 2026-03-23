@@ -44,6 +44,20 @@ export const reviewService = {
     return data.data;
   },
 
+  // Add this update method
+  async update(id: string, review: Partial<Review>): Promise<Review> {
+    const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(review),
+    });
+    const data: ApiResponse<Review> = await response.json();
+    if (!data.success)
+      throw new Error(data.message || "Failed to update review");
+    if (!data.data) throw new Error("No data returned");
+    return data.data;
+  },
+
   async updateStatus(
     id: string,
     status: "published" | "deleted",

@@ -1,65 +1,92 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
+import { collectionService } from "@/services/collectionService";
+import { productService } from "@/services/productService";
+import { getImageUrl } from "@/utils/imageUrl";
+import { Collection } from "@/types/product";
 import "swiper/css";
 
-const categories = [
-  {
-    label: "Facial Cleansers",
-    count: 8,
-    image:
-      "https://purity.nextsky.co/cdn/shop/collections/collection-lv-2_1.jpg?v=1758855565&width=660",
-    href: "/shop/facial-cleansers",
-  },
-  {
-    label: "Serums",
-    count: 8,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-    href: "/shop/serums",
-  },
-  {
-    label: "Toners",
-    count: 5,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-    href: "/shop/toners",
-  },
-  {
-    label: "Makeup Removers",
-    count: 8,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-    href: "/shop/makeup-removers",
-  },
-  {
-    label: "Moisturisers",
-    count: 6,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-    href: "/shop/moisturisers",
-  },
-  {
-    label: "Sunscreens",
-    count: 4,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-    href: "/shop/sunscreens",
-  },
-];
+interface CollectionWithCount extends Collection {
+  productCount: number;
+}
 
 export default function CategoryList() {
+  const t = useTranslations("ShopPage");
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
   const [hovered, setHovered] = useState(false);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+  const [collections, setCollections] = useState<CollectionWithCount[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCollections = async () => {
+      try {
+        // Load collections and products in parallel
+        const [collectionsData, productsData] = await Promise.all([
+          collectionService.getAll(),
+          productService.getAll(1, 1000), // Get all products to count
+        ]);
+
+        // Count products per collection
+        const productCounts: Record<string, number> = {};
+        productsData.products.forEach((product: any) => {
+          if (product.collection) {
+            const collectionId =
+              typeof product.collection === "object"
+                ? product.collection._id
+                : product.collection;
+            productCounts[collectionId] =
+              (productCounts[collectionId] || 0) + 1;
+          }
+        });
+
+        // Add count to each collection
+        const activeCollections: CollectionWithCount[] = collectionsData
+          .filter((c) => c.isActive)
+          .map((collection) => ({
+            ...collection,
+            productCount: productCounts[collection._id] || 0,
+          }));
+
+        setCollections(activeCollections);
+        console.log(
+          "Collections loaded:",
+          activeCollections.map((c) => ({
+            name: c.name,
+            count: c.productCount,
+          })),
+        );
+      } catch (error) {
+        console.error("Error loading collections:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCollections();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-10">
+        <div className="flex justify-center items-center h-64">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-[#1f473e] rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  if (collections.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-10">
@@ -138,25 +165,30 @@ export default function CategoryList() {
             1024: { slidesPerView: 4, spaceBetween: 24 },
           }}
         >
-          {categories.map((cat, i) => (
-            <SwiperSlide key={i}>
-              <Link href={cat.href} className="flex flex-col gap-3 group">
+          {collections.map((collection) => (
+            <SwiperSlide key={collection._id}>
+              <Link
+                href={`/shop?collection=${collection._id}`}
+                className="flex flex-col gap-3 group"
+              >
                 {/* Image */}
                 <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100">
                   <Image
-                    src={cat.image}
-                    alt={cat.label}
+                    src={getImageUrl(collection.image) || "/placeholder.jpg"}
+                    alt={collection.name}
                     fill
                     className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
                   />
                 </div>
 
-                {/* Label */}
+                {/* Label with product count */}
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-base font-medium text-gray-900">
-                    {cat.label}
+                    {collection.name}
                   </span>
-                  <span className="text-sm text-gray-400">{cat.count}</span>
+                  <span className="text-sm text-gray-400">
+                    {collection.productCount || 0}
+                  </span>
                 </div>
               </Link>
             </SwiperSlide>

@@ -1,59 +1,80 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
-    name: {
+const addressSchema = new mongoose.Schema({
+    label: {
+        type: String,
+        enum: ['Home', 'Work', 'Other'],
+        default: 'Home'
+    },
+    fullName: {
         type: String,
         required: true
     },
-    email: {
+    street: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
-    password: {
+    city: {
         type: String,
-        required: function () {
-            // Password is only required if not using Google auth
-            return !this.googleId;
-        }
+        required: true
     },
-    googleId: {
+    state: {
         type: String,
-        sparse: true,
-        unique: true
+        required: true
     },
-    avatar: {
+    zipCode: {
         type: String,
-        default: ''
+        required: true
     },
-    role: {
+    country: {
         type: String,
-        enum: ['customer', 'admin'],
-        default: 'customer'
+        required: true
     },
-    status: {
+    phone: {
         type: String,
-        enum: ['active', 'blocked'],
-        default: 'active'
+        required: true
     },
-    totalSpent: {
-        type: Number,
-        default: 0
-    },
-    orderCount: {
-        type: Number,
-        default: 0
-    },
-    lastLogin: {
-        type: Date,
-        default: Date.now
+    isDefault: {
+        type: Boolean,
+        default: false
     }
-}, {
-    timestamps: true
 });
 
-// Hash password before saving - only if password exists
+const notificationSettingsSchema = new mongoose.Schema({
+    orderUpdates: { type: Boolean, default: true },
+    shippingDelivery: { type: Boolean, default: true },
+    promotionsOffers: { type: Boolean, default: true },
+    newsletter: { type: Boolean, default: false },
+    smsNotifications: { type: Boolean, default: false }
+});
+
+const userSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String },
+    googleId: { type: String },
+    avatar: { type: String, default: '' },
+    phone: { type: String },
+    birthday: { type: Date },
+    gender: { type: String, enum: ['male', 'female', 'other'], default: 'other' },
+    role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
+    status: { type: String, enum: ['active', 'blocked'], default: 'active' },
+    totalSpent: { type: Number, default: 0 },
+    orderCount: { type: Number, default: 0 },
+    addresses: [addressSchema],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+    notificationSettings: { type: notificationSettingsSchema, default: () => ({}) },
+    displayLanguage: { type: String, enum: ['en', 'az', 'ru'], default: 'en' },
+    refreshToken: { type: String, select: false },
+    lastLogin: { type: Date, default: Date.now },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
+    emailVerified: { type: Boolean, default: false },
+    verificationToken: String
+}, { timestamps: true });
+
+// Hash password before saving
 userSchema.pre('save', async function () {
     if (this.isModified('password') && this.password) {
         const salt = await bcrypt.genSalt(10);
@@ -67,11 +88,9 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Virtual for joined date
 userSchema.virtual('joined').get(function () {
     if (!this.createdAt) return '';
-    const date = new Date(this.createdAt);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return this.createdAt.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 });
 
 userSchema.set('toJSON', { virtuals: true });

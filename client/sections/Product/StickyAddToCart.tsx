@@ -2,13 +2,17 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
 
-export default function StickyAddToCart({
-  product,
-}: {
-  product: ProductDetail;
-}) {
+interface StickyAddToCartProps {
+  product: {
+    name: string;
+    price: string;
+    images: string[];
+  };
+}
+
+export default function StickyAddToCart({ product }: StickyAddToCartProps) {
   const t = useTranslations("ProductDetail");
   const [visible, setVisible] = useState(false);
   const [qty, setQty] = useState(1);
@@ -26,7 +30,7 @@ export default function StickyAddToCart({
       <div className="max-w-5xl mx-auto flex items-center gap-3 md:gap-4">
         <div className="relative w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-xl overflow-hidden bg-[#f0ebe2]">
           <Image
-            src={product.images[0]}
+            src={getImageUrl(product.images[0])}
             alt={product.name}
             fill
             className="object-contain p-1"

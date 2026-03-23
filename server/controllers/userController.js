@@ -1,11 +1,19 @@
 const User = require('../models/User');
+const Order = require('../models/Order');
+const Product = require('../models/Product');
 
 // Get all users
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password').sort({ createdAt: -1 });
-        res.json({ success: true, data: users });
+        const users = await User.find()
+            .select('-password -resetPasswordToken -resetPasswordExpire -verificationToken -refreshToken')
+            .sort({ createdAt: -1 });
+
+        console.log(`Found ${users.length} users`); // Debug log
+
+        res.status(200).json({ success: true, data: users });
     } catch (error) {
+        console.error('Error in getAllUsers:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -13,10 +21,17 @@ const getAllUsers = async (req, res) => {
 // Get user by ID
 const getUserById = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('-password');
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-        res.json({ success: true, data: user });
+        const user = await User.findById(req.params.id)
+            .select('-password -resetPasswordToken -resetPasswordExpire -verificationToken')
+            .populate('wishlist', 'name price images rating');
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, data: user });
     } catch (error) {
+        console.error('Error in getUserById:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -31,14 +46,23 @@ const createUser = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Email already exists' });
         }
 
-        const user = new User({ name, email, password, role, status });
+        const user = new User({
+            name,
+            email,
+            password,
+            role: role || 'customer',
+            status: status || 'active',
+            emailVerified: true
+        });
+
         await user.save();
 
-        const userData = user.toJSON();
+        const userData = user.toObject();
         delete userData.password;
 
         res.status(201).json({ success: true, data: userData });
     } catch (error) {
+        console.error('Error in createUser:', error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -46,17 +70,21 @@ const createUser = async (req, res) => {
 // Update user
 const updateUser = async (req, res) => {
     try {
-        const { name, email, role, status } = req.body;
+        const { name, email, phone, birthday, gender, role, status, notificationSettings, displayLanguage } = req.body;
 
         const user = await User.findByIdAndUpdate(
             req.params.id,
-            { name, email, role, status },
+            { name, email, phone, birthday, gender, role, status, notificationSettings, displayLanguage },
             { new: true, runValidators: true }
-        ).select('-password');
+        ).select('-password -resetPasswordToken -resetPasswordExpire -verificationToken');
 
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-        res.json({ success: true, data: user });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, data: user });
     } catch (error) {
+        console.error('Error in updateUser:', error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -65,15 +93,217 @@ const updateUser = async (req, res) => {
 const updateUserStatus = async (req, res) => {
     try {
         const { status } = req.body;
+
         const user = await User.findByIdAndUpdate(
             req.params.id,
             { status },
             { new: true }
         ).select('-password');
 
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-        res.json({ success: true, data: user });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, data: user });
     } catch (error) {
+        console.error('Error in updateUserStatus:', error);
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Add address to user
+const addAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const newAddress = { ...req.body, isDefault: user.addresses.length === 0 ? true : req.body.isDefault };
+
+        // If this address is set as default, unset others
+        if (newAddress.isDefault) {
+            user.addresses.forEach(addr => { addr.isDefault = false; });
+        }
+
+        user.addresses.push(newAddress);
+        await user.save();
+
+        res.status(201).json({ success: true, data: user.addresses });
+    } catch (error) {
+        console.error('Error in addAddress:', error);
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Update address
+const updateAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const address = user.addresses.id(req.params.addressId);
+        if (!address) {
+            return res.status(404).json({ success: false, message: 'Address not found' });
+        }
+
+        Object.assign(address, req.body);
+
+        // If this address is set as default, unset others
+        if (address.isDefault) {
+            user.addresses.forEach(addr => {
+                if (addr._id.toString() !== req.params.addressId) {
+                    addr.isDefault = false;
+                }
+            });
+        }
+
+        await user.save();
+        res.status(200).json({ success: true, data: user.addresses });
+    } catch (error) {
+        console.error('Error in updateAddress:', error);
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Delete address
+const deleteAddress = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const address = user.addresses.id(req.params.addressId);
+        if (!address) {
+            return res.status(404).json({ success: false, message: 'Address not found' });
+        }
+
+        address.remove();
+        await user.save();
+
+        res.status(200).json({ success: true, data: user.addresses });
+    } catch (error) {
+        console.error('Error in deleteAddress:', error);
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Add to wishlist
+const addToWishlist = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const productId = req.params.productId;
+
+        if (user.wishlist.includes(productId)) {
+            return res.status(400).json({ success: false, message: 'Product already in wishlist' });
+        }
+
+        user.wishlist.push(productId);
+        await user.save();
+
+        const updatedUser = await User.findById(user._id).populate('wishlist', 'name price images rating');
+
+        res.status(200).json({ success: true, data: updatedUser.wishlist });
+    } catch (error) {
+        console.error('Error in addToWishlist:', error);
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+// Remove from wishlist
+const removeFromWishlist = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        user.wishlist = user.wishlist.filter(id => id.toString() !== req.params.productId);
+        await user.save();
+
+        const updatedUser = await User.findById(user._id).populate('wishlist', 'name price images rating');
+
+        res.status(200).json({ success: true, data: updatedUser.wishlist });
+    } catch (error) {
+        console.error('Error in removeFromWishlist:', error);
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
+const updateAvatar = async (req, res) => {
+    try {
+        console.log('=== updateAvatar called ===');
+        console.log('Request params:', req.params);
+        console.log('Request file:', req.file);
+
+        if (!req.file) {
+            console.log('No file in request');
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
+
+        console.log('File details:', {
+            filename: req.file.filename,
+            path: req.file.path,
+            url: req.file.url,
+            size: req.file.size,
+            mimetype: req.file.mimetype
+        });
+
+        const avatarUrl = req.file.url;
+        console.log('Saving avatar URL to user:', avatarUrl);
+
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { avatar: avatarUrl },
+            { new: true }
+        ).select('-password -refreshToken');
+
+        if (!user) {
+            console.log('User not found:', req.params.id);
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        console.log('User updated successfully:', user._id);
+        console.log('New avatar URL:', user.avatar);
+
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    } catch (error) {
+        console.error('Error in updateAvatar:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Update password
+const updatePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const isMatch = await user.comparePassword(currentPassword);
+        if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+        }
+
+        user.password = newPassword;
+        await user.save();
+
+        res.status(200).json({ success: true, message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Error in updatePassword:', error);
         res.status(400).json({ success: false, message: error.message });
     }
 };
@@ -82,9 +312,13 @@ const updateUserStatus = async (req, res) => {
 const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-        res.json({ success: true, message: 'User deleted successfully' });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, message: 'User deleted successfully' });
     } catch (error) {
+        console.error('Error in deleteUser:', error);
         res.status(500).json({ success: false, message: error.message });
     }
 };
@@ -95,5 +329,12 @@ module.exports = {
     createUser,
     updateUser,
     updateUserStatus,
+    addAddress,
+    updateAddress,
+    deleteAddress,
+    addToWishlist,
+    removeFromWishlist,
+    updateAvatar,
+    updatePassword,
     deleteUser
 };

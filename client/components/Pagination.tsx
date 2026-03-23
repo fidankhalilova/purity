@@ -4,20 +4,28 @@ import { useSearchParams } from "next/navigation";
 type PaginationProps = {
   totalPages: number;
   onPageChange: (page: number) => void;
+  currentPage?: number;
 };
 
 export default function Pagination({
   totalPages,
   onPageChange,
+  currentPage: propCurrentPage,
 }: PaginationProps) {
   const searchParams = useSearchParams();
-  const current = Number(searchParams?.get("page")) || 1;
+  const urlPage = Number(searchParams?.get("page")) || 1;
+  const current = propCurrentPage || urlPage;
+
+  if (totalPages <= 1) return null;
 
   // Build visible page numbers with ellipsis
   const getPages = () => {
-    if (totalPages <= 5)
+    if (totalPages <= 5) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
     const pages: (number | "...")[] = [];
+
     if (current <= 3) {
       pages.push(1, 2, 3, "...", totalPages);
     } else if (current >= totalPages - 2) {
@@ -43,6 +51,7 @@ export default function Pagination({
         onClick={() => onPageChange(current - 1)}
         disabled={current === 1}
         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-gray-400 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+        aria-label="Previous page"
       >
         <svg
           className="w-4 h-4"
@@ -51,8 +60,7 @@ export default function Pagination({
           strokeWidth={2}
           viewBox="0 0 24 24"
         >
-          <polyline points="11 7 6 12 11 17" />
-          <polyline points="18 7 13 12 18 17" />
+          <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
 
@@ -73,6 +81,8 @@ export default function Pagination({
                 ? "bg-[#1f473e] text-white"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-gray-400"
             }`}
+            aria-label={`Go to page ${page}`}
+            aria-current={current === page ? "page" : undefined}
           >
             {page}
           </button>
@@ -84,6 +94,7 @@ export default function Pagination({
         onClick={() => onPageChange(current + 1)}
         disabled={current === totalPages}
         className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-gray-400 transition-colors duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+        aria-label="Next page"
       >
         <svg
           className="w-4 h-4"
@@ -92,8 +103,7 @@ export default function Pagination({
           strokeWidth={2}
           viewBox="0 0 24 24"
         >
-          <polyline points="13 17 18 12 13 7" />
-          <polyline points="6 17 11 12 6 7" />
+          <polyline points="9 18 15 12 9 6" />
         </svg>
       </button>
     </div>

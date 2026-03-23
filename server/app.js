@@ -2,7 +2,43 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./db/ConnectDB');
 const cors = require('cors');
+const path = require('path');
+const cookieParser = require('cookie-parser');
 
+// Load env vars
+dotenv.config();
+
+// Connect to database
+connectDB();
+
+const app = express();
+
+// CORS - MUST come first
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    exposedHeaders: ['Content-Length', 'X-Kuma-Revision']
+}));
+
+// Body parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Cookie parser - MUST be BEFORE routes
+app.use(cookieParser());
+
+// Test route
+app.get('/', (req, res) => {
+    res.send('API is running');
+});
+
+// Static files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// API Routes - ALL routes after middleware
+const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const productColorRoutes = require('./routes/productColorRoutes');
 const productSizeRoutes = require('./routes/productSizeRoutes');
@@ -19,31 +55,10 @@ const userRoutes = require('./routes/userRoutes');
 const discountRoutes = require('./routes/discountRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const formulationRoutes = require('./routes/formulationRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
-// Load env vars
-dotenv.config();
-
-// Connect to database
-connectDB();
-
-const app = express();
-
-app.use(cors({
-    origin: 'http://localhost:3000', // Your Next.js frontend URL
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (req, res) => {
-    res.send('API is running');
-});
-
-// API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/product-colors', productColorRoutes);
@@ -60,10 +75,12 @@ app.use('/api/badges', badgeRoutes);
 app.use('/api/discounts', discountRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/formulations', formulationRoutes);
-
+app.use('/api/orders', orderRoutes);
+app.use('/api/upload', uploadRoutes);
 
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Auth routes available at: http://localhost:${PORT}/api/auth`);
 });

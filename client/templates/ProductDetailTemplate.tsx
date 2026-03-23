@@ -11,32 +11,37 @@ import PromoMarquee from "@/sections/Product/Marquee";
 import OthersBought from "@/sections/AboutUs/OthersBought";
 import CardForPromo from "@/sections/Product/CardForPromo";
 
+interface ProductDetailTemplateProps {
+  product: ProductDetail;
+}
+
 export default async function ProductDetailTemplate({
   product,
-}: {
-  product: ProductDetail;
-}) {
+}: ProductDetailTemplateProps) {
   return (
     <div className="relative pb-16">
       <div className="container mx-auto px-4 md:px-6 py-4">
-        <Breadcrumb overrideLastLabel={product.name} />
+        <Breadcrumb overrideLastLabel={product?.name || "Product"} />
         <ProductHero product={product} />
       </div>
 
-      <BoughtTogether product={product} />
-      <GlowIngredients product={product} />
+      <BoughtTogether items={product?.boughtTogether || []} />
+      <GlowIngredients ingredients={product?.glowIngredients || []} />
       <WhyUs />
       <PromoMarquee />
-      <SimilarProducts product={product} />
+      <SimilarProducts products={product?.similarProducts || []} />
 
       <div className="container mx-auto px-4 md:px-6 flex flex-col gap-12">
-        <CustomerReviews product={product} />
+        <CustomerReviews
+          productId={product?._id || ""}
+          initialReviews={product?.reviews || []}
+        />
         <CardForPromo
           category="Our Philosophy"
           title="Glow with Confidence"
           date="October 10, 2023"
           author="Admin"
-          excerpt="Our clean formulas are designed to nourish, restore, and reveal your skin’s natural glow—so confidence feels as effortless and radiant as true, timeless beauty itself."
+          excerpt="Our clean formulas are designed to nourish, restore, and reveal your skin's natural glow—so confidence feels as effortless and radiant as true, timeless beauty itself."
           image="https://purity.nextsky.co/cdn/shop/files/pdp-banner.jpg?v=1760930201&width=3840"
           href="/promo"
         />

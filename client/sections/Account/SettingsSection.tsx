@@ -1,15 +1,35 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Bell, Lock, Globe, Trash2, AlertTriangle } from "lucide-react";
+import {
+  Bell,
+  Lock,
+  Globe,
+  Trash2,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react";
+import { userService } from "@/services/userService";
+import { User, NotificationSettings } from "@/types/user";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-export default function SettingsSection() {
+interface SettingsSectionProps {
+  userId: string;
+}
+
+export default function SettingsSection({ userId }: SettingsSectionProps) {
   const t = useTranslations("AccountPage.settings");
-  const [notifications, setNotifications] = useState({
-    orders: true,
-    promotions: true,
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [notifications, setNotifications] = useState<NotificationSettings>({
+    orderUpdates: true,
+    shippingDelivery: true,
+    promotionsOffers: true,
     newsletter: false,
-    sms: false,
+    smsNotifications: false,
   });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
@@ -18,6 +38,108 @@ export default function SettingsSection() {
     confirm: "",
   });
   const [lang, setLang] = useState("en");
+
+  useEffect(() => {
+    loadUser();
+  }, [userId]);
+
+  const loadUser = async () => {
+    try {
+      setLoading(true);
+      const data = await userService.getById(userId);
+      setUser(data);
+      setNotifications(data.notificationSettings || notifications);
+      setLang(data.displayLanguage || "en");
+    } catch (error) {
+      console.error("Error loading user:", error);
+      toast.error("Failed to load settings");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateNotificationSettings = async (
+    key: keyof NotificationSettings,
+    value: boolean,
+  ) => {
+    try {
+      setUpdating(true);
+      const newSettings = { ...notifications, [key]: value };
+      setNotifications(newSettings);
+      await userService.update(userId, { notificationSettings: newSettings });
+      toast.success("Settings updated");
+    } catch (error) {
+      console.error("Error updating settings:", error);
+      toast.error("Failed to update settings");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const updateLanguage = async (newLang: string) => {
+    try {
+      setUpdating(true);
+      setLang(newLang);
+      await userService.update(userId, {
+        displayLanguage: newLang as "en" | "az" | "ru",
+      });
+      toast.success("Language updated");
+      // Reload page to apply language change
+      setTimeout(() => window.location.reload(), 500);
+    } catch (error) {
+      console.error("Error updating language:", error);
+      toast.error("Failed to update language");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const updatePassword = async () => {
+    if (!passwordForm.current || !passwordForm.newPass) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    if (passwordForm.newPass !== passwordForm.confirm) {
+      toast.error("New passwords do not match");
+      return;
+    }
+    if (passwordForm.newPass.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      setUpdating(true);
+      await userService.updatePassword(
+        userId,
+        passwordForm.current,
+        passwordForm.newPass,
+      );
+      toast.success("Password updated successfully");
+      setPasswordForm({ current: "", newPass: "", confirm: "" });
+    } catch (error: any) {
+      console.error("Error updating password:", error);
+      toast.error(error.message || "Failed to update password");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      setUpdating(true);
+      await userService.delete(userId);
+      toast.success("Account deleted successfully");
+      // Clear user data and redirect to home
+      localStorage.removeItem("user");
+      router.push("/");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error("Failed to delete account");
+    } finally {
+      setUpdating(false);
+    }
+  };
 
   const Toggle = ({
     value,
@@ -28,13 +150,22 @@ export default function SettingsSection() {
   }) => (
     <button
       onClick={onChange}
-      className={`w-11 h-6 rounded-full transition-colors relative shrink-0 ${value ? "bg-[#1f473e]" : "bg-gray-200"}`}
+      disabled={updating}
+      className={`w-11 h-6 rounded-full transition-colors relative shrink-0 ${value ? "bg-[#1f473e]" : "bg-gray-200"} disabled:opacity-50`}
     >
       <div
         className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform shadow-sm ${value ? "translate-x-5" : "translate-x-0.5"}`}
       />
     </button>
   );
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -56,12 +187,17 @@ export default function SettingsSection() {
         <div className="flex flex-col gap-4">
           {[
             {
-              key: "orders" as const,
+              key: "orderUpdates" as const,
               label: t("notifications.orders"),
               desc: t("notifications.ordersDesc"),
             },
             {
-              key: "promotions" as const,
+              key: "shippingDelivery" as const,
+              label: t("notifications.shipping"),
+              desc: t("notifications.shippingDesc"),
+            },
+            {
+              key: "promotionsOffers" as const,
               label: t("notifications.promotions"),
               desc: t("notifications.promotionsDesc"),
             },
@@ -71,7 +207,7 @@ export default function SettingsSection() {
               desc: t("notifications.newsletterDesc"),
             },
             {
-              key: "sms" as const,
+              key: "smsNotifications" as const,
               label: t("notifications.sms"),
               desc: t("notifications.smsDesc"),
             },
@@ -84,10 +220,7 @@ export default function SettingsSection() {
               <Toggle
                 value={notifications[key]}
                 onChange={() =>
-                  setNotifications({
-                    ...notifications,
-                    [key]: !notifications[key],
-                  })
+                  updateNotificationSettings(key, !notifications[key])
                 }
               />
             </div>
@@ -124,7 +257,11 @@ export default function SettingsSection() {
               />
             </div>
           ))}
-          <button className="self-start px-6 py-3 bg-[#1f473e] text-white text-sm font-medium rounded-full hover:bg-[#163830] transition-colors">
+          <button
+            onClick={updatePassword}
+            disabled={updating}
+            className="self-start px-6 py-3 bg-[#1f473e] text-white text-sm font-medium rounded-full hover:bg-[#163830] transition-colors disabled:opacity-50"
+          >
             {t("password.update")}
           </button>
         </div>
@@ -144,8 +281,9 @@ export default function SettingsSection() {
           </label>
           <select
             value={lang}
-            onChange={(e) => setLang(e.target.value)}
-            className="px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors max-w-xs"
+            onChange={(e) => updateLanguage(e.target.value)}
+            disabled={updating}
+            className="px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors max-w-xs disabled:opacity-50"
           >
             <option value="en">English</option>
             <option value="az">Azərbaycan</option>
@@ -195,7 +333,11 @@ export default function SettingsSection() {
               >
                 {t("danger.cancelBtn")}
               </button>
-              <button className="flex-1 py-2.5 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-colors">
+              <button
+                onClick={deleteAccount}
+                disabled={updating}
+                className="flex-1 py-2.5 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-colors disabled:opacity-50"
+              >
                 {t("danger.confirmBtn")}
               </button>
             </div>

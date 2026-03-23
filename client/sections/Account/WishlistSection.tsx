@@ -1,48 +1,64 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";
+import { userService } from "@/services/userService";
+import { Product } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
+import { toast } from "react-hot-toast";
 
-const initialWishlist = [
-  {
-    id: "1",
-    name: "Dark Circle Patch",
-    price: "$75.00",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=900",
-    href: "dark-circle-patch",
-    inStock: true,
-  },
-  {
-    id: "2",
-    name: "Pore Detox Scrub",
-    price: "$70.00",
-    originalPrice: "$100.00",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-    href: "pore-detox-scrub",
-    inStock: true,
-  },
-  {
-    id: "3",
-    name: "Brighten Serum",
-    price: "$160.00",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-    href: "brighten-serum",
-    inStock: false,
-  },
-];
+interface WishlistSectionProps {
+  userId: string;
+}
 
-export default function WishlistSection() {
+export default function WishlistSection({ userId }: WishlistSectionProps) {
   const t = useTranslations("AccountPage.wishlist");
   const locale = useLocale();
-  const [items, setItems] = useState(initialWishlist);
+  const [items, setItems] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
-  const remove = (id: string) => setItems(items.filter((i) => i.id !== id));
+  useEffect(() => {
+    loadWishlist();
+  }, [userId]);
+
+  const loadWishlist = async () => {
+    try {
+      setLoading(true);
+      const user = await userService.getById(userId);
+      setItems(user.wishlist || []);
+    } catch (error) {
+      console.error("Error loading wishlist:", error);
+      toast.error("Failed to load wishlist");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const removeFromWishlist = async (productId: string) => {
+    try {
+      setRemovingId(productId);
+      await userService.removeFromWishlist(userId, productId);
+      setItems(items.filter((item) => item._id !== productId));
+      toast.success("Removed from wishlist");
+    } catch (error) {
+      console.error("Error removing from wishlist:", error);
+      toast.error("Failed to remove from wishlist");
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -71,13 +87,13 @@ export default function WishlistSection() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {items.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             className="bg-white rounded-3xl border border-gray-100 overflow-hidden group"
           >
-            <Link href={`/${locale}/shop/${item.href}`}>
+            <Link href={`/${locale}/shop/${item.id || item._id}`}>
               <div className="relative w-full aspect-square bg-[#f0ebe2]">
                 <Image
-                  src={item.image}
+                  src={getImageUrl(item.images?.[0] || "")}
                   alt={item.name}
                   fill
                   className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
@@ -98,13 +114,13 @@ export default function WishlistSection() {
                 </p>
                 <div className="flex items-baseline gap-2 mt-1">
                   <span
-                    className={`text-sm font-bold ${(item as any).originalPrice ? "text-[#e8392a]" : "text-gray-900"}`}
+                    className={`text-sm font-bold ${item.originalPrice ? "text-[#e8392a]" : "text-gray-900"}`}
                   >
                     {item.price}
                   </span>
-                  {(item as any).originalPrice && (
+                  {item.originalPrice && (
                     <span className="text-xs text-gray-400 line-through">
-                      {(item as any).originalPrice}
+                      {item.originalPrice}
                     </span>
                   )}
                 </div>
@@ -118,10 +134,15 @@ export default function WishlistSection() {
                   {t("addToCart")}
                 </button>
                 <button
-                  onClick={() => remove(item.id)}
-                  className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full hover:bg-red-50 hover:border-red-200 transition-colors"
+                  onClick={() => removeFromWishlist(item._id)}
+                  disabled={removingId === item._id}
+                  className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full hover:bg-red-50 hover:border-red-200 transition-colors disabled:opacity-50"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-gray-400" />
+                  {removingId === item._id ? (
+                    <Loader2 className="w-3.5 h-3.5 text-gray-400 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-3.5 h-3.5 text-gray-400" />
+                  )}
                 </button>
               </div>
             </div>

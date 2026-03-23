@@ -2,7 +2,22 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
+import { reviewService } from "@/services/reviewService";
+
+interface ReviewType {
+  author: string;
+  rating: number;
+  date: string;
+  title: string;
+  body: string;
+  images?: string[];
+}
+
+interface CustomerReviewsProps {
+  productId: string;
+  initialReviews: ReviewType[];
+}
 
 function Stars({
   rating,
@@ -37,7 +52,15 @@ function Stars({
   );
 }
 
-function WriteReview({ onClose }: { onClose: () => void }) {
+function WriteReview({
+  productId,
+  onClose,
+  onSuccess,
+}: {
+  productId: string;
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
   const t = useTranslations("ProductDetail");
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState("");
@@ -45,6 +68,7 @@ function WriteReview({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const ratingLabels = t.raw("ratingLabels") as string[];
 
@@ -55,6 +79,33 @@ function WriteReview({ onClose }: { onClose: () => void }) {
         setImages((prev) => [...prev, ev.target?.result as string]);
       reader.readAsDataURL(file);
     });
+  };
+
+  const handleSubmit = async () => {
+    if (!rating || !title || !body || !name) return;
+
+    try {
+      setSubmitting(true);
+      await reviewService.create({
+        author: name,
+        rating,
+        title,
+        body,
+        images,
+        date: new Date().toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "numeric",
+        }),
+        status: "published",
+      });
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -203,14 +254,11 @@ function WriteReview({ onClose }: { onClose: () => void }) {
         </div>
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
-            onClick={() => {
-              if (!rating || !title || !body || !name) return;
-              onClose();
-            }}
-            disabled={!rating || !title || !body || !name}
+            onClick={handleSubmit}
+            disabled={!rating || !title || !body || !name || submitting}
             className="flex-1 bg-[#1f473e] text-white py-3.5 rounded-full text-sm font-medium hover:bg-[#163830] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {t("submitReview")}
+            {submitting ? "Submitting..." : t("submitReview")}
           </button>
           <button
             onClick={onClose}
@@ -225,23 +273,28 @@ function WriteReview({ onClose }: { onClose: () => void }) {
 }
 
 export default function CustomerReviews({
-  product,
-}: {
-  product: ProductDetail;
-}) {
+  productId,
+  initialReviews,
+}: CustomerReviewsProps) {
   const t = useTranslations("ProductDetail");
+  const [reviews, setReviews] = useState(initialReviews);
   const [sort, setSort] = useState(t("mostRecent"));
   const [sortOpen, setSortOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const avg =
-    product.reviews.reduce((s, r) => s + r.rating, 0) / product.reviews.length;
+  const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
   const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
     star,
-    count: product.reviews.filter((r) => r.rating === star).length,
+    count: reviews.filter((r) => r.rating === star).length,
   }));
 
   const sortOpts = [t("mostRecent"), t("highestRated"), t("lowestRated")];
+
+  const sortedReviews = [...reviews].sort((a, b) => {
+    if (sort === t("highestRated")) return b.rating - a.rating;
+    if (sort === t("lowestRated")) return a.rating - b.rating;
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
 
   return (
     <section className="py-12 md:py-16 bg-[#f5f0e8] rounded-2xl md:rounded-3xl px-4 md:px-6 lg:px-10 my-8 md:my-10">
@@ -256,7 +309,7 @@ export default function CustomerReviews({
             {avg.toFixed(2)} {t("outOf5")}
           </p>
           <p className="text-sm text-gray-500">
-            {t("basedOn")} {product.reviews.length} {t("reviews")}
+            {t("basedOn")} {reviews.length} {t("reviews")}
           </p>
         </div>
         <div className="bg-white rounded-2xl p-5 md:p-6 flex flex-col gap-2">
@@ -267,8 +320,8 @@ export default function CustomerReviews({
                 <div
                   className="h-full bg-yellow-400 rounded-full transition-all"
                   style={{
-                    width: product.reviews.length
-                      ? `${(count / product.reviews.length) * 100}%`
+                    width: reviews.length
+                      ? `${(count / reviews.length) * 100}%`
                       : "0%",
                   }}
                 />
@@ -293,7 +346,15 @@ export default function CustomerReviews({
         </div>
       </div>
 
-      {showForm && <WriteReview onClose={() => setShowForm(false)} />}
+      {showForm && (
+        <WriteReview
+          productId={productId}
+          onClose={() => setShowForm(false)}
+          onSuccess={() => {
+            // Refresh reviews
+          }}
+        />
+      )}
 
       <div className="relative inline-block mb-5 md:mb-6 mt-4">
         <button
@@ -330,7 +391,7 @@ export default function CustomerReviews({
       </div>
 
       <div className="flex flex-col divide-y divide-gray-200">
-        {product.reviews.map((review, i) => (
+        {sortedReviews.map((review, i) => (
           <div key={i} className="py-6 md:py-8">
             <div className="flex items-start justify-between gap-4">
               <div className="flex flex-col gap-2 md:gap-3 flex-1">
@@ -363,7 +424,7 @@ export default function CustomerReviews({
                         className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden"
                       >
                         <Image
-                          src={img}
+                          src={getImageUrl(img)}
                           alt="Review photo"
                           fill
                           className="object-cover"

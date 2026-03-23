@@ -7,6 +7,8 @@ import { Instrument_Sans } from "next/font/google";
 import "../globals.css";
 import RootLayout from "@/layout/RootLayout";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider } from "@/context/AuthContext";
+import { Toaster } from "react-hot-toast";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -41,7 +43,18 @@ export default async function LocaleLayout(props: {
       <body className={`${instrumentSans.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <LanguageProvider>
-            <RootLayout>{children}</RootLayout>
+            <AuthProvider>
+              <RootLayout>{children}</RootLayout>
+              <Toaster
+                position="top-center"
+                toastOptions={{
+                  duration: 3000,
+                  style: { background: "#363636", color: "#fff" },
+                  success: { duration: 3000, style: { background: "#1f473e" } },
+                  error: { duration: 4000, style: { background: "#e8392a" } },
+                }}
+              />
+            </AuthProvider>
           </LanguageProvider>
         </NextIntlClientProvider>
       </body>

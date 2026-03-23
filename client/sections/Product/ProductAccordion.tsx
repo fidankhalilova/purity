@@ -1,13 +1,16 @@
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
 
-export default function ProductAccordion({
-  product,
-}: {
-  product: ProductDetail;
-}) {
+interface ProductAccordionProps {
+  product: {
+    productInfo: string;
+    howToUse: string;
+    ingredients: string;
+  };
+}
+
+export default function ProductAccordion({ product }: ProductAccordionProps) {
   const t = useTranslations("ProductDetail");
   const [open, setOpen] = useState<string | null>(null);
 

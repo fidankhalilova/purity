@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus,
@@ -39,6 +39,10 @@ import {
   Badge,
 } from "@/types/product";
 import { toast } from "react-hot-toast";
+import { uploadService } from "@/services/uploadService";
+import { Upload } from "lucide-react";
+import { getImageUrl } from "@/utils/imageUrl";
+import { createPortal } from "react-dom";
 
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors bg-white";
@@ -59,6 +63,10 @@ function MultiSelect({
   getOptionLabel: (option: any) => string;
 }) {
   const [open, setOpen] = useState(false);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const toggle = (optId: string) =>
     onChange(
       value.includes(optId)
@@ -66,13 +74,46 @@ function MultiSelect({
         : [...value, optId],
     );
 
+  useEffect(() => {
+    if (open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const dropdownHeight = Math.min(options.length * 40 + 16, 176);
+      const spaceBelow = window.innerHeight - rect.bottom;
+
+      setDropdownStyle({
+        position: "fixed",
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+        ...(spaceBelow < dropdownHeight
+          ? { bottom: window.innerHeight - rect.top + 4 }
+          : { top: rect.bottom + 4 }),
+      });
+    }
+  }, [open, options.length]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-1.5" ref={wrapperRef}>
       <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
         {label}
       </label>
       <div className="relative">
         <button
+          ref={buttonRef}
           type="button"
           onClick={() => setOpen(!open)}
           className={`${inputClass} flex items-center justify-between text-left`}
@@ -86,36 +127,60 @@ function MultiSelect({
             <ChevronDown className="w-4 h-4 text-gray-400 shrink-0" />
           )}
         </button>
-        {open && (
-          <div className="absolute top-full left-0 right-0 z-20 mt-1 bg-white border border-gray-100 rounded-2xl shadow-lg py-2 max-h-44 overflow-y-auto">
-            {options.map((opt) => (
-              <button
-                key={opt._id}
-                type="button"
-                onClick={() => toggle(opt._id)}
-                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors ${value.includes(opt._id) ? "font-semibold text-[#1f473e]" : "text-gray-600"}`}
-              >
-                <div
-                  className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${value.includes(opt._id) ? "bg-[#1f473e] border-[#1f473e]" : "border-gray-300"}`}
+
+        {open &&
+          typeof window !== "undefined" &&
+          createPortal(
+            <div
+              style={dropdownStyle}
+              className="bg-white border border-gray-100 rounded-2xl shadow-xl py-2 max-h-44 overflow-y-auto"
+            >
+              {options.length === 0 && (
+                <p className="text-xs text-gray-400 px-4 py-2">
+                  No options available
+                </p>
+              )}
+              {options.map((opt) => (
+                <button
+                  key={opt._id}
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    toggle(opt._id);
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors ${
+                    value.includes(opt._id)
+                      ? "font-semibold text-[#1f473e]"
+                      : "text-gray-600"
+                  }`}
                 >
-                  {value.includes(opt._id) && (
-                    <svg
-                      className="w-2.5 h-2.5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={3}
-                      viewBox="0 0 24 24"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  )}
-                </div>
-                {getOptionLabel(opt)}
-              </button>
-            ))}
-          </div>
-        )}
+                  <div
+                    className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                      value.includes(opt._id)
+                        ? "bg-[#1f473e] border-[#1f473e]"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {value.includes(opt._id) && (
+                      <svg
+                        className="w-2.5 h-2.5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                        viewBox="0 0 24 24"
+                      >
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    )}
+                  </div>
+                  {getOptionLabel(opt)}
+                </button>
+              ))}
+            </div>,
+            document.body,
+          )}
       </div>
+
       {value.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mt-1">
           {value.map((v) => {
@@ -291,6 +356,12 @@ export default function AdminProducts() {
   const [skinConcerns, setSkinConcerns] = useState<SkinConcern[]>([]);
   const [skinShades, setSkinShades] = useState<SkinShade[]>([]);
   const [skinColors, setSkinColors] = useState<SkinColor[]>([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadingType, setUploadingType] = useState<"main" | "action" | null>(
+    null,
+  );
+  const mainImageInputRef = useRef<HTMLInputElement>(null);
+  const actionImageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadAllData();
@@ -420,6 +491,40 @@ export default function AdminProducts() {
   const setFormValue = <K extends keyof Product>(key: K, value: Product[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
+  // Add image upload handler
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "main" | "action",
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+      setUploadingType(type);
+      const url = await uploadService.uploadProductImage(file);
+
+      if (type === "main") {
+        setFormValue("images", [...(form.images || []), url]);
+      } else {
+        setFormValue("actionImages", [...(form.actionImages || []), url]);
+      }
+
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+      setUploadingType(null);
+      if (type === "main" && mainImageInputRef.current) {
+        mainImageInputRef.current.value = "";
+      } else if (type === "action" && actionImageInputRef.current) {
+        actionImageInputRef.current.value = "";
+      }
+    }
+  };
+
   const columns: Column<Product>[] = [
     {
       key: "name",
@@ -429,11 +534,10 @@ export default function AdminProducts() {
         <div className="flex items-center gap-3">
           <div className="relative w-10 h-10 shrink-0 rounded-xl overflow-hidden bg-[#f0ebe2]">
             {row?.images?.[0] && (
-              <Image
-                src={row.images[0]}
+              <img
+                src={getImageUrl(row.images[0])}
                 alt={row.name}
-                fill
-                className="object-contain p-1"
+                className="w-full h-full object-contain p-1"
               />
             )}
           </div>
@@ -704,18 +808,65 @@ export default function AdminProducts() {
 
           {/* Images */}
           <FormSection title="Images">
-            <StringListEditor
-              label="Image URLs"
-              value={form.images ?? []}
-              onChange={(v) => setFormValue("images", v)}
-              placeholder="https://..."
-            />
-            <StringListEditor
-              label="Action Images"
-              value={form.actionImages ?? []}
-              onChange={(v) => setFormValue("actionImages", v)}
-              placeholder="https://..."
-            />
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e, "main")}
+                  ref={mainImageInputRef}
+                  className="hidden"
+                  id="main-image-upload"
+                />
+                <label
+                  htmlFor="main-image-upload"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-200 transition-colors"
+                >
+                  {uploading && uploadingType === "main" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  Upload Main Image
+                </label>
+              </div>
+              <StringListEditor
+                label="Image URLs"
+                value={form.images ?? []}
+                onChange={(v) => setFormValue("images", v)}
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 mt-4">
+              <div className="flex gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageUpload(e, "action")}
+                  ref={actionImageInputRef}
+                  className="hidden"
+                  id="action-image-upload"
+                />
+                <label
+                  htmlFor="action-image-upload"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-200 transition-colors"
+                >
+                  {uploading && uploadingType === "action" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  Upload Action Image
+                </label>
+              </div>
+              <StringListEditor
+                label="Action Images"
+                value={form.actionImages ?? []}
+                onChange={(v) => setFormValue("actionImages", v)}
+                placeholder="https://..."
+              />
+            </div>
           </FormSection>
 
           {/* Variants */}
@@ -723,14 +874,22 @@ export default function AdminProducts() {
             <MultiSelect
               label="Product Colors"
               options={productColors}
-              value={(form.productColors as string[]) ?? []}
+              value={
+                (form.productColors as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("productColors", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Product Sizes"
               options={productSizes}
-              value={(form.productSizes as string[]) ?? []}
+              value={
+                (form.productSizes as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("productSizes", v)}
               getOptionLabel={(opt) => `${opt.size} (${opt.ml}ml)`}
             />
@@ -741,28 +900,44 @@ export default function AdminProducts() {
             <MultiSelect
               label="Skin Types"
               options={skinTypes}
-              value={(form.skinTypes as string[]) ?? []}
+              value={
+                (form.skinTypes as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("skinTypes", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Skin Concerns"
               options={skinConcerns}
-              value={(form.skinConcerns as string[]) ?? []}
+              value={
+                (form.skinConcerns as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("skinConcerns", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Skin Shades"
               options={skinShades}
-              value={(form.skinShades as string[]) ?? []}
+              value={
+                (form.skinShades as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("skinShades", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Skin Colors"
               options={skinColors}
-              value={(form.skinColors as string[]) ?? []}
+              value={
+                (form.skinColors as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("skinColors", v)}
               getOptionLabel={(opt) => opt.name}
             />
@@ -773,28 +948,44 @@ export default function AdminProducts() {
             <SingleSelect
               label="Collection"
               options={collections}
-              value={(form.collection as string) ?? ""}
+              value={
+                typeof form.collection === "object"
+                  ? (form.collection as any)?._id || ""
+                  : ((form.collection as string) ?? "")
+              }
               onChange={(v) => setFormValue("collection", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Tags"
               options={tags}
-              value={(form.tags as string[]) ?? []}
+              value={
+                (form.tags as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("tags", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Home Sections"
               options={homeSections}
-              value={(form.homeSections as string[]) ?? []}
+              value={
+                (form.homeSections as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("homeSections", v)}
               getOptionLabel={(opt) => opt.displayName}
             />
             <MultiSelect
               label="Badges"
               options={badges}
-              value={(form.badges as string[]) ?? []}
+              value={
+                (form.badges as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("badges", v)}
               getOptionLabel={(opt) => `${opt.icon} ${opt.label}`}
             />
@@ -805,21 +996,33 @@ export default function AdminProducts() {
             <MultiSelect
               label="Pairs Well With"
               options={products}
-              value={(form.pairsWell as string[]) ?? []}
+              value={
+                (form.pairsWell as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("pairsWell", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Bought Together"
               options={products}
-              value={(form.boughtTogether as string[]) ?? []}
+              value={
+                (form.boughtTogether as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("boughtTogether", v)}
               getOptionLabel={(opt) => opt.name}
             />
             <MultiSelect
               label="Similar Products"
               options={products}
-              value={(form.similarProducts as string[]) ?? []}
+              value={
+                (form.similarProducts as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
               onChange={(v) => setFormValue("similarProducts", v)}
               getOptionLabel={(opt) => opt.name}
             />

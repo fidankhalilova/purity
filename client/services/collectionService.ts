@@ -5,7 +5,9 @@ const API_BASE_URL =
 
 export const collectionService = {
   async getAll(): Promise<Collection[]> {
-    const response = await fetch(`${API_BASE_URL}/collections`);
+    const response = await fetch(
+      `${API_BASE_URL}/collections?includeCounts=true`,
+    );
     const data: ApiResponse<Collection[]> = await response.json();
     if (!data.success)
       throw new Error(data.message || "Failed to fetch collections");

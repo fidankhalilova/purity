@@ -1,24 +1,98 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Camera } from "lucide-react";
+import { Camera, Loader2 } from "lucide-react";
+import { userService } from "@/services/userService";
+import { uploadService } from "@/services/uploadService";
+import { User } from "@/types/user";
+import { toast } from "react-hot-toast";
+import { getImageUrl } from "@/utils/imageUrl";
 
-export default function ProfileSection() {
+interface ProfileSectionProps {
+  userId: string;
+}
+
+export default function ProfileSection({ userId }: ProfileSectionProps) {
   const t = useTranslations("AccountPage.profile");
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const [form, setForm] = useState({
-    name: "Isabella D.",
-    email: "isabella@example.com",
-    phone: "+1 (555) 000-1234",
-    birthday: "1995-06-15",
-    gender: "female",
+    name: "",
+    email: "",
+    phone: "",
+    birthday: "",
+    gender: "other" as "male" | "female" | "other",
   });
 
-  const handleSave = () => {
-    setSaved(true);
-    setEditing(false);
-    setTimeout(() => setSaved(false), 3000);
+  useEffect(() => {
+    loadUser();
+  }, [userId]);
+
+  const loadUser = async () => {
+    try {
+      setLoading(true);
+      const data = await userService.getById(userId);
+      setUser(data);
+      setForm({
+        name: data.name,
+        email: data.email,
+        phone: data.phone || "",
+        birthday: data.birthday?.split("T")[0] || "",
+        gender: data.gender || "other",
+      });
+    } catch (error) {
+      console.error("Error loading user:", error);
+      toast.error("Failed to load profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // In ProfileSection.tsx
+  // In ProfileSection.tsx, update handleAvatarUpload
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const updatedUser = await userService.updateAvatar(userId, file);
+      console.log("Avatar upload response:", updatedUser);
+      console.log("Avatar URL:", updatedUser.avatar);
+      setUser(updatedUser);
+      toast.success("Avatar updated successfully");
+    } catch (error) {
+      console.error("Error uploading avatar:", error);
+      toast.error("Failed to upload avatar");
+    } finally {
+      setUploading(false);
+    }
+  };
+  const handleSave = async () => {
+    try {
+      const updatedUser = await userService.update(userId, form);
+      setUser(updatedUser);
+      setSaved(true);
+      setEditing(false);
+      setTimeout(() => setSaved(false), 3000);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("Failed to save profile");
+    }
   };
 
   const genderOptions = [
@@ -45,7 +119,7 @@ export default function ProfileSection() {
       {options ? (
         <select
           value={form[name]}
-          onChange={(e) => setForm({ ...form, [name]: e.target.value })}
+          onChange={(e) => setForm({ ...form, [name]: e.target.value as any })}
           disabled={!editing}
           className="px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 outline-none focus:border-[#1f473e] disabled:bg-gray-50 disabled:text-gray-500 transition-colors"
         >
@@ -66,6 +140,18 @@ export default function ProfileSection() {
       )}
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <div>User not found</div>;
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -107,23 +193,42 @@ export default function ProfileSection() {
 
       <div className="bg-[#f0ebe2] rounded-3xl p-5 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-5">
         <div className="relative">
-          <div className="w-20 h-20 rounded-full bg-[#1f473e] flex items-center justify-center text-white text-2xl font-bold">
-            {form.name.charAt(0)}
+          <div className="w-20 h-20 rounded-full bg-[#1f473e] flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+            {user.avatar ? (
+              <img
+                src={getImageUrl(user.avatar)}
+                alt={user.name}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              user.name.charAt(0)
+            )}
           </div>
           {editing && (
-            <button className="absolute bottom-0 right-0 w-7 h-7 bg-white rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm">
-              <Camera className="w-3.5 h-3.5 text-gray-600" />
-            </button>
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                className="hidden"
+                id="avatar-upload"
+              />
+              <label
+                htmlFor="avatar-upload"
+                className="absolute bottom-0 right-0 w-7 h-7 bg-white rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm cursor-pointer"
+              >
+                {uploading ? (
+                  <Loader2 className="w-3.5 h-3.5 text-gray-600 animate-spin" />
+                ) : (
+                  <Camera className="w-3.5 h-3.5 text-gray-600" />
+                )}
+              </label>
+            </>
           )}
         </div>
         <div className="text-center sm:text-left">
-          <p className="font-bold text-gray-900 text-lg">{form.name}</p>
-          <p className="text-sm text-gray-500">{form.email}</p>
-          {editing && (
-            <button className="text-xs text-[#1f473e] font-medium mt-1 hover:underline">
-              {t("avatar")}
-            </button>
-          )}
+          <p className="font-bold text-gray-900 text-lg">{user.name}</p>
+          <p className="text-sm text-gray-500">{user.email}</p>
         </div>
       </div>
 
@@ -146,45 +251,44 @@ export default function ProfileSection() {
           </button>
         </div>
         <div className="flex flex-col gap-3">
-          {[
-            {
-              label: "Home",
-              address: "123 Glow St, New York, NY 10001",
-              default: true,
-            },
-            {
-              label: "Work",
-              address: "456 Beauty Ave, Brooklyn, NY 11201",
-              default: false,
-            },
-          ].map((addr) => (
-            <div
-              key={addr.label}
-              className="flex items-start justify-between gap-4 p-4 border border-gray-100 rounded-2xl"
-            >
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-semibold text-gray-900">
-                    {addr.label}
-                  </span>
-                  {addr.default && (
-                    <span className="text-xs bg-[#1f473e]/10 text-[#1f473e] px-2 py-0.5 rounded-full font-medium">
-                      {t("default")}
+          {user.addresses && user.addresses.length > 0 ? (
+            user.addresses.map((addr) => (
+              <div
+                key={addr._id}
+                className="flex items-start justify-between gap-4 p-4 border border-gray-100 rounded-2xl"
+              >
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold text-gray-900">
+                      {addr.label}
                     </span>
-                  )}
+                    {addr.isDefault && (
+                      <span className="text-xs bg-[#1f473e]/10 text-[#1f473e] px-2 py-0.5 rounded-full font-medium">
+                        {t("default")}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    {addr.street}, {addr.city}, {addr.state} {addr.zipCode},{" "}
+                    {addr.country}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">{addr.phone}</p>
                 </div>
-                <p className="text-sm text-gray-500">{addr.address}</p>
+                <div className="flex gap-2 shrink-0">
+                  <button className="text-xs text-gray-400 hover:text-gray-700 transition-colors">
+                    {t("edit")}
+                  </button>
+                  <button className="text-xs text-red-400 hover:text-red-600 transition-colors">
+                    {t("remove")}
+                  </button>
+                </div>
               </div>
-              <div className="flex gap-2 shrink-0">
-                <button className="text-xs text-gray-400 hover:text-gray-700 transition-colors">
-                  {t("edit")}
-                </button>
-                <button className="text-xs text-red-400 hover:text-red-600 transition-colors">
-                  {t("remove")}
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-sm text-gray-500 text-center py-4">
+              No addresses saved
+            </p>
+          )}
         </div>
       </div>
     </div>

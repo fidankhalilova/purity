@@ -42,6 +42,7 @@ const sectionMap: Record<string, React.ComponentType> = {
   badges: AdminBadges,
   brands: AdminBrands,
   formulations: AdminFormulations,
+  users: AdminUsers,
 };
 
 export default function AdminSectionTemplate({ section }: { section: string }) {

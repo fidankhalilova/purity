@@ -2,20 +2,30 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
 
-export default function BoughtTogether({
-  product,
-}: {
-  product: ProductDetail;
-}) {
+interface BoughtTogetherItem {
+  name: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  href: string;
+  isCurrentItem?: boolean;
+  sizes?: string[];
+}
+
+interface BoughtTogetherProps {
+  items?: BoughtTogetherItem[];
+}
+
+export default function BoughtTogether({ items = [] }: BoughtTogetherProps) {
   const t = useTranslations("ProductDetail");
-  const [selected, setSelected] = useState<boolean[]>(
-    product.boughtTogether.map(() => true),
-  );
+  const [selected, setSelected] = useState<boolean[]>(items.map(() => true));
   const [sizes, setSizes] = useState<Record<number, string>>({});
 
-  const selectedItems = product.boughtTogether.filter((_, i) => selected[i]);
+  if (!items || items.length === 0) return null;
+
+  const selectedItems = items.filter((_, i) => selected[i]);
   const totalPrice = selectedItems.reduce(
     (sum, item) => sum + parseFloat(item.price.replace(/[^0-9.]/g, "")),
     0,
@@ -43,10 +53,12 @@ export default function BoughtTogether({
         <div className="flex flex-col lg:flex-row gap-4 md:gap-6 items-stretch">
           <div className="flex-1 bg-white rounded-2xl md:rounded-3xl p-4 md:p-8">
             <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
-              {product.boughtTogether.map((item, i) => (
-                <>
+              {items.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 md:gap-4 w-full"
+                >
                   <div
-                    key={i}
                     onClick={() => {
                       const next = [...selected];
                       next[i] = !next[i];
@@ -58,7 +70,7 @@ export default function BoughtTogether({
                       className={`relative w-full aspect-square rounded-xl md:rounded-2xl overflow-hidden transition-all duration-200 ${selected[i] ? "ring-2 ring-[#1f473e]" : "opacity-50"}`}
                     >
                       <Image
-                        src={item.image}
+                        src={getImageUrl(item.image)}
                         alt={item.name}
                         fill
                         className="object-contain p-3 md:p-5 transition-transform duration-300 group-hover:scale-105"
@@ -117,7 +129,7 @@ export default function BoughtTogether({
                       )}
                     </div>
                   </div>
-                  {i < product.boughtTogether.length - 1 && (
+                  {i < items.length - 1 && (
                     <div
                       key={`plus-${i}`}
                       className="shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-gray-100 flex items-center justify-center"
@@ -127,7 +139,7 @@ export default function BoughtTogether({
                       </span>
                     </div>
                   )}
-                </>
+                </div>
               ))}
             </div>
           </div>
@@ -153,7 +165,7 @@ export default function BoughtTogether({
             </div>
             <div className="w-full h-px bg-white/20" />
             <div className="w-full flex flex-col gap-1.5">
-              {product.boughtTogether.map((item, i) => (
+              {items.map((item, i) => (
                 <div
                   key={i}
                   className={`flex items-center gap-2 text-xs transition-opacity ${selected[i] ? "opacity-100" : "opacity-30"}`}

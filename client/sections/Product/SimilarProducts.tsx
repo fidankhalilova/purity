@@ -1,7 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
+
+interface SimilarProduct {
+  name: string;
+  price: string;
+  image: string;
+  rating: number;
+  ingredient: string;
+  inStock: boolean;
+  href: string;
+}
+
+interface SimilarProductsProps {
+  products: SimilarProduct[];
+}
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -20,13 +34,11 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export default function SimilarProducts({
-  product,
-}: {
-  product: ProductDetail;
-}) {
+export default function SimilarProducts({ products }: SimilarProductsProps) {
   const t = useTranslations("ProductDetail");
   const rows = [t("price"), t("ratings"), t("ingredient"), t("availability")];
+
+  if (!products || products.length === 0) return null;
 
   return (
     <section className="py-12 md:py-16 px-4 md:px-6">
@@ -42,12 +54,12 @@ export default function SimilarProducts({
             <thead>
               <tr>
                 <td className="w-24 md:w-36 shrink-0" />
-                {product.similarProducts.map((item, i) => (
+                {products.map((item, i) => (
                   <td key={i} className="text-center pb-4 px-2 md:px-3">
                     <Link href={item.href}>
                       <div className="relative aspect-square w-full max-w-28 md:max-w-36 mx-auto rounded-xl md:rounded-2xl overflow-hidden bg-[#f0ebe2]">
                         <Image
-                          src={item.image}
+                          src={getImageUrl(item.image)}
                           alt={item.name}
                           fill
                           className="object-cover hover:scale-105 transition-transform duration-300"
@@ -67,7 +79,7 @@ export default function SimilarProducts({
                   <td className="py-3 md:py-4 text-xs md:text-sm font-semibold text-gray-700 pr-3 md:pr-4">
                     {row}
                   </td>
-                  {product.similarProducts.map((item, i) => (
+                  {products.map((item, i) => (
                     <td
                       key={i}
                       className="py-3 md:py-4 text-center px-2 md:px-3"

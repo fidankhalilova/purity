@@ -1,10 +1,66 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import { Heart } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
 import ProductAccordion from "./ProductAccordion";
 import PairsWell from "./PairsWell";
+import { useAuth } from "@/context/AuthContext";
+import { userService } from "@/services/userService";
+import { toast } from "react-hot-toast";
+
+interface ProductHeroProps {
+  product: {
+    _id: string;
+    name: string;
+    price: string;
+    originalPrice?: string;
+    rating: number;
+    reviewCount: number;
+    inStock: boolean;
+    description: string;
+    images: string[];
+    badges: { icon: string; label: string }[];
+    benefits: string[];
+    actionImages: string[];
+    productInfo: string;
+    howToUse: string;
+    ingredients: string;
+    brand?: {
+      _id: string;
+      name: string;
+      logo?: string;
+      website?: string;
+      description?: string;
+      isFeatured?: boolean;
+      isActive?: boolean;
+    };
+    formulation?: { _id: string; name: string };
+    productColors?: {
+      _id: string;
+      name: string;
+      hexCode?: string;
+      inStock: boolean;
+    }[];
+    productSizes?: {
+      _id: string;
+      size: string;
+      ml: number;
+      price: string;
+      originalPrice?: string;
+      inStock: boolean;
+    }[];
+    pairsWell: {
+      _id: string;
+      name: string;
+      price: string;
+      originalPrice?: string;
+      image: string;
+      href: string;
+    }[];
+  };
+}
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -23,33 +79,122 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export default function ProductHero({ product }: { product: ProductDetail }) {
+export default function ProductHero({ product }: ProductHeroProps) {
   const t = useTranslations("ProductDetail");
+  const { user, accessToken } = useAuth();
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
-  const gridImages = product.images.slice(0, 6);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+
+  // Safely get the first in-stock color or first color
+  const [selectedColor, setSelectedColor] = useState<string | null>(() => {
+    if (product.productColors && product.productColors.length > 0) {
+      const inStockColor = product.productColors.find((c) => c.inStock);
+      return inStockColor?._id ?? product.productColors[0]?._id ?? null;
+    }
+    return null;
+  });
+
+  // Safely get the first in-stock size or first size
+  const [selectedSize, setSelectedSize] = useState<string | null>(() => {
+    if (product.productSizes && product.productSizes.length > 0) {
+      const inStockSize = product.productSizes.find((s) => s.inStock);
+      return inStockSize?._id ?? product.productSizes[0]?._id ?? null;
+    }
+    return null;
+  });
+
+  // Check if product is in wishlist
+  useEffect(() => {
+    const checkWishlist = async () => {
+      if (user) {
+        try {
+          const userData = await userService.getById(user._id, accessToken);
+          setIsWishlisted(
+            userData.wishlist?.some((item: any) => item._id === product._id),
+          );
+        } catch (error) {
+          console.error("Error checking wishlist:", error);
+        }
+      }
+    };
+    checkWishlist();
+  }, [user, product._id, accessToken]);
+
+  const handleWishlist = async () => {
+    if (!user) {
+      toast.error("Please login to add items to wishlist");
+      return;
+    }
+
+    try {
+      setWishlistLoading(true);
+      if (isWishlisted) {
+        await userService.removeFromWishlist(
+          user._id,
+          product._id,
+          accessToken,
+        );
+        setIsWishlisted(false);
+        toast.success("Removed from wishlist");
+      } else {
+        await userService.addToWishlist(user._id, product._id, accessToken);
+        setIsWishlisted(true);
+        toast.success("Added to wishlist");
+      }
+    } catch (error) {
+      console.error("Wishlist error:", error);
+      toast.error("Something went wrong");
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
+
+  const gridImages = product.images?.slice(0, 6) || [];
+
+  // Resolve active price from selected size, fallback to product price
+  const activeSize = product.productSizes?.find((s) => s._id === selectedSize);
+  const displayPrice = activeSize?.price ?? product.price;
+  const displayOriginalPrice =
+    activeSize?.originalPrice ?? product.originalPrice;
+
+  // Debug log to see what data is coming in
+  useEffect(() => {
+    console.log("ProductHero received product:", {
+      name: product.name,
+      hasColors: product.productColors?.length,
+      hasSizes: product.productSizes?.length,
+      colors: product.productColors,
+      sizes: product.productSizes,
+    });
+  }, [product]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 py-6 md:py-8">
       {/* Left — images */}
       <div className="flex flex-col gap-3 md:gap-4">
         <div className="relative w-full aspect-square rounded-2xl overflow-hidden cursor-pointer bg-[#f0ebe2]">
-          <Image
-            src={gridImages[activeImg]}
-            alt={product.name}
-            fill
-            className="object-cover transition-opacity duration-300"
-          />
+          {gridImages[activeImg] && (
+            <Image
+              src={getImageUrl(gridImages[activeImg])}
+              alt={product.name}
+              fill
+              className="object-cover transition-opacity duration-300"
+            />
+          )}
         </div>
         <div className="grid grid-cols-3 gap-2 md:gap-3">
           {gridImages.map((img, i) => (
             <button
               key={i}
               onClick={() => setActiveImg(i)}
-              className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-colors ${activeImg === i ? "border-[#1f473e]" : "border-transparent"}`}
+              className={`relative aspect-square rounded-xl overflow-hidden border-2 transition-colors ${
+                activeImg === i ? "border-[#1f473e]" : "border-transparent"
+              }`}
             >
               <Image
-                src={img}
+                src={getImageUrl(img)}
                 alt={`${product.name} ${i + 1}`}
                 fill
                 className="object-cover"
@@ -61,6 +206,59 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
 
       {/* Right — info */}
       <div className="flex flex-col gap-4 md:gap-5">
+        {/* Brand + formulation tags + wishlist */}
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            {product.brand && (
+              <div className="flex items-center gap-2 bg-[#1f473e]/10 px-3 py-1.5 rounded-full">
+                {product.brand.logo ? (
+                  <div className="relative w-5 h-5 shrink-0 rounded-full overflow-hidden bg-white">
+                    <Image
+                      src={getImageUrl(product.brand.logo)}
+                      alt={product.brand.name}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full bg-[#1f473e] flex items-center justify-center shrink-0">
+                    <span className="text-[9px] font-black text-white leading-none">
+                      {product.brand.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <span className="text-xs font-semibold text-[#1f473e]">
+                  {product.brand.name}
+                </span>
+              </div>
+            )}
+            {product.formulation && (
+              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full">
+                {product.formulation.name}
+              </span>
+            )}
+          </div>
+
+          {/* Wishlist button */}
+          <button
+            onClick={handleWishlist}
+            disabled={wishlistLoading}
+            className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50"
+            aria-label={
+              isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+            }
+          >
+            <Heart
+              size={18}
+              className={`transition-colors ${
+                isWishlisted
+                  ? "fill-red-500 text-red-500"
+                  : "text-gray-400 hover:text-red-400"
+              }`}
+            />
+          </button>
+        </div>
+
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
           {product.name}
         </h1>
@@ -75,10 +273,20 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
           </span>
         </div>
 
+        {/* Price */}
         <div>
-          <p className="text-xl md:text-2xl font-bold text-gray-900">
-            {product.price}
-          </p>
+          <div className="flex items-baseline gap-2">
+            <p
+              className={`text-xl md:text-2xl font-bold ${displayOriginalPrice ? "text-[#e8392a]" : "text-gray-900"}`}
+            >
+              {displayPrice}
+            </p>
+            {displayOriginalPrice && (
+              <p className="text-base text-gray-400 line-through">
+                {displayOriginalPrice}
+              </p>
+            )}
+          </div>
           <p className="text-xs text-gray-400 mt-1">
             {t("taxesIncluded")}{" "}
             <a href="#" className="underline text-gray-600">
@@ -89,12 +297,89 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500" />
-          <span className="text-sm text-green-600 font-medium">
-            {t("inStock")}
+          <div
+            className={`w-2.5 h-2.5 rounded-full ${product.inStock ? "bg-green-500" : "bg-red-400"}`}
+          />
+          <span
+            className={`text-sm font-medium ${product.inStock ? "text-green-600" : "text-red-500"}`}
+          >
+            {product.inStock ? t("inStock") : t("outOfStock")}
           </span>
         </div>
 
+        {/* Color selector */}
+        {product.productColors && product.productColors.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold text-gray-700">
+                {t("color") ?? "Color"}:
+              </p>
+              <p className="text-sm text-gray-500">
+                {
+                  product.productColors.find((c) => c._id === selectedColor)
+                    ?.name
+                }
+              </p>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {product.productColors.map((color) => (
+                <button
+                  key={color._id}
+                  onClick={() => setSelectedColor(color._id)}
+                  title={color.name}
+                  disabled={!color.inStock}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                    selectedColor === color._id
+                      ? "border-[#1f473e] scale-110 shadow-md"
+                      : "border-gray-200 hover:border-gray-400"
+                  } ${!color.inStock ? "opacity-50 cursor-not-allowed" : ""}`}
+                  style={{ backgroundColor: color.hexCode ?? "#e5e7eb" }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Size selector */}
+        {product.productSizes && product.productSizes.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold text-gray-700">
+              {t("size") ?? "Size"}:
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              {product.productSizes.map((size) => (
+                <button
+                  key={size._id}
+                  onClick={() => {
+                    if (size.inStock) setSelectedSize(size._id);
+                  }}
+                  disabled={!size.inStock}
+                  className={`relative px-4 py-2 rounded-full text-sm font-medium border-2 transition-all ${
+                    selectedSize === size._id
+                      ? "border-[#1f473e] bg-[#1f473e] text-white"
+                      : size.inStock
+                        ? "border-gray-200 text-gray-700 hover:border-[#1f473e]/50"
+                        : "border-gray-100 text-gray-300 cursor-not-allowed"
+                  }`}
+                >
+                  {!size.inStock && (
+                    <span className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <span className="w-full h-px bg-gray-300 absolute rotate-[-20deg]" />
+                    </span>
+                  )}
+                  {size.size}
+                  {size.price && selectedSize !== size._id && size.inStock && (
+                    <span className="ml-1 text-xs text-gray-400">
+                      {size.price}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Qty + Add to cart */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex items-center gap-3 border border-gray-200 rounded-full px-4 py-3 w-fit">
             <button
@@ -128,7 +413,7 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
             </button>
           </div>
           <button className="flex-1 bg-[#1f473e] text-white py-3 px-6 rounded-full font-medium hover:bg-[#163830] transition-colors text-sm">
-            {t("addToCart")} — {product.price}
+            {t("addToCart")} — {displayPrice}
           </button>
         </div>
 
@@ -181,33 +466,40 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
           {product.description}
         </p>
 
-        <div className="flex gap-4 md:gap-6 flex-wrap">
-          {product.badges.map((badge) => (
-            <div key={badge.label} className="flex flex-col items-center gap-1">
-              <div className="w-11 h-11 md:w-12 md:h-12 rounded-full border border-gray-200 flex items-center justify-center text-lg md:text-xl">
-                {badge.icon}
-              </div>
-              <span className="text-xs text-gray-600 text-center">
-                {badge.label}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className="bg-gray-50 rounded-2xl p-4 md:p-5">
-          <p className="font-bold text-gray-900 mb-3">{t("topBenefits")}</p>
-          <ul className="flex flex-col gap-1.5">
-            {product.benefits.map((b, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2 text-sm text-gray-600"
+        {product.badges.length > 0 && (
+          <div className="flex gap-4 md:gap-6 flex-wrap">
+            {product.badges.map((badge) => (
+              <div
+                key={badge.label}
+                className="flex flex-col items-center gap-1"
               >
-                <span className="text-gray-400 mt-0.5">•</span>
-                {b}
-              </li>
+                <div className="w-11 h-11 md:w-12 md:h-12 rounded-full border border-gray-200 flex items-center justify-center text-lg md:text-xl">
+                  {badge.icon}
+                </div>
+                <span className="text-xs text-gray-600 text-center">
+                  {badge.label}
+                </span>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
+        )}
+
+        {product.benefits.length > 0 && (
+          <div className="bg-gray-50 rounded-2xl p-4 md:p-5">
+            <p className="font-bold text-gray-900 mb-3">{t("topBenefits")}</p>
+            <ul className="flex flex-col gap-1.5">
+              {product.benefits.map((b, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-sm text-gray-600"
+                >
+                  <span className="text-gray-400 mt-0.5">•</span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {product.actionImages.length > 0 && (
           <div>
@@ -221,7 +513,7 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
                   className="relative w-16 h-16 md:w-20 md:h-20 shrink-0 rounded-xl overflow-hidden bg-gray-100"
                 >
                   <Image
-                    src={img}
+                    src={getImageUrl(img)}
                     alt="In action"
                     fill
                     className="object-cover"
@@ -233,7 +525,9 @@ export default function ProductHero({ product }: { product: ProductDetail }) {
         )}
 
         <ProductAccordion product={product} />
-        <PairsWell product={product} />
+        {product.pairsWell && product.pairsWell.length > 0 && (
+          <PairsWell items={product.pairsWell} />
+        )}
       </div>
     </div>
   );

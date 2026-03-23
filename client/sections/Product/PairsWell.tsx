@@ -5,12 +5,26 @@ import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
-import { ProductDetail } from "@/types/product";
+import { getImageUrl } from "@/utils/imageUrl";
 
-export default function PairsWell({ product }: { product: ProductDetail }) {
+interface PairsWellItem {
+  name: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  href: string;
+}
+
+interface PairsWellProps {
+  items: PairsWellItem[];
+}
+
+export default function PairsWell({ items }: PairsWellProps) {
   const t = useTranslations("ProductDetail");
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
+
+  if (!items || items.length === 0) return null;
 
   return (
     <div className="py-6 md:py-8 border-t border-gray-100">
@@ -61,12 +75,12 @@ export default function PairsWell({ product }: { product: ProductDetail }) {
           swiper.params.navigation.nextEl = nextRef.current;
         }}
       >
-        {product.pairsWell.map((item, i) => (
+        {items.map((item, i) => (
           <SwiperSlide key={i}>
             <div className="flex items-center gap-3 md:gap-4 border border-gray-100 rounded-2xl p-3 md:p-4">
               <div className="relative w-14 h-14 md:w-16 md:h-16 shrink-0 rounded-xl overflow-hidden bg-[#f0ebe2]">
                 <Image
-                  src={item.image}
+                  src={getImageUrl(item.image)}
                   alt={item.name}
                   fill
                   className="object-contain p-2"
