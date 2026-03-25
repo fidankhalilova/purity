@@ -196,35 +196,23 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
           <div className="w-20 h-20 rounded-full bg-[#1f473e] flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
             {user.avatar ? (
               <img
-                src={getImageUrl(user.avatar)}
+                src={user.avatar} // Don't use getImageUrl for external Google URLs
                 alt={user.name}
                 className="w-full h-full object-cover"
+                referrerPolicy="no-referrer" // Important for Google images
+                onError={(e) => {
+                  // If image fails to load, fallback to initials
+                  e.currentTarget.style.display = "none";
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.textContent = user.name.charAt(0);
+                  }
+                }}
               />
             ) : (
               user.name.charAt(0)
             )}
           </div>
-          {editing && (
-            <>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarUpload}
-                className="hidden"
-                id="avatar-upload"
-              />
-              <label
-                htmlFor="avatar-upload"
-                className="absolute bottom-0 right-0 w-7 h-7 bg-white rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm cursor-pointer"
-              >
-                {uploading ? (
-                  <Loader2 className="w-3.5 h-3.5 text-gray-600 animate-spin" />
-                ) : (
-                  <Camera className="w-3.5 h-3.5 text-gray-600" />
-                )}
-              </label>
-            </>
-          )}
         </div>
         <div className="text-center sm:text-left">
           <p className="font-bold text-gray-900 text-lg">{user.name}</p>

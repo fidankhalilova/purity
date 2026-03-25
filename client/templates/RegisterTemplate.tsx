@@ -34,7 +34,9 @@ export default function RegisterTemplate() {
     try {
       await register(form.firstName, form.lastName, form.email, form.password);
       toast.success("Account created successfully!");
-      router.push(`/${locale}/account/profile`);
+
+      // After registration, users are always customers, redirect to shop
+      router.push(`/${locale}/shop`);
     } catch (error: any) {
       toast.error(error.message || "Registration failed");
     } finally {

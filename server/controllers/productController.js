@@ -49,15 +49,11 @@ const getAllProducts = async (req, res) => {
             }
         }
 
-        // For array filters, we need to use aggregation or get all and filter
-        // Let's get all products first and then filter by these arrays
-
         // Build sort
         let sort = {};
         if (req.query.sort) {
             const sortOrder = req.query.order === 'desc' ? -1 : 1;
             if (req.query.sort === 'price') {
-                // Sort by numeric price value
                 sort = { priceValue: sortOrder };
             } else {
                 sort[req.query.sort] = sortOrder;
@@ -168,9 +164,19 @@ const getAllProducts = async (req, res) => {
         const total = filteredProducts.length;
         const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
+        // FIX: Ensure inStock has a default value for all products
+        const productsWithDefaultStock = paginatedProducts.map(product => {
+            const productObj = product.toObject ? product.toObject() : product;
+            // Set default inStock to true if undefined or null
+            if (productObj.inStock === undefined || productObj.inStock === null) {
+                productObj.inStock = true;
+            }
+            return productObj;
+        });
+
         res.status(200).json({
             success: true,
-            data: paginatedProducts,
+            data: productsWithDefaultStock,
             pagination: {
                 page,
                 limit,

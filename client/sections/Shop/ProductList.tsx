@@ -143,7 +143,7 @@ export default function ProductList() {
             .map((c: any) => ({
               name: c.name,
               hex: c.hexCode,
-              inStock: c.inStock !== false,
+              inStock: p.inStock !== false,
             }));
         }
 

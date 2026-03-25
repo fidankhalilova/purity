@@ -4,12 +4,17 @@ const connectDB = require('./db/ConnectDB');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
+const session = require('express-session');
 
 // Load env vars
 dotenv.config();
 
 // Connect to database
 connectDB();
+
+// Import passport config
+require('./config/passport');
 
 const app = express();
 
@@ -28,6 +33,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // Cookie parser - MUST be BEFORE routes
 app.use(cookieParser());
+
+// Session middleware - MUST be before passport
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-session-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Test route
 app.get('/', (req, res) => {
@@ -57,6 +78,7 @@ const brandRoutes = require('./routes/brandRoutes');
 const formulationRoutes = require('./routes/formulationRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -77,10 +99,12 @@ app.use('/api/brands', brandRoutes);
 app.use('/api/formulations', formulationRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/cart', cartRoutes);
 
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Auth routes available at: http://localhost:${PORT}/api/auth`);
+    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`📍 Auth routes: http://localhost:${PORT}/api/auth`);
+    console.log(`📍 Google OAuth: http://localhost:${PORT}/api/auth/google`);
 });

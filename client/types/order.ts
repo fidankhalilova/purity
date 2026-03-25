@@ -1,3 +1,4 @@
+// types/order.ts
 export type OrderItem = {
   product: string;
   name: string;
@@ -45,6 +46,23 @@ export type Order = {
   cancelledAt?: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CreateOrderInput = {
+  userId: string;
+  items: {
+    productId: string;
+    quantity: number;
+    size?: string | null;
+    color?: string | null;
+    price?: number;
+    discountedPrice?: number;
+  }[];
+  shippingAddress: Omit<Address, "_id">;
+  billingAddress?: Omit<Address, "_id">;
+  paymentMethod: "card" | "paypal" | "bank_transfer";
+  couponCode?: string;
+  notes?: string;
 };
 
 export type ApiResponse<T = any> = {

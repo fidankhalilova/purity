@@ -18,6 +18,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { menuItems } from "@/constants/NavbarItems";
 import { productService } from "@/services/productService";
 import { getImageUrl } from "@/utils/imageUrl";
+import { useAuth } from "@/context/AuthContext";
 
 interface SearchProduct {
   _id: string;
@@ -39,6 +40,7 @@ export default function Navbar() {
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { cartCount } = useAuth();
   const router = useRouter();
   const locale = useLocale();
 
@@ -290,9 +292,14 @@ export default function Navbar() {
               <User size={20} />
             </Link>
           </button>
-          <button>
+          <button className="relative">
             <Link href="/account/basket">
               <ShoppingBag size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#1f473e] text-white text-xs rounded-full min-w-4.5 h-4.5 flex items-center justify-center px-1">
+                  {cartCount > 99 ? "99+" : cartCount}
+                </span>
+              )}
             </Link>
           </button>
           <button

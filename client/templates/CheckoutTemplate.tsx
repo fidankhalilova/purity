@@ -1,40 +1,25 @@
+// app/[locale]/checkout/page.tsx
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Breadcrumb from "@/components/BreadCrumb";
-import { Tag, Lock, ChevronDown } from "lucide-react";
-
-const cartItems = [
-  {
-    name: "Dark Circle Patch",
-    price: 75.0,
-    qty: 1,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=300",
-  },
-  {
-    name: "Pore Detox Scrub",
-    price: 70.0,
-    qty: 2,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=300",
-  },
-  {
-    name: "Brighten Serum",
-    price: 160.0,
-    qty: 1,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=300",
-  },
-];
+import { Tag, Lock, ChevronDown, Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { cartService, CartItem } from "@/services/cartService";
+import { orderService } from "@/services/orderService";
+import { toast } from "react-hot-toast";
 
 export default function CheckoutTemplate() {
   const t = useTranslations("CheckoutPage");
   const locale = useLocale();
   const router = useRouter();
+  const { user, accessToken, refreshCartCount } = useAuth();
+
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [delivery, setDelivery] = useState<"standard" | "express">("standard");
   const [promo, setPromo] = useState("");
@@ -43,26 +28,223 @@ export default function CheckoutTemplate() {
   const [countryOpen, setCountryOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("");
 
+  // Form states
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [apartment, setApartment] = useState("");
+  const [city, setCity] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+
   const countries = t.raw("shipping.countries") as string[];
 
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.qty,
+  // Load cart items
+  useEffect(() => {
+    loadCart();
+  }, [user]);
+
+  // Pre-fill user data if logged in
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email || "");
+      setFirstName(user.name?.split(" ")[0] || "");
+      setLastName(user.name?.split(" ")[1] || "");
+      setPhone(user.phone || "");
+
+      // Pre-fill default address if exists
+      const defaultAddress = user.addresses?.find((addr) => addr.isDefault);
+      if (defaultAddress) {
+        setAddress(defaultAddress.street);
+        setCity(defaultAddress.city);
+        setZipCode(defaultAddress.zipCode);
+        setSelectedCountry(defaultAddress.country);
+        setPhone(defaultAddress.phone);
+      }
+    }
+  }, [user]);
+
+  const loadCart = async () => {
+    try {
+      setLoading(true);
+      if (user) {
+        const cartItems = await cartService.getCart(
+          user._id,
+          accessToken || undefined,
+        );
+        setItems(cartItems);
+      } else {
+        const localCart = cartService.getLocalCart();
+        setItems(localCart);
+      }
+    } catch (error) {
+      console.error("Error loading cart:", error);
+      toast.error("Failed to load cart");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const subtotal = items.reduce(
+    (sum, item) => sum + parseFloat(item.price.replace("$", "")) * item.qty,
     0,
   );
   const deliveryCost = delivery === "express" ? 12 : 0;
   const discount = promoApplied ? subtotal * 0.1 : 0;
   const total = subtotal + deliveryCost - discount;
 
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    const matches = v.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    if (parts.length) {
+      return parts.join(" ");
+    } else {
+      return value;
+    }
+  };
+
+  const formatExpiry = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    if (v.length >= 2) {
+      return `${v.substring(0, 2)}/${v.substring(2, 4)}`;
+    }
+    return v;
+  };
+
+  // In checkout/page.tsx, update handlePlaceOrder
+  const handlePlaceOrder = async () => {
+    if (!user) {
+      toast.error("Please login to place an order");
+      router.push(`/${locale}/account/login?returnUrl=/${locale}/checkout`);
+      return;
+    }
+
+    // Validate required fields
+    if (
+      !email ||
+      !phone ||
+      !firstName ||
+      !lastName ||
+      !address ||
+      !city ||
+      !zipCode ||
+      !selectedCountry
+    ) {
+      toast.error("Please fill in all shipping details");
+      return;
+    }
+
+    if (!cardNumber || !cardName || !expiry || !cvv) {
+      toast.error("Please fill in all payment details");
+      return;
+    }
+
+    try {
+      setPlacing(true);
+
+      // Format items for order
+      const orderItems = items.map((item) => ({
+        productId: item.productId,
+        quantity: item.qty,
+        size: item.size || undefined,
+        color: item.color || undefined,
+        price: parseFloat(item.price.replace("$", "")),
+      }));
+
+      const orderData = {
+        userId: user._id,
+        items: orderItems,
+        shippingAddress: {
+          fullName: `${firstName} ${lastName}`,
+          street: address,
+          city,
+          state: city,
+          zipCode,
+          country: selectedCountry,
+          phone,
+          label: "Home" as const,
+          isDefault: false,
+        },
+        billingAddress: {
+          fullName: cardName,
+          street: address,
+          city,
+          state: city,
+          zipCode,
+          country: selectedCountry,
+          phone,
+          label: "Home" as const,
+          isDefault: false,
+        },
+        paymentMethod: "card" as const,
+        couponCode: promoApplied ? promo : undefined,
+        notes: apartment,
+      };
+
+      console.log("Sending order data:", JSON.stringify(orderData, null, 2));
+
+      const order = await orderService.create(orderData);
+
+      // Clear cart after successful order
+      if (user) {
+        for (const item of items) {
+          await cartService.removeItem(
+            user._id,
+            item.id,
+            accessToken || undefined,
+          );
+        }
+      } else {
+        cartService.clearLocalCart();
+      }
+
+      if (refreshCartCount) refreshCartCount();
+
+      toast.success("Order placed successfully!");
+      router.push(`/${locale}/checkout/success?orderId=${order._id}`);
+    } catch (error: any) {
+      console.error("Full error object:", error);
+      console.error("Error message:", error.message);
+      console.error("Error response:", error.response);
+      toast.error(error.message || "Failed to place order. Please try again.");
+      router.push(`/${locale}/checkout/fail`);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-20 flex justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center">
+        <p className="text-gray-500">Your cart is empty</p>
+        <Link
+          href={`/${locale}/shop`}
+          className="mt-4 inline-block text-[#1f473e] underline"
+        >
+          Continue Shopping
+        </Link>
+      </div>
+    );
+  }
+
   const inputClass =
     "w-full px-4 py-3.5 border border-gray-200 rounded-2xl text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-[#1f473e] transition-colors bg-white";
-
-  const handlePlaceOrder = () => {
-    setPlacing(true);
-    setTimeout(() => {
-      // simulate success — change to /fail to test fail page
-      router.push(`/${locale}/checkout/success`);
-    }, 1500);
-  };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-4 md:py-6">
@@ -84,11 +266,17 @@ export default function CheckoutTemplate() {
               type="email"
               placeholder={t("contact.email")}
               className={inputClass}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <input
               type="tel"
               placeholder={t("contact.phone")}
               className={inputClass}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
             />
           </div>
 
@@ -102,33 +290,50 @@ export default function CheckoutTemplate() {
                 type="text"
                 placeholder={t("shipping.firstName")}
                 className={inputClass}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
               />
               <input
                 type="text"
                 placeholder={t("shipping.lastName")}
                 className={inputClass}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
               />
             </div>
             <input
               type="text"
               placeholder={t("shipping.address")}
               className={inputClass}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
             />
             <input
               type="text"
               placeholder={t("shipping.apartment")}
               className={inputClass}
+              value={apartment}
+              onChange={(e) => setApartment(e.target.value)}
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
                 placeholder={t("shipping.city")}
                 className={inputClass}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
               />
               <input
                 type="text"
                 placeholder={t("shipping.zip")}
                 className={inputClass}
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                required
               />
             </div>
             {/* Country dropdown */}
@@ -215,13 +420,17 @@ export default function CheckoutTemplate() {
               {t("payment.title")}
             </h2>
 
-            {/* Card number with formatting */}
             <div className="relative">
               <input
                 type="text"
                 placeholder={t("payment.cardNumber")}
                 maxLength={19}
                 className={inputClass}
+                value={cardNumber}
+                onChange={(e) =>
+                  setCardNumber(formatCardNumber(e.target.value))
+                }
+                required
               />
               <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1">
                 {["visa", "mc"].map((card) => (
@@ -243,6 +452,9 @@ export default function CheckoutTemplate() {
               type="text"
               placeholder={t("payment.cardName")}
               className={inputClass}
+              value={cardName}
+              onChange={(e) => setCardName(e.target.value)}
+              required
             />
             <div className="grid grid-cols-2 gap-4">
               <input
@@ -250,12 +462,18 @@ export default function CheckoutTemplate() {
                 placeholder={t("payment.expiry")}
                 maxLength={5}
                 className={inputClass}
+                value={expiry}
+                onChange={(e) => setExpiry(formatExpiry(e.target.value))}
+                required
               />
               <input
                 type="text"
                 placeholder={t("payment.cvv")}
                 maxLength={3}
                 className={inputClass}
+                value={cvv}
+                onChange={(e) => setCvv(e.target.value.replace(/[^0-9]/g, ""))}
+                required
               />
             </div>
 
@@ -275,19 +493,17 @@ export default function CheckoutTemplate() {
 
             {/* Items */}
             <div className="flex flex-col gap-4">
-              {cartItems.map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
+              {items.map((item) => (
+                <div key={item.id} className="flex items-center gap-3">
                   <div className="relative w-14 h-14 shrink-0">
-                    {/* Image */}
                     <div className="w-full h-full rounded-2xl overflow-hidden bg-[#f0ebe2]">
                       <Image
-                        src={item.image}
+                        src={getImageUrl(item.image)}
                         alt={item.name}
                         fill
                         className="object-contain p-2"
                       />
                     </div>
-                    {/* Qty badge — over the image top-left corner */}
                     <span className="absolute -top-1.5 -left-1.5 w-5 h-5 bg-[#1f473e] text-white text-[10px] font-bold rounded-full flex items-center justify-center z-10">
                       {item.qty}
                     </span>
@@ -296,12 +512,20 @@ export default function CheckoutTemplate() {
                     <p className="text-xs font-semibold text-gray-900 truncate">
                       {item.name}
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {t("summary.items")}: {item.qty}
-                    </p>
+                    {item.size && (
+                      <p className="text-xs text-gray-400">Size: {item.size}</p>
+                    )}
+                    {item.color && (
+                      <p className="text-xs text-gray-400">
+                        Color: {item.color}
+                      </p>
+                    )}
                   </div>
                   <p className="text-sm font-bold text-gray-900 shrink-0">
-                    ${(item.price * item.qty).toFixed(2)}
+                    $
+                    {(
+                      parseFloat(item.price.replace("$", "")) * item.qty
+                    ).toFixed(2)}
                   </p>
                 </div>
               ))}
@@ -381,25 +605,7 @@ export default function CheckoutTemplate() {
             >
               {placing ? (
                 <>
-                  <svg
-                    className="w-4 h-4 animate-spin"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   {t("summary.processing")}
                 </>
               ) : (
@@ -415,3 +621,6 @@ export default function CheckoutTemplate() {
     </div>
   );
 }
+
+// Add import for getImageUrl at the top
+import { getImageUrl } from "@/utils/imageUrl";

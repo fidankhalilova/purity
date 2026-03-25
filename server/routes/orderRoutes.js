@@ -1,12 +1,19 @@
+// routes/orderRoutes.js
 const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
+const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
 
-router.get('/', orderController.getAllOrders);
-router.get('/:id', orderController.getOrderById);
-router.get('/user/:userId', orderController.getUserOrders);
-router.post('/', orderController.createOrder);
-router.patch('/:id/status', orderController.updateOrderStatus);
-router.post('/:id/cancel', orderController.cancelOrder);
+// Public routes (if any) - none here, all require auth
+
+// Admin only routes
+router.get('/', verifyToken, verifyAdmin, orderController.getAllOrders);
+router.patch('/:id/status', verifyToken, verifyAdmin, orderController.updateOrderStatus);
+
+// User routes (require auth)
+router.get('/user/:userId', verifyToken, orderController.getUserOrders);
+router.get('/:id', verifyToken, orderController.getOrderById);
+router.post('/', verifyToken, orderController.createOrder);
+router.post('/:id/cancel', verifyToken, orderController.cancelOrder);
 
 module.exports = router;

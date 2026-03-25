@@ -41,6 +41,17 @@ const addressSchema = new mongoose.Schema({
     }
 });
 
+const cartItemSchema = new mongoose.Schema({
+    productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 },
+    sizeId: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductSize' },
+    colorId: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductColor' },
+    size: { type: String },  // Store size as string for products without sizeId reference
+    color: { type: String }, // Store color as string for products without colorId reference
+    addedAt: { type: Date, default: Date.now }
+});
+
+
 const notificationSettingsSchema = new mongoose.Schema({
     orderUpdates: { type: Boolean, default: true },
     shippingDelivery: { type: Boolean, default: true },
@@ -61,6 +72,7 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
     status: { type: String, enum: ['active', 'blocked'], default: 'active' },
     totalSpent: { type: Number, default: 0 },
+    cart: [cartItemSchema],
     orderCount: { type: Number, default: 0 },
     addresses: [addressSchema],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],

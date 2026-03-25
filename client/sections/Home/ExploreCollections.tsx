@@ -1,70 +1,74 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-
-const collections = [
-  {
-    name: "Glow Sets",
-    count: 20,
-    href: "/shop",
-    hoverImage:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=600",
-  },
-  {
-    name: "Hair Care",
-    count: 11,
-    href: "/shop",
-    hoverImage:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=600",
-  },
-  {
-    name: "Body Care",
-    count: 5,
-    href: "/shop",
-    hoverImage:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=600",
-  },
-  {
-    name: "Self—Care Tools",
-    count: 5,
-    href: "/shop",
-    hoverImage:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=600",
-  },
-];
-
-const categoryImages = [
-  {
-    label: "Skin Care",
-    count: 31,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/highlight_collection-12.jpg?v=1755240670&width=660",
-    href: "/shop",
-  },
-  {
-    label: "Make Up",
-    count: 33,
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/home2_collection-2_v2.jpg?v=1752139340&width=660",
-    href: "/shop",
-  },
-];
+import { collectionService } from "@/services/collectionService";
+import { getImageUrl } from "@/utils/imageUrl";
 
 export default function ExploreCollections() {
   const locale = useLocale();
   const t = useTranslations("HomePage.exploreCollections");
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [collections, setCollections] = useState<any[]>([]);
+  const [categoryImages, setCategoryImages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    loadCollections();
+  }, []);
+
+  const loadCollections = async () => {
+    try {
+      setLoading(true);
+      const data = await collectionService.getAll();
+      // Get first 4 collections for the list
+      const activeCollections = data.filter((c) => c.isActive).slice(0, 4);
+      setCollections(
+        activeCollections.map((c) => ({
+          name: c.name,
+          count: c.productCount || 0,
+          href: `/shop?collection=${c._id}`,
+          hoverImage: c.image || "",
+        })),
+      );
+
+      // Get first 2 collections for category images
+      setCategoryImages(
+        activeCollections.slice(0, 2).map((c) => ({
+          label: c.name,
+          count: c.productCount || 0,
+          image: c.image || "",
+          href: `/shop?collection=${c._id}`,
+        })),
+      );
+    } catch (error) {
+      console.error("Error loading collections:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
+
+  if (loading) {
+    return (
+      <section className="py-16 md:py-24 px-4 md:px-6">
+        <div className="container mx-auto flex justify-center items-center h-64">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-[#1f473e] rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  if (collections.length === 0) return null;
 
   return (
     <section className="py-16 md:py-24 px-4 md:px-6">
@@ -78,12 +82,14 @@ export default function ExploreCollections() {
                 href={`/${locale}${cat.href}`}
                 className={`relative flex-1 rounded-2xl md:rounded-3xl overflow-hidden group`}
               >
-                <Image
-                  src={cat.image}
-                  alt={cat.label}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {cat.image && (
+                  <Image
+                    src={getImageUrl(cat.image)}
+                    alt={cat.label}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4">
                   <span className="text-white font-semibold text-sm md:text-base">
@@ -164,7 +170,7 @@ export default function ExploreCollections() {
             </div>
 
             {/* Floating image — desktop only */}
-            {hoveredIndex !== null && (
+            {hoveredIndex !== null && collections[hoveredIndex]?.hoverImage && (
               <div
                 className="hidden md:block absolute pointer-events-none z-20 w-28 h-32 rounded-2xl overflow-hidden shadow-xl"
                 style={{
@@ -174,7 +180,7 @@ export default function ExploreCollections() {
                 }}
               >
                 <Image
-                  src={collections[hoveredIndex].hoverImage}
+                  src={getImageUrl(collections[hoveredIndex].hoverImage)}
                   alt={collections[hoveredIndex].name}
                   fill
                   className="object-cover"

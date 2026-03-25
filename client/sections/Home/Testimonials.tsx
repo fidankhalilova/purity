@@ -1,48 +1,10 @@
 "use client";
-import { useRef, useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
+import { reviewService } from "@/services/reviewService";
 import "swiper/css";
-
-const testimonials = [
-  {
-    author: "Isabella D.",
-    rating: 5,
-    text: "I've been using the Dark Circle Patch for 3 weeks and my under-eyes look so much brighter. The formula is incredibly gentle on sensitive skin.",
-    date: "Mar 2026",
-  },
-  {
-    author: "Amelia T.",
-    rating: 5,
-    text: "The Brighten Serum is a game changer. My dark spots have faded noticeably and my skin texture is so smooth. Worth every penny.",
-    date: "Feb 2026",
-  },
-  {
-    author: "Sophie M.",
-    rating: 5,
-    text: "Finally found a scrub that doesn't strip my skin dry. The Pore Detox Scrub leaves my face feeling clean and balanced.",
-    date: "Jan 2026",
-  },
-  {
-    author: "Jordan K.",
-    rating: 5,
-    text: "My whole routine is now Purity products. The quality is unmatched and the results speak for themselves.",
-    date: "Mar 2026",
-  },
-  {
-    author: "Priya S.",
-    rating: 4,
-    text: "Love the cruelty-free philosophy and the products actually deliver results. My skin has never looked better.",
-    date: "Feb 2026",
-  },
-  {
-    author: "Mia C.",
-    rating: 5,
-    text: "The packaging is beautiful and the products feel luxurious without the luxury price tag. So happy with my purchase.",
-    date: "Jan 2026",
-  },
-];
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -63,6 +25,40 @@ function Stars({ rating }: { rating: number }) {
 
 export default function Testimonials() {
   const t = useTranslations("HomePage.testimonials");
+  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadTestimonials();
+  }, []);
+
+  const loadTestimonials = async () => {
+    try {
+      setLoading(true);
+      const data = await reviewService.getAll();
+      // Get only published reviews
+      const publishedReviews = data
+        .filter((r) => r.status === "published")
+        .slice(0, 6);
+      setTestimonials(publishedReviews);
+    } catch (error) {
+      console.error("Error loading testimonials:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="py-16 md:py-20 overflow-hidden bg-white">
+        <div className="container mx-auto flex justify-center items-center h-64">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-[#1f473e] rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) return null;
 
   return (
     <section className="py-16 md:py-20 overflow-hidden bg-white">
@@ -88,11 +84,11 @@ export default function Testimonials() {
         }}
       >
         {testimonials.map((item, i) => (
-          <SwiperSlide key={i}>
+          <SwiperSlide key={item._id}>
             <div className="bg-[#f5f0e8] rounded-3xl p-6 flex flex-col gap-4 h-full">
               <Stars rating={item.rating} />
               <p className="text-sm text-gray-700 leading-relaxed flex-1">
-                "{item.text}"
+                "{item.body}"
               </p>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

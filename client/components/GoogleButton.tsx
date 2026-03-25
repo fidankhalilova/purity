@@ -1,13 +1,29 @@
+"use client";
+import { useLocale } from "next-intl";
+
 type Props = {
   label: string;
   onClick?: () => void;
 };
 
 export default function GoogleButton({ label, onClick }: Props) {
+  const locale = useLocale();
+  const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
+  const handleGoogleLogin = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      // Default behavior: redirect to Google OAuth
+      window.location.href = `${API_BASE_URL}/auth/google`;
+    }
+  };
+
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={handleGoogleLogin}
       className="w-full flex items-center justify-center gap-3 px-5 py-4 border border-gray-200 rounded-full bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm"
     >
       {/* Google SVG logo */}

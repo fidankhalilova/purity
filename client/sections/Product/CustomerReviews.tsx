@@ -1,17 +1,23 @@
+// components/CustomerReviews.tsx (updated)
 "use client";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { getImageUrl } from "@/utils/imageUrl";
 import { reviewService } from "@/services/reviewService";
+import { uploadService } from "@/services/uploadService";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-hot-toast";
 
 interface ReviewType {
+  _id: string;
   author: string;
   rating: number;
   date: string;
   title: string;
   body: string;
   images?: string[];
+  user?: string | { _id: string; name: string; email: string };
 }
 
 interface CustomerReviewsProps {
@@ -62,47 +68,70 @@ function WriteReview({
   onSuccess: () => void;
 }) {
   const t = useTranslations("ProductDetail");
+  const { user, accessToken } = useAuth();
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const ratingLabels = t.raw("ratingLabels") as string[];
 
-  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    Array.from(e.target.files || []).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (ev) =>
-        setImages((prev) => [...prev, ev.target?.result as string]);
-      reader.readAsDataURL(file);
-    });
+  // Check if user is logged in
+  if (!user) {
+    return (
+      <div className="bg-white rounded-2xl p-5 md:p-8 border border-gray-100 mt-6 text-center">
+        <p className="text-gray-600 mb-4">{t("loginToReview")}</p>
+        <button className="px-6 py-3 bg-[#1f473e] text-white rounded-full hover:bg-[#163830] transition-colors">
+          {t("login")}
+        </button>
+      </div>
+    );
+  }
+
+  const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    for (const file of files) {
+      try {
+        setUploading(true);
+        const url = await uploadService.uploadReviewImage(file);
+        setImages((prev) => [...prev, url]);
+        toast.success("Image uploaded successfully");
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Failed to upload image");
+      } finally {
+        setUploading(false);
+      }
+    }
   };
 
   const handleSubmit = async () => {
-    if (!rating || !title || !body || !name) return;
+    if (!rating || !title || !body) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
     try {
       setSubmitting(true);
-      await reviewService.create({
-        author: name,
+
+      const reviewData = {
+        productId,
         rating,
         title,
         body,
         images,
-        date: new Date().toLocaleDateString("en-US", {
-          month: "2-digit",
-          day: "2-digit",
-          year: "numeric",
-        }),
-        status: "published",
-      });
+      };
+
+      await reviewService.create(reviewData, accessToken);
+      toast.success("Review submitted successfully!");
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting review:", error);
+      toast.error(error.message || "Failed to submit review");
     } finally {
       setSubmitting(false);
     }
@@ -143,32 +172,7 @@ function WriteReview({
             )}
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">
-              {t("name")} <span className="text-[#e8392a]">*</span>
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={t("name")}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-gray-700">
-              {t("email")}
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
-            />
-          </div>
-        </div>
+
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-semibold text-gray-700">
             {t("reviewTitle")} <span className="text-[#e8392a]">*</span>
@@ -181,6 +185,7 @@ function WriteReview({
             className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors"
           />
         </div>
+
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-semibold text-gray-700">
             {t("yourReview")} <span className="text-[#e8392a]">*</span>
@@ -193,6 +198,7 @@ function WriteReview({
             className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-gray-400 transition-colors resize-none"
           />
         </div>
+
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-gray-700">
             {t("addPhotos")}
@@ -203,7 +209,12 @@ function WriteReview({
                 key={i}
                 className="relative w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden group"
               >
-                <Image src={img} alt="preview" fill className="object-cover" />
+                <Image
+                  src={getImageUrl(img)}
+                  alt="preview"
+                  fill
+                  className="object-cover"
+                />
                 <button
                   onClick={() => setImages(images.filter((_, j) => j !== i))}
                   className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
@@ -223,22 +234,47 @@ function WriteReview({
             {images.length < 5 && (
               <button
                 onClick={() => fileRef.current?.click()}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-1 hover:border-gray-400 transition-colors text-gray-400 hover:text-gray-600"
+                disabled={uploading}
+                className="w-16 h-16 md:w-20 md:h-20 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-1 hover:border-gray-400 transition-colors text-gray-400 hover:text-gray-600 disabled:opacity-50"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-                <span className="text-xs">{t("photo")}</span>
+                {uploading ? (
+                  <svg
+                    className="w-5 h-5 animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                ) : (
+                  <>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={1.5}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M12 4.5v15m7.5-7.5h-15"
+                      />
+                    </svg>
+                    <span className="text-xs">{t("photo")}</span>
+                  </>
+                )}
               </button>
             )}
           </div>
@@ -252,10 +288,11 @@ function WriteReview({
           />
           <p className="text-xs text-gray-400">{t("photoLimit")}</p>
         </div>
+
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <button
             onClick={handleSubmit}
-            disabled={!rating || !title || !body || !name || submitting}
+            disabled={!rating || !title || !body || submitting}
             className="flex-1 bg-[#1f473e] text-white py-3.5 rounded-full text-sm font-medium hover:bg-[#163830] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {submitting ? "Submitting..." : t("submitReview")}
@@ -277,12 +314,33 @@ export default function CustomerReviews({
   initialReviews,
 }: CustomerReviewsProps) {
   const t = useTranslations("ProductDetail");
-  const [reviews, setReviews] = useState(initialReviews);
+  const { user } = useAuth();
+  const [reviews, setReviews] = useState<ReviewType[]>(initialReviews);
   const [sort, setSort] = useState(t("mostRecent"));
   const [sortOpen, setSortOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+  useEffect(() => {
+    loadReviews();
+  }, [productId]);
+
+  const loadReviews = async () => {
+    try {
+      setLoading(true);
+      const data = await reviewService.getByProduct(productId);
+      setReviews(data);
+    } catch (error) {
+      console.error("Error loading reviews:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const avg =
+    reviews.length > 0
+      ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+      : 0;
   const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
     star,
     count: reviews.filter((r) => r.rating === star).length,
@@ -334,7 +392,13 @@ export default function CustomerReviews({
         </div>
         <div className="flex items-center justify-center">
           <button
-            onClick={() => setShowForm(!showForm)}
+            onClick={() => {
+              if (!user) {
+                toast.error("Please login to write a review");
+                return;
+              }
+              setShowForm(!showForm);
+            }}
             className={`px-6 md:px-8 py-3 border-2 font-medium rounded-full transition-colors text-sm md:text-base ${
               showForm
                 ? "bg-gray-900 border-gray-900 text-white"
@@ -350,9 +414,7 @@ export default function CustomerReviews({
         <WriteReview
           productId={productId}
           onClose={() => setShowForm(false)}
-          onSuccess={() => {
-            // Refresh reviews
-          }}
+          onSuccess={loadReviews}
         />
       )}
 
@@ -391,8 +453,8 @@ export default function CustomerReviews({
       </div>
 
       <div className="flex flex-col divide-y divide-gray-200">
-        {sortedReviews.map((review, i) => (
-          <div key={i} className="py-6 md:py-8">
+        {sortedReviews.map((review) => (
+          <div key={review._id} className="py-6 md:py-8">
             <div className="flex items-start justify-between gap-4">
               <div className="flex flex-col gap-2 md:gap-3 flex-1">
                 <Stars rating={review.rating} />
@@ -435,7 +497,7 @@ export default function CustomerReviews({
                 )}
               </div>
               <span className="text-xs text-gray-400 shrink-0">
-                {review.date}
+                {new Date(review.date).toLocaleDateString()}
               </span>
             </div>
           </div>

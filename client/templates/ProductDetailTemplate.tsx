@@ -18,6 +18,15 @@ interface ProductDetailTemplateProps {
 export default async function ProductDetailTemplate({
   product,
 }: ProductDetailTemplateProps) {
+  const mappedReviews = (product?.reviews || []).map((review: any) => ({
+    _id: review._id || review.id || `temp-${Math.random()}`,
+    author: review.author,
+    rating: review.rating,
+    date: review.date || new Date().toISOString(),
+    title: review.title,
+    body: review.body,
+    images: review.images || [],
+  }));
   return (
     <div className="relative pb-16">
       <div className="container mx-auto px-4 md:px-6 py-4">
@@ -34,7 +43,7 @@ export default async function ProductDetailTemplate({
       <div className="container mx-auto px-4 md:px-6 flex flex-col gap-12">
         <CustomerReviews
           productId={product?._id || ""}
-          initialReviews={product?.reviews || []}
+          initialReviews={mappedReviews}
         />
         <CardForPromo
           category="Our Philosophy"

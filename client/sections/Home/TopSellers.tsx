@@ -1,160 +1,71 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import ProductCard from "@/components/ProductCard";
-
-const tabProducts = {
-  0: [
-    {
-      name: "Dark Circle Patch",
-      price: "$75.00",
-      rating: 4.5,
-      tags: ["Eye Care", "Lift"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Pore Detox Scrub",
-      price: "$70.00",
-      originalPrice: "$100.00",
-      discount: "-30%",
-      rating: 5.0,
-      tags: ["Clay", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-    {
-      name: "Brighten Serum",
-      price: "$160.00",
-      rating: 5.0,
-      tags: ["Serum", "Spot"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Clear Away Cleanser",
-      price: "$26.00",
-      rating: 4.5,
-      tags: ["Detox", "Purify"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/clear-away-cleanser",
-    },
-  ],
-  1: [
-    {
-      name: "Brighten Serum",
-      price: "$160.00",
-      rating: 5.0,
-      tags: ["Serum", "Spot"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Clear Away Cleanser",
-      price: "$26.00",
-      rating: 4.5,
-      tags: ["Detox", "Purify"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/clear-away-cleanser",
-    },
-    {
-      name: "Dark Circle Patch",
-      price: "$75.00",
-      rating: 4.5,
-      tags: ["Eye Care", "Lift"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Pore Detox Scrub",
-      price: "$70.00",
-      originalPrice: "$100.00",
-      discount: "-30%",
-      rating: 5.0,
-      tags: ["Clay", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-  ],
-  2: [
-    {
-      name: "Pore Detox Scrub",
-      price: "$70.00",
-      originalPrice: "$100.00",
-      discount: "-30%",
-      rating: 5.0,
-      tags: ["Clay", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-    {
-      name: "Brighten Serum",
-      price: "$160.00",
-      rating: 5.0,
-      tags: ["Serum", "Spot"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Clear Away Cleanser",
-      price: "$26.00",
-      rating: 4.5,
-      tags: ["Detox", "Purify"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/clear-away-cleanser",
-    },
-    {
-      name: "Dark Circle Patch",
-      price: "$75.00",
-      rating: 4.5,
-      tags: ["Eye Care", "Lift"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-  ],
-} as Record<number, any[]>;
+import { productService } from "@/services/productService";
+import { getImageUrl } from "@/utils/imageUrl";
 
 export default function TopSellers() {
   const t = useTranslations("HomePage.topSellers");
   const tabs = t.raw("tabs") as string[];
   const [activeTab, setActiveTab] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const [productsByTab, setProductsByTab] = useState<Record<number, any[]>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    try {
+      setLoading(true);
+      const { products: allProducts } = await productService.getAll(1, 12, {
+        status: "active",
+        inStock: true,
+      });
+
+      // Split products into 3 tabs (4 products per tab)
+      const chunkSize = 4;
+      const tabsData: Record<number, any[]> = {};
+      for (let i = 0; i < 3; i++) {
+        tabsData[i] = allProducts
+          .slice(i * chunkSize, (i + 1) * chunkSize)
+          .map((p: any) => ({
+            _id: p._id,
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            originalPrice: p.originalPrice,
+            discount: p.originalPrice
+              ? `-${Math.round((1 - parseFloat(p.price.replace("$", "")) / parseFloat(p.originalPrice.replace("$", ""))) * 100)}%`
+              : undefined,
+            description: p.description,
+            sizes:
+              p.productSizes?.map((s: any) => ({
+                size: s.size,
+                inStock: s.inStock !== false,
+              })) || [],
+            colors:
+              p.productColors?.map((c: any) => ({
+                name: c.name,
+                hex: c.hexCode,
+              })) || [],
+            image: getImageUrl(p.images?.[0]),
+            hoverImage: getImageUrl(p.images?.[1] || p.images?.[0]),
+            tags: p.badges?.map((b: any) => b.label).slice(0, 2) || [],
+            rating: p.rating,
+            href: p.id ? `/shop/${p.id}` : `/shop/${p._id}`,
+            inStock: p.inStock,
+          }));
+      }
+      setProductsByTab(tabsData);
+    } catch (error) {
+      console.error("Error loading top sellers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleTab = (i: number) => {
     if (i === activeTab) return;
@@ -164,6 +75,16 @@ export default function TopSellers() {
       setAnimating(false);
     }, 200);
   };
+
+  if (loading) {
+    return (
+      <section className="py-16 md:py-20 px-4 md:px-6 container mx-auto">
+        <div className="flex justify-center items-center h-64">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-[#1f473e] rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 md:py-20 px-4 md:px-6 container mx-auto">
@@ -194,8 +115,8 @@ export default function TopSellers() {
       <div
         className={`grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 transition-all duration-200 ${animating ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
       >
-        {(tabProducts[activeTab] || []).map((product, i) => (
-          <ProductCard key={`${product.href}-${i}`} product={product} />
+        {(productsByTab[activeTab] || []).map((product) => (
+          <ProductCard key={product._id} product={product} />
         ))}
       </div>
     </section>

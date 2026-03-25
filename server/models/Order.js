@@ -1,3 +1,4 @@
+// models/Order.js - Fixed version without next()
 const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
@@ -81,7 +82,7 @@ const orderSchema = new mongoose.Schema({
     orderNumber: {
         type: String,
         unique: true,
-        required: true
+        sparse: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -145,16 +146,21 @@ const orderSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Generate order number before saving
-orderSchema.pre('save', async function (next) {
-    if (!this.orderNumber) {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const count = await mongoose.model('Order').countDocuments();
-        this.orderNumber = `ORD-${year}${month}-${String(count + 1).padStart(4, '0')}`;
+// Generate order number before saving - FIXED: Use async function without next
+orderSchema.pre('save', async function () {
+    // If order number already exists, skip
+    if (this.orderNumber) {
+        return;
     }
-    next();
+
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+
+    this.orderNumber = `ORD-${year}${month}${day}-${random}`;
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+const Order = mongoose.model('Order', orderSchema);
+module.exports = Order;

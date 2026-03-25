@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
@@ -15,6 +15,7 @@ export default function LoginTemplate() {
   const tg = useTranslations("AuthPages.google");
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -28,9 +29,25 @@ export default function LoginTemplate() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      const loggedInUser = await login(email, password);
       toast.success("Login successful!");
-      router.push(`/${locale}/account/profile`);
+
+      // After login, get the user role from the stored user
+      const storedUser = localStorage.getItem("user");
+      const userData = storedUser ? JSON.parse(storedUser) : null;
+
+      if (userData?.role === "admin") {
+        // Admin routes should NOT have locale prefix
+        router.push("/admin");
+      } else {
+        // Redirect to previous page or shop
+        const returnUrl = searchParams?.get("returnUrl");
+        if (returnUrl) {
+          router.push(returnUrl);
+        } else {
+          router.push(`/${locale}/shop`);
+        }
+      }
     } catch (error: any) {
       toast.error(error.message || "Login failed");
     } finally {
@@ -104,7 +121,7 @@ export default function LoginTemplate() {
               </Link>
             </p>
             <Link
-              href={`/${locale}/account/reset-password`}
+              href={`/${locale}/reset-password`}
               className="font-semibold text-gray-900 underline underline-offset-2 hover:text-[#1f473e] transition-colors"
             >
               {t("forgotPassword")}

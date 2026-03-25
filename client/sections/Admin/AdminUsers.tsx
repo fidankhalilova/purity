@@ -280,15 +280,6 @@ export default function AdminUsers() {
       render: (row) => (
         <div className="flex gap-2">
           <button
-            onClick={() =>
-              setExpandedUserId(expandedUserId === row._id ? null : row._id)
-            }
-            disabled={submitting}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50"
-          >
-            <Eye className="w-3.5 h-3.5 text-gray-500" />
-          </button>
-          <button
             onClick={() => openEdit(row)}
             disabled={submitting}
             className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50"

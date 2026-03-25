@@ -11,7 +11,7 @@ export default function HomeHelpCenter() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section className="py-16 md:py-20 px-4 md:px-6 border-t border-gray-100">
+    <section className="py-16 md:py-20  border-t border-gray-100">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
           <div className="flex flex-col gap-5">

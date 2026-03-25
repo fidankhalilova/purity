@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { useLocale } from "next-intl";
 import Link from "next/link";
@@ -9,306 +9,41 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import ProductCard from "@/components/ProductCard";
 import { useTranslations } from "next-intl";
-
-const skinTones = [
-  {
-    label: "Fair Skin",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=200",
-    sliderValue: 0,
-  },
-  {
-    label: "Light Skin",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_3.jpg?v=1746763913&width=200",
-    sliderValue: 33,
-  },
-  {
-    label: "Medium Skin",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_4.jpg?v=1746763913&width=200",
-    sliderValue: 66,
-  },
-  {
-    label: "Dark Skin",
-    image:
-      "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_5.jpg?v=1746763913&width=200",
-    sliderValue: 100,
-  },
-];
-
-const productsByTone: Record<number, any[]> = {
-  0: [
-    {
-      name: "Glossy Lipstick",
-      price: "$75.00",
-      badge: "Buy 1 Get 1",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Soft Pinch Blush",
-      price: "$150.00",
-      originalPrice: "$300.00",
-      badge: "-50%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Gentle", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-    {
-      name: "Phantom Lip Balm",
-      price: "$170.00",
-      originalPrice: "$200.00",
-      badge: "-15%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Plump Foundation",
-      price: "$150.00",
-      rating: 5.0,
-      tags: ["Cover", "Repair"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Glow Tinted Serum",
-      price: "$95.00",
-      rating: 5.0,
-      tags: ["Glow", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_3.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_4.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-  ],
-  1: [
-    {
-      name: "Plump Foundation",
-      price: "$150.00",
-      rating: 5.0,
-      tags: ["Cover", "Repair"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Glossy Lipstick",
-      price: "$75.00",
-      badge: "Buy 1 Get 1",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Soft Pinch Blush",
-      price: "$150.00",
-      originalPrice: "$300.00",
-      badge: "-50%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Gentle", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-    {
-      name: "Phantom Lip Balm",
-      price: "$170.00",
-      originalPrice: "$200.00",
-      badge: "-15%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Glow Tinted Serum",
-      price: "$95.00",
-      rating: 5.0,
-      tags: ["Glow", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_3.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_4.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-  ],
-  2: [
-    {
-      name: "Phantom Lip Balm",
-      price: "$170.00",
-      originalPrice: "$200.00",
-      badge: "-15%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Plump Foundation",
-      price: "$150.00",
-      rating: 5.0,
-      tags: ["Cover", "Repair"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Soft Pinch Blush",
-      price: "$150.00",
-      originalPrice: "$300.00",
-      badge: "-50%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Gentle", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-    {
-      name: "Glossy Lipstick",
-      price: "$75.00",
-      badge: "Buy 1 Get 1",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Glow Tinted Serum",
-      price: "$95.00",
-      rating: 5.0,
-      tags: ["Glow", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_3.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_4.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-  ],
-  3: [
-    {
-      name: "Glow Tinted Serum",
-      price: "$95.00",
-      rating: 5.0,
-      tags: ["Glow", "Serum"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_3.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_4.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Phantom Lip Balm",
-      price: "$170.00",
-      originalPrice: "$200.00",
-      badge: "-15%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_2_d042f124-9b0e-4e04-8779-038fb8e6b420.jpg?v=1753074132&width=720",
-      href: "/shop/brighten-serum",
-    },
-    {
-      name: "Plump Foundation",
-      price: "$150.00",
-      rating: 5.0,
-      tags: ["Cover", "Repair"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-    {
-      name: "Soft Pinch Blush",
-      price: "$150.00",
-      originalPrice: "$300.00",
-      badge: "-50%",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Gentle", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_2.jpg?v=1746803408&width=720",
-      href: "/shop/pore-detox-scrub",
-    },
-    {
-      name: "Glossy Lipstick",
-      price: "$75.00",
-      badge: "Buy 1 Get 1",
-      badgeColor: "bg-[#e8392a]",
-      rating: 5.0,
-      tags: ["Lip", "Makeup"],
-      image:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_1_01fffa50-699f-41cd-9014-5870f3f57c86.jpg?v=1753071357&width=720",
-      hoverImage:
-        "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_5_2_09908fab-998c-4cfc-a8cc-d06b38bad6b5.jpg?v=1753071357&width=720",
-      href: "/shop/dark-circle-patch",
-    },
-  ],
-};
+import { skinShadeService } from "@/services/skinShadeService";
+import { productService } from "@/services/productService";
+import { getImageUrl } from "@/utils/imageUrl";
 
 export default function ChooseYourShade() {
   const locale = useLocale();
   const t = useTranslations("HomePage.chooseYourShade");
-  const skinToneLabels = t.raw("skinTones") as string[];
   const [activeTone, setActiveTone] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const [skinShades, setSkinShades] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [shadesData, productsData] = await Promise.all([
+        skinShadeService.getAll(),
+        productService.getAll(1, 100, { inStock: true, status: "active" }),
+      ]);
+      setSkinShades(shadesData.slice(0, 4));
+      setProducts(productsData.products);
+    } catch (error) {
+      console.error("Error loading data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleToneChange = (index: number) => {
     if (index === activeTone) return;
@@ -320,7 +55,59 @@ export default function ChooseYourShade() {
     }, 200);
   };
 
-  const sliderValue = skinTones[activeTone].sliderValue;
+  // Get products for active skin shade (filter by skinShade)
+  const getProductsByShade = () => {
+    const currentShade = skinShades[activeTone];
+    if (!currentShade) return [];
+    // Filter products that match this skin shade
+    return products
+      .filter((p) =>
+        p.skinShades?.some(
+          (s: any) => s._id === currentShade._id || s === currentShade._id,
+        ),
+      )
+      .slice(0, 5);
+  };
+
+  const mappedProducts = getProductsByShade().map((p: any) => ({
+    _id: p._id,
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    discount: p.originalPrice
+      ? `-${Math.round((1 - parseFloat(p.price.replace("$", "")) / parseFloat(p.originalPrice.replace("$", ""))) * 100)}%`
+      : undefined,
+    description: p.description,
+    sizes:
+      p.productSizes?.map((s: any) => ({
+        size: s.size,
+        inStock: s.inStock !== false,
+      })) || [],
+    colors:
+      p.productColors?.map((c: any) => ({ name: c.name, hex: c.hexCode })) ||
+      [],
+    image: getImageUrl(p.images?.[0]),
+    hoverImage: getImageUrl(p.images?.[1] || p.images?.[0]),
+    tags: p.badges?.map((b: any) => b.label).slice(0, 2) || [],
+    rating: p.rating,
+    href: p.id ? `/shop/${p.id}` : `/shop/${p._id}`,
+    inStock: p.inStock,
+  }));
+
+  if (loading) {
+    return (
+      <section className="py-16 md:py-20 px-4 md:px-6">
+        <div className="container mx-auto flex justify-center items-center h-64">
+          <div className="w-8 h-8 border-4 border-gray-200 border-t-[#1f473e] rounded-full animate-spin" />
+        </div>
+      </section>
+    );
+  }
+
+  if (skinShades.length === 0) return null;
+
+  const sliderValue = (activeTone / (skinShades.length - 1)) * 100;
 
   return (
     <section className="py-16 md:py-20 px-4 md:px-6">
@@ -352,28 +139,26 @@ export default function ChooseYourShade() {
         {/* Skin tone selector */}
         <div className="flex flex-col items-center gap-6 mb-10">
           {/* Tone ovals */}
-          <div className="flex gap-4 md:gap-10 justify-center">
-            {skinTones.map((tone, i) => (
+          <div className="flex gap-4 md:gap-10 justify-center flex-wrap">
+            {skinShades.map((shade, i) => (
               <button
-                key={i}
+                key={shade._id}
                 onClick={() => handleToneChange(i)}
                 className="flex flex-col items-center gap-2 shrink-0"
               >
                 <div
                   className={`relative overflow-hidden transition-all duration-300
-          w-20 h-20 md:w-24 md:h-24
-          rounded-full
-          ${
-            activeTone === i
-              ? "ring-2 ring-offset-2 ring-gray-900 scale-105"
-              : "opacity-60 hover:opacity-90"
-          }`}
+                    w-20 h-20 md:w-24 md:h-24
+                    rounded-full
+                    ${
+                      activeTone === i
+                        ? "ring-2 ring-offset-2 ring-gray-900 scale-105"
+                        : "opacity-60 hover:opacity-90"
+                    }`}
                 >
-                  <Image
-                    src={tone.image}
-                    alt={skinToneLabels[i]}
-                    fill
-                    className="object-cover object-[center_20%]"
+                  <div
+                    className="w-full h-full"
+                    style={{ backgroundColor: shade.colorCode || "#f5deb3" }}
                   />
                 </div>
                 <span
@@ -383,7 +168,7 @@ export default function ChooseYourShade() {
                       : "text-gray-400"
                   }`}
                 >
-                  {skinToneLabels[i]}
+                  {shade.name}
                 </span>
               </button>
             ))}
@@ -407,7 +192,7 @@ export default function ChooseYourShade() {
           </div>
         </div>
 
-        {/* Products swiper — nav buttons inside on mobile */}
+        {/* Products swiper */}
         <div className="relative">
           <button
             ref={prevRef}
@@ -451,9 +236,6 @@ export default function ChooseYourShade() {
                 swiper.params.navigation.nextEl = nextRef.current;
                 swiperRef.current = swiper;
               }}
-              onSwiper={(swiper) => {
-                swiperRef.current = swiper;
-              }}
               grabCursor
               breakpoints={{
                 0: { slidesPerView: 1.5, spaceBetween: 12 },
@@ -462,7 +244,7 @@ export default function ChooseYourShade() {
                 1024: { slidesPerView: 4, spaceBetween: 24 },
               }}
             >
-              {(productsByTone[activeTone] || []).map((product, i) => (
+              {mappedProducts.map((product, i) => (
                 <SwiperSlide key={`${activeTone}-${i}`}>
                   <ProductCard product={product} />
                 </SwiperSlide>

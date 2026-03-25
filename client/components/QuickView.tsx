@@ -1,3 +1,4 @@
+// components/QuickView.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -9,6 +10,7 @@ import { getImageUrl } from "@/utils/imageUrl";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
 import { userService } from "@/services/userService";
+import { cartService } from "@/services/cartService";
 
 type SizeOption = {
   size: string;
@@ -47,7 +49,7 @@ function QuickViewContent({
   onClose: () => void;
 }) {
   const t = useTranslations("ProductDetail");
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, refreshCartCount } = useAuth(); // ✅ Call hook at top level
 
   // Debug log to see what's coming in
   useEffect(() => {
@@ -126,13 +128,73 @@ function QuickViewContent({
     }
   };
 
+  // components/QuickView.tsx - Updated handleAddToCart function
   const handleAddToCart = async () => {
-    if (!product.inStock) {
-      toast.error("This product is out of stock");
+    // Check if user is logged in
+    if (!user) {
+      // Store in local storage for guest
+      const guestCart = cartService.getLocalCart();
+      const existingItemIndex = guestCart.findIndex(
+        (item) =>
+          item.productId === product._id &&
+          item.size === selectedSize &&
+          item.color === selectedColor,
+      );
+
+      const qtyToAdd = quantity;
+
+      if (existingItemIndex !== -1) {
+        guestCart[existingItemIndex].qty += qtyToAdd;
+      } else {
+        guestCart.push({
+          id: `temp_${Date.now()}`,
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          originalPrice: product.originalPrice,
+          image: product.image,
+          qty: qtyToAdd,
+          size: selectedSize || undefined,
+          color: selectedColor || undefined,
+          sizeId: undefined, // Don't send sizeId as it's not available
+          colorId: undefined, // Don't send colorId as it's not available
+          inStock: product.inStock,
+        });
+      }
+
+      cartService.saveLocalCart(guestCart);
+
+      // Update cart count
+      if (refreshCartCount) {
+        refreshCartCount();
+      }
+
+      toast.success("Added to cart! Sign in to save your cart.");
+      onClose();
       return;
     }
+
+    // Logged in user - add to backend
     try {
       setAddingToCart(true);
+
+      await cartService.addToCart(
+        user._id,
+        {
+          productId: product._id,
+          quantity: quantity,
+          // Only send size and color as strings, not IDs
+          size: selectedSize || undefined,
+          color: selectedColor || undefined,
+        },
+        accessToken || undefined,
+      );
+
+      // Refresh cart count
+      if (refreshCartCount) {
+        refreshCartCount();
+      }
+
       toast.success("Added to cart!");
       onClose();
     } catch (error) {

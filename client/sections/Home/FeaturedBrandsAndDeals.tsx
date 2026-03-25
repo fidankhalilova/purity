@@ -47,12 +47,12 @@ export default function FeaturedBrandsAndDeals() {
         </div>
       </section>
 
-      <section className="pb-16 md:pb-20 px-4 md:px-6">
+      <section className="pb-16 md:pb-20 ">
         <div className="container mx-auto">
-          <div className="rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 bg-[#e8e0d0] min-h-72">
-            <div className="relative min-h-64 md:min-h-auto">
+          <div className="rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 bg-[#e8e0d0] h-84">
+            <div className="relative h-64 md:h-auto">
               <Image
-                src="https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_2.jpg?v=1746763913&width=900"
+                src="https://purity.nextsky.co/cdn/shop/files/home1_iwt-1_v2.jpg?v=1752739663&width=3840"
                 alt="Beauty Offers"
                 fill
                 className="object-cover object-top"

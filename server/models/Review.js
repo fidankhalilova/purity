@@ -1,6 +1,17 @@
+// models/Review.js
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        sparse: true
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        sparse: true
+    },
     author: {
         type: String,
         required: true
@@ -10,10 +21,6 @@ const reviewSchema = new mongoose.Schema({
         required: true,
         min: 1,
         max: 5
-    },
-    date: {
-        type: String,
-        required: true
     },
     title: {
         type: String,
@@ -26,6 +33,13 @@ const reviewSchema = new mongoose.Schema({
     images: [{
         type: String
     }],
+    date: {
+        type: String,
+        default: () => {
+            const date = new Date();
+            return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+        }
+    },
     status: {
         type: String,
         enum: ['published', 'deleted'],
@@ -34,5 +48,9 @@ const reviewSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Index for faster queries
+reviewSchema.index({ product: 1, status: 1 });
+reviewSchema.index({ user: 1, product: 1 });
 
 module.exports = mongoose.model('Review', reviewSchema);

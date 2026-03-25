@@ -1,3 +1,4 @@
+// app/[locale]/account/basket/page.tsx or components/BasketSection.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -7,21 +8,13 @@ import { useLocale } from "next-intl";
 import { Trash2, ShoppingCart, Tag, Loader2 } from "lucide-react";
 import { getImageUrl } from "@/utils/imageUrl";
 import { toast } from "react-hot-toast";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: string;
-  originalPrice?: string;
-  image: string;
-  qty: number;
-  size?: string;
-  color?: string;
-}
+import { useAuth } from "@/context/AuthContext";
+import { cartService, CartItem } from "@/services/cartService";
 
 export default function BasketSection() {
   const t = useTranslations("AccountPage.basket");
   const locale = useLocale();
+  const { user, accessToken, refreshCartCount } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [promo, setPromo] = useState("");
@@ -30,57 +23,56 @@ export default function BasketSection() {
 
   useEffect(() => {
     loadCart();
-  }, []);
+  }, [user]);
 
   const loadCart = async () => {
     try {
       setLoading(true);
-      // TODO: Replace with actual cart API call
-      // For now using mock data
-      setTimeout(() => {
-        setItems([
-          {
-            id: "1",
-            name: "Dark Circle Patch",
-            price: "$75.00",
-            image:
-              "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_1_1.jpg?v=1746763913&width=900",
-            qty: 1,
-            size: "30ml",
-          },
-          {
-            id: "2",
-            name: "Pore Detox Scrub",
-            price: "$70.00",
-            image:
-              "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_33_1.jpg?v=1746803408&width=720",
-            qty: 2,
-            size: "100ml",
-          },
-          {
-            id: "3",
-            name: "Brighten Serum",
-            price: "$160.00",
-            image:
-              "https://purity.nextsky.co/cdn/shop/files/cosmetic_products_7_1_52d5c36d-437a-49dd-a2b5-97e49beb7490.jpg?v=1753074132&width=720",
-            qty: 1,
-          },
-        ]);
-        setLoading(false);
-      }, 500);
+
+      if (user) {
+        // Logged in user: get cart from backend
+        const cartItems = await cartService.getCart(
+          user._id,
+          accessToken || undefined,
+        );
+        setItems(cartItems);
+      } else {
+        // Guest user: get cart from localStorage
+        const localCart = cartService.getLocalCart();
+        setItems(localCart);
+      }
     } catch (error) {
       console.error("Error loading cart:", error);
       toast.error("Failed to load cart");
+    } finally {
       setLoading(false);
     }
   };
 
   const updateQty = async (id: string, qty: number) => {
     if (qty < 1) return;
+
     try {
       setUpdating(true);
-      // TODO: API call to update quantity
-      setItems(items.map((i) => (i.id === id ? { ...i, qty } : i)));
+
+      if (user) {
+        const updatedCart = await cartService.updateQuantity(
+          user._id,
+          id,
+          qty,
+          accessToken || undefined,
+        );
+        setItems(updatedCart);
+        if (refreshCartCount) refreshCartCount();
+      } else {
+        // Update local storage
+        const updatedItems = items.map((item) =>
+          item.id === id ? { ...item, qty } : item,
+        );
+        setItems(updatedItems);
+        cartService.saveLocalCart(updatedItems);
+        if (refreshCartCount) refreshCartCount();
+      }
     } catch (error) {
       console.error("Error updating quantity:", error);
       toast.error("Failed to update quantity");
@@ -92,8 +84,21 @@ export default function BasketSection() {
   const removeItem = async (id: string) => {
     try {
       setUpdating(true);
-      // TODO: API call to remove item
-      setItems(items.filter((i) => i.id !== id));
+
+      if (user) {
+        const updatedCart = await cartService.removeItem(
+          user._id,
+          id,
+          accessToken || undefined,
+        );
+        setItems(updatedCart);
+        if (refreshCartCount) refreshCartCount();
+      } else {
+        const updatedItems = items.filter((item) => item.id !== id);
+        setItems(updatedItems);
+        cartService.saveLocalCart(updatedItems);
+        if (refreshCartCount) refreshCartCount();
+      }
       toast.success("Item removed from cart");
     } catch (error) {
       console.error("Error removing item:", error);
@@ -163,6 +168,9 @@ export default function BasketSection() {
                 </p>
                 {item.size && (
                   <p className="text-xs text-gray-400 mt-0.5">{item.size}</p>
+                )}
+                {item.color && (
+                  <p className="text-xs text-gray-400">{item.color}</p>
                 )}
                 <p className="text-sm font-bold text-gray-900 mt-1">
                   {item.price}
@@ -266,7 +274,9 @@ export default function BasketSection() {
             )}
           </div>
           <button className="w-full py-3.5 bg-[#1f473e] text-white text-sm font-bold rounded-full hover:bg-[#163830] transition-colors">
-            {t("checkout")} — ${total.toFixed(2)}
+            <Link href="/checkout">
+              {t("checkout")} — ${total.toFixed(2)}
+            </Link>
           </button>
           <Link
             href={`/${locale}/shop`}

@@ -9,6 +9,7 @@ import PairsWell from "./PairsWell";
 import { useAuth } from "@/context/AuthContext";
 import { userService } from "@/services/userService";
 import { toast } from "react-hot-toast";
+import { cartService } from "@/services/cartService";
 
 interface ProductHeroProps {
   product: {
@@ -81,12 +82,12 @@ function Stars({ rating }: { rating: number }) {
 
 export default function ProductHero({ product }: ProductHeroProps) {
   const t = useTranslations("ProductDetail");
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, refreshCartCount } = useAuth();
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
-
+  const [addingToCart, setAddingToCart] = useState(false);
   // Safely get the first in-stock color or first color
   const [selectedColor, setSelectedColor] = useState<string | null>(() => {
     if (product.productColors && product.productColors.length > 0) {
@@ -148,6 +149,81 @@ export default function ProductHero({ product }: ProductHeroProps) {
       toast.error("Something went wrong");
     } finally {
       setWishlistLoading(false);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      // Guest cart logic
+      const guestCart = cartService.getLocalCart();
+      const selectedSizeObj = product.productSizes?.find(
+        (s) => s._id === selectedSize,
+      );
+      const selectedColorObj = product.productColors?.find(
+        (c) => c._id === selectedColor,
+      );
+
+      const existingItemIndex = guestCart.findIndex(
+        (item) =>
+          item.productId === product._id &&
+          item.size === selectedSizeObj?.size &&
+          item.color === selectedColorObj?.name,
+      );
+
+      if (existingItemIndex !== -1) {
+        guestCart[existingItemIndex].qty += qty;
+      } else {
+        guestCart.push({
+          id: `temp_${Date.now()}`,
+          productId: product._id,
+          name: product.name,
+          price: displayPrice,
+          originalPrice: displayOriginalPrice,
+          image: product.images?.[0] || "",
+          qty: qty,
+          size: selectedSizeObj?.size,
+          color: selectedColorObj?.name,
+          sizeId: undefined, // Don't send IDs for guest cart
+          colorId: undefined,
+          inStock: product.inStock,
+        });
+      }
+
+      cartService.saveLocalCart(guestCart);
+      if (refreshCartCount) refreshCartCount();
+      toast.success("Added to cart! Sign in to save your cart.");
+      return;
+    }
+
+    // Logged in user
+    try {
+      setAddingToCart(true);
+
+      const selectedSizeObj = product.productSizes?.find(
+        (s) => s._id === selectedSize,
+      );
+      const selectedColorObj = product.productColors?.find(
+        (c) => c._id === selectedColor,
+      );
+
+      await cartService.addToCart(
+        user._id,
+        {
+          productId: product._id,
+          quantity: qty,
+          size: selectedSizeObj?.size,
+          color: selectedColorObj?.name,
+        },
+        accessToken || undefined,
+      );
+
+      if (refreshCartCount) refreshCartCount();
+      toast.success("Added to cart!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("Failed to add to cart");
+    } finally {
+      setAddingToCart(false);
     }
   };
 
@@ -412,8 +488,12 @@ export default function ProductHero({ product }: ProductHeroProps) {
               </svg>
             </button>
           </div>
-          <button className="flex-1 bg-[#1f473e] text-white py-3 px-6 rounded-full font-medium hover:bg-[#163830] transition-colors text-sm">
-            {t("addToCart")} — {displayPrice}
+          <button
+            onClick={handleAddToCart}
+            disabled={addingToCart || !product.inStock}
+            className="flex-1 bg-[#1f473e] text-white py-3 px-6 rounded-full font-medium hover:bg-[#163830] transition-colors text-sm disabled:opacity-50"
+          >
+            {addingToCart ? "Adding..." : `${t("addToCart")} — ${displayPrice}`}
           </button>
         </div>
 

@@ -1,3 +1,4 @@
+// context/AuthContext.tsx
 "use client";
 import {
   createContext,
@@ -5,17 +6,20 @@ import {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { User } from "@/types/user";
 import { toast } from "react-hot-toast";
+import { cartService } from "@/services/cartService";
 
 interface AuthContextType {
   user: User | null;
   accessToken: string | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  googleLogin: (token: string, userData: User) => Promise<void>;
   register: (
     firstName: string,
     lastName: string,
@@ -25,6 +29,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshToken: () => Promise<void>;
   getAuthHeaders: () => { Authorization: string } | {};
+  cartCount: number;
+  refreshCartCount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,7 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [cartCount, setCartCount] = useState(0);
 
+  // Load user on mount
   useEffect(() => {
     const loadUser = async () => {
       const storedUser = localStorage.getItem("user");
@@ -61,20 +69,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
+  // Load cart count when user changes
   useEffect(() => {
-    if (!accessToken) return;
-    const refreshInterval = setInterval(
-      async () => {
+    const loadCartCount = async () => {
+      if (user && accessToken) {
         try {
-          await refreshToken();
+          const cart = await cartService.getCart(user._id, accessToken);
+          const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+          setCartCount(totalItems);
         } catch (error) {
-          console.error("Failed to refresh token:", error);
+          console.error("Error loading cart count:", error);
         }
-      },
-      14 * 60 * 1000,
-    );
-    return () => clearInterval(refreshInterval);
-  }, [accessToken]);
+      } else if (!user) {
+        // Guest cart count from localStorage
+        const guestCart = cartService.getLocalCart();
+        const totalItems = guestCart.reduce((sum, item) => sum + item.qty, 0);
+        setCartCount(totalItems);
+      }
+    };
+
+    loadCartCount();
+  }, [user, accessToken]);
+
+  const refreshCartCount = useCallback(async () => {
+    if (user && accessToken) {
+      try {
+        const cart = await cartService.getCart(user._id, accessToken);
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+        setCartCount(totalItems);
+      } catch (error) {
+        console.error("Error refreshing cart count:", error);
+      }
+    } else {
+      const guestCart = cartService.getLocalCart();
+      const totalItems = guestCart.reduce((sum, item) => sum + item.qty, 0);
+      setCartCount(totalItems);
+    }
+  }, [user, accessToken]);
 
   const getAuthHeaders = () => {
     if (accessToken) {
@@ -111,11 +142,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await response.json();
     if (!data.success) throw new Error(data.message);
 
+    // Store user and token
     setUser(data.data.user);
     setAccessToken(data.data.accessToken);
     localStorage.setItem("user", JSON.stringify(data.data.user));
     localStorage.setItem("accessToken", data.data.accessToken);
     setCookie("accessToken", data.data.accessToken, 0.0104);
+
+    // Sync guest cart to backend after login
+    try {
+      await cartService.syncLocalCartToBackend(
+        data.data.user._id,
+        data.data.accessToken,
+      );
+      // Refresh cart count after sync
+      await refreshCartCount();
+    } catch (error) {
+      console.error("Error syncing cart after login:", error);
+    }
+
+    return data.data.user;
   };
 
   const register = async (
@@ -138,6 +184,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("user", JSON.stringify(data.data.user));
     localStorage.setItem("accessToken", data.data.accessToken);
     setCookie("accessToken", data.data.accessToken, 0.0104);
+
+    // Sync guest cart to backend after registration
+    try {
+      await cartService.syncLocalCartToBackend(
+        data.data.user._id,
+        data.data.accessToken,
+      );
+      await refreshCartCount();
+    } catch (error) {
+      console.error("Error syncing cart after registration:", error);
+    }
   };
 
   const logout = async () => {
@@ -151,11 +208,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setUser(null);
     setAccessToken(null);
+    setCartCount(0);
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     deleteCookie("accessToken");
+
     router.push(`/${locale}/account/login`);
   };
+
+  const googleLogin = useCallback(async (token: string, userData: User) => {
+    if (typeof window !== "undefined") {
+      setUser(userData);
+      setAccessToken(token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("accessToken", token);
+      setCookie("accessToken", token, 0.0104);
+
+      // Sync guest cart to backend after Google login
+      try {
+        await cartService.syncLocalCartToBackend(userData._id, token);
+        // Refresh cart count after sync
+        const cart = await cartService.getCart(userData._id, token);
+        const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+        setCartCount(totalItems);
+      } catch (error) {
+        console.error("Error syncing cart after Google login:", error);
+      }
+    }
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -163,11 +243,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         accessToken,
         isLoading,
+        googleLogin,
         login,
         register,
         logout,
         refreshToken,
         getAuthHeaders,
+        cartCount,
+        refreshCartCount,
       }}
     >
       {children}

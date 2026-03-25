@@ -26,6 +26,19 @@ type Props = {
   userId: string;
 };
 
+// Helper function to get the correct avatar URL
+const getAvatarUrl = (avatar?: string | null): string | null => {
+  if (!avatar) return null;
+
+  // If it's already a full URL (http:// or https://), return as is
+  if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+    return avatar;
+  }
+
+  // Otherwise, treat it as a local path and use getImageUrl
+  return getImageUrl(avatar);
+};
+
 export default function AccountSidebar({
   activeTab,
   onTabChange,
@@ -38,6 +51,7 @@ export default function AccountSidebar({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -103,6 +117,25 @@ export default function AccountSidebar({
     </div>
   );
 
+  const renderAvatar = () => {
+    const avatarUrl = getAvatarUrl(user?.avatar);
+
+    if (avatarUrl && !imageError) {
+      return (
+        <img
+          src={avatarUrl}
+          alt={user?.name || "User avatar"}
+          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+          onError={() => setImageError(true)}
+        />
+      );
+    }
+
+    // Fallback to initials
+    return user?.name?.charAt(0) || "U";
+  };
+
   if (loading) {
     return (
       <div className="hidden lg:flex flex-col gap-6 w-64 shrink-0">
@@ -150,15 +183,7 @@ export default function AccountSidebar({
       <div className="hidden lg:flex flex-col gap-6 w-64 shrink-0 sticky top-24 self-start">
         <div className="bg-[#f0ebe2] rounded-3xl p-5 flex flex-col items-center gap-3 text-center">
           <div className="w-16 h-16 rounded-full bg-[#1f473e] flex items-center justify-center text-white text-xl font-bold overflow-hidden">
-            {user?.avatar ? (
-              <img
-                src={getImageUrl(user.avatar)}
-                alt={user.name}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              user?.name?.charAt(0) || "U"
-            )}
+            {renderAvatar()}
           </div>
           <div>
             <p className="font-bold text-gray-900">{user?.name}</p>

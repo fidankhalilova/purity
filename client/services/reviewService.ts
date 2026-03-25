@@ -1,3 +1,4 @@
+// services/reviewService.ts
 import { Review, ApiResponse } from "@/types/review";
 
 const API_BASE_URL =
@@ -31,10 +32,25 @@ export const reviewService = {
     return data.data || [];
   },
 
-  async create(review: Partial<Review>): Promise<Review> {
+  // For customer reviews (requires productId)
+  async createForProduct(
+    review: {
+      productId: string;
+      rating: number;
+      title: string;
+      body: string;
+      images?: string[];
+    },
+    token?: string | null,
+  ): Promise<Review> {
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/reviews`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(review),
     });
     const data: ApiResponse<Review> = await response.json();
@@ -44,11 +60,41 @@ export const reviewService = {
     return data.data;
   },
 
-  // Add this update method
-  async update(id: string, review: Partial<Review>): Promise<Review> {
+  // For admin reviews (no productId)
+  async create(
+    review: Partial<Review>,
+    token?: string | null,
+  ): Promise<Review> {
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/reviews`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(review),
+    });
+    const data: ApiResponse<Review> = await response.json();
+    if (!data.success)
+      throw new Error(data.message || "Failed to create review");
+    if (!data.data) throw new Error("No data returned");
+    return data.data;
+  },
+
+  async update(
+    id: string,
+    review: Partial<Review>,
+    token?: string | null,
+  ): Promise<Review> {
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(review),
     });
     const data: ApiResponse<Review> = await response.json();
@@ -61,10 +107,16 @@ export const reviewService = {
   async updateStatus(
     id: string,
     status: "published" | "deleted",
+    token?: string | null,
   ): Promise<Review> {
+    const headers: HeadersInit = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/reviews/${id}/status`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({ status }),
     });
     const data: ApiResponse<Review> = await response.json();
@@ -74,9 +126,15 @@ export const reviewService = {
     return data.data;
   },
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, token?: string | null): Promise<void> {
+    const headers: HeadersInit = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/reviews/${id}`, {
       method: "DELETE",
+      headers,
     });
     const data: ApiResponse = await response.json();
     if (!data.success)

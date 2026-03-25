@@ -52,7 +52,7 @@ export default function ProductCard({ product }: { product: Product }) {
     colors: (product.colors || []).map((color) => ({
       name: color.name,
       hex: color.hex,
-      inStock: color.inStock !== false, // Default to true
+      inStock: product.inStock !== false, // Default to true
     })),
     inStock: product.inStock,
   };
@@ -105,6 +105,10 @@ export default function ProductCard({ product }: { product: Product }) {
       setWishlistLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log("ProductCard - inStock status:", product.name, product.inStock);
+  }, [product]);
 
   return (
     <>

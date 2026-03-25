@@ -1,3 +1,4 @@
+// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
@@ -26,6 +27,7 @@ const verifyAdmin = async (req, res, next) => {
         if (!user || user.role !== 'admin') {
             return res.status(403).json({ success: false, message: 'Admin access required' });
         }
+        req.userRole = user.role;
         next();
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
