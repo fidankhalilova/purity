@@ -175,35 +175,50 @@ const googleLogin = passport.authenticate('google', {
     scope: ['profile', 'email']
 });
 
-const googleCallback = async (req, res) => {
-    try {
-        const user = req.user;
-        if (!user) {
-            return res.redirect(`${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed`);
-        }
+// controllers/authController.js - Update googleCallback
+const googleCallback = (req, res, next) => {
+    // Use passport.authenticate as middleware with session: false
+    passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed` },
+        async (err, user, info) => {
+            try {
+                console.log('Google Callback - Error:', err);
+                console.log('Google Callback - User:', user);
+                console.log('Google Callback - Info:', info);
 
-        const { accessToken, refreshToken } = generateTokens(user._id);
-        user.refreshToken = refreshToken;
-        await user.save();
+                if (err || !user) {
+                    console.error('Google auth failed:', err || 'No user returned');
+                    return res.redirect(`${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed`);
+                }
 
-        const userData = user.toObject();
-        delete userData.password;
-        delete userData.refreshToken;
+                // Generate tokens
+                const { accessToken, refreshToken } = generateTokens(user._id);
 
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            path: '/'
-        });
+                // Store refresh token in database
+                user.refreshToken = refreshToken;
+                await user.save();
 
-        const redirectUrl = `${process.env.FRONTEND_URL}/en/account/google/callback?token=${accessToken}&user=${encodeURIComponent(JSON.stringify(userData))}`;
-        res.redirect(redirectUrl);
-    } catch (error) {
-        console.error('Google callback error:', error);
-        res.redirect(`${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed`);
-    }
+                const userData = user.toObject();
+                delete userData.password;
+                delete userData.refreshToken;
+
+                // Set refresh token as HTTP-only cookie
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'lax',
+                    maxAge: 7 * 24 * 60 * 60 * 1000,
+                    path: '/'
+                });
+
+                // Redirect to frontend with user data
+                const redirectUrl = `${process.env.FRONTEND_URL}/en/account/google/callback?token=${accessToken}&user=${encodeURIComponent(JSON.stringify(userData))}`;
+                console.log('Redirecting to:', redirectUrl);
+                res.redirect(redirectUrl);
+            } catch (error) {
+                console.error('Google callback error:', error);
+                res.redirect(`${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed`);
+            }
+        })(req, res, next);
 };
 
 const refreshToken = async (req, res) => {

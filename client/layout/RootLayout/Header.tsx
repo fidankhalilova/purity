@@ -193,7 +193,7 @@ export default function Navbar() {
           <LanguageSwitcher />
 
           {/* Search Button with Modal */}
-          <div ref={searchRef} className="relative">
+          <div ref={searchRef} className="relative mt-1.5">
             <button
               onClick={() => {
                 setIsSearchOpen(true);

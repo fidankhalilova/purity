@@ -66,6 +66,20 @@ export const uploadService = {
     return data.data.url;
   },
 
+  async uploadBlogImage(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append("blogImage", file);
+
+    const response = await fetch(`${API_BASE_URL}/upload/blog-image`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    if (!data.success) throw new Error(data.message);
+    return data.data.url;
+  },
+
   async uploadReviewImage(file: File): Promise<string> {
     const formData = new FormData();
     formData.append("reviewImage", file);

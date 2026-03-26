@@ -1,51 +1,53 @@
+// components/Blog/BeforeYouGo.tsx
 "use client";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import BlogCard from "@/components/BlogCard_Two";
+import { blogService } from "@/services/blogService";
+import { BlogPost } from "@/types/blog";
+import { Loader2 } from "lucide-react";
 
-const relatedPosts = [
-  {
-    category: "Holidays",
-    title: "Your Gifting Season Glow Guide",
-    date: "10 Apr 2025",
-    author: "Olivia Bennett",
-    image:
-      "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-    href: "gifting-season-glow",
-  },
-  {
-    category: "Gifting",
-    title: "Best Skincare Gifts Under $75",
-    date: "09 Apr 2025",
-    author: "Olivia Bennett",
-    image:
-      "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-    href: "skincare-gifts-under-75",
-  },
-  {
-    category: "Tips",
-    title: "Are You Over-Exfoliating Your Skin?",
-    date: "08 Apr 2025",
-    author: "Olivia Bennett",
-    image:
-      "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-    href: "over-exfoliating",
-  },
-  {
-    category: "Self-Care",
-    title: "Morning Rituals That Actually Work",
-    date: "05 Apr 2025",
-    author: "Olivia Bennett",
-    image:
-      "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-    href: "morning-rituals",
-  },
-];
+interface BeforeYouGoProps {
+  currentPostId: string;
+}
 
-export default function BeforeYouGo() {
+export default function BeforeYouGo({ currentPostId }: BeforeYouGoProps) {
   const t = useTranslations("BlogDetail.beforeYouGo");
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadRelatedPosts();
+  }, [currentPostId]);
+
+  const loadRelatedPosts = async () => {
+    try {
+      setLoading(true);
+      const posts = await blogService.getRelated(currentPostId);
+      setRelatedPosts(posts);
+    } catch (error) {
+      console.error("Error loading related posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="py-10 px-4 md:px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#1f473e] mx-auto" />
+        </div>
+      </section>
+    );
+  }
+
+  if (relatedPosts.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-10 px-4 md:px-6">
@@ -67,9 +69,24 @@ export default function BeforeYouGo() {
             1024: { slidesPerView: 3, spaceBetween: 24 },
           }}
         >
-          {relatedPosts.map((post, i) => (
-            <SwiperSlide key={`${post.href}-${i}`}>
-              <BlogCard {...post} />
+          {relatedPosts.map((post) => (
+            <SwiperSlide key={post._id}>
+              <BlogCard
+                category={post.category}
+                title={post.title}
+                date={
+                  post.publishedAt
+                    ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    : post.createdAt.split("T")[0]
+                }
+                author={post.author}
+                image={post.featuredImage}
+                href={post.slug}
+              />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -1,35 +1,60 @@
-export type BlockType =
-  | "intro"
-  | "h2"
-  | "h3"
-  | "p"
-  | "tip"
-  | "image"
-  | "link-p";
-
-export type ContentBlock =
-  | { type: "intro"; text: string }
-  | { type: "h2"; text: string }
-  | { type: "h3"; text: string }
-  | { type: "p"; text: string }
-  | { type: "tip"; text: string }
-  | { type: "image"; src: string; alt?: string; caption?: string }
-  | {
-      type: "link-p";
-      parts: { text: string; href?: string; bold?: boolean }[];
-    };
+// types/blog.ts
+export type ContentBlock = {
+  type:
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "p"
+    | "intro"
+    | "tip"
+    | "image"
+    | "quote"
+    | "list"
+    | "link-p";
+  text?: string;
+  src?: string;
+  alt?: string;
+  caption?: string;
+  items?: string[];
+  parts?: {
+    text: string;
+    bold?: boolean;
+    italic?: boolean;
+    underline?: boolean;
+    href?: string;
+  }[];
+  order?: number;
+};
 
 export type BlogPost = {
-  id: string;
-  category: string;
+  _id: string;
   title: string;
-  date: string;
+  slug: string;
   author: string;
+  category: string;
+  featuredImage: string;
   excerpt: string;
-  coverImage: string;
+  content: ContentBlock[];
+  status: "draft" | "published";
+  views: number;
+  comments: number;
   tags: string[];
-  comments?: number;
-  blocks: ContentBlock[];
-  older?: { title: string; href: string };
-  newer?: { title: string; href: string };
+  seoTitle?: string;
+  seoDescription?: string;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ApiResponse<T = any> = {
+  success: boolean;
+  data?: T;
+  message?: string;
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
 };

@@ -1,5 +1,9 @@
 {
   "HomePage": {
+    "meta": {
+      "title": "Purity | Təmiz Gözəllik Parlaq Dəri Üçün",
+      "description": "Purity'nin təmiz gözəllik məhsullarını kəşf edin. Təbii tərkiblər, davamlı qablaşdırma və görünən nəticələr."
+    },
     "hero": {
       "slides": [
         {
@@ -188,6 +192,10 @@
     "instagramTitle": "Səyahətimizdə Bizi İzləyin"
   },
   "AboutUs": {
+    "meta": {
+      "title": "Haqqımızda | Purity",
+      "description": "Purity'nin dərinizə və planetə qayğı göstərən təmiz, effektiv dəri baxımı yaratmaq missiyası haqqında məlumat əldə edin."
+    },
     "AboutBanner": {
       "title": "Purity'nin Hekayəsi",
       "description": "Niyyətlə başlayan və etibarla sona çatan dəri qayğısı — hər damcısında həssaslıqla, dürüstlüklə və məqsədlə hazırlanmışdır."
@@ -276,6 +284,10 @@
     }
   },
   "ContactPage": {
+    "meta": {
+      "title": "Bizimlə Əlaqə | Purity",
+      "description": "Komandamızla əlaqə saxlayın. Məhsullarımız və ya sifarişinizlə bağlı suallarınıza cavab verməyə hazırıq."
+    },
     "Info": {
       "title": "Bizimlə Əlaqə",
       "description": "Aşağıdakı formu istifadə edin. Müştəri xidmətinə +1 (973) 3333-5555 nömrəsi ilə də zəng edə bilərsiniz.",
@@ -306,6 +318,10 @@
     }
   },
   "FAQPage": {
+    "meta": {
+      "title": "Tez-tez Verilən Suallar | Purity",
+      "description": "Məhsullarımız, çatdırılma, geri qaytarma və daha çox şey haqqında tez-tez verilən suallara cavab tapın."
+    },
     "StickyFAQ": {
       "badge": "Bizimlə Əlaqə",
       "title": "Hələ Axtarırsınız?",
@@ -438,8 +454,13 @@
     ]
   },
   "BlogPage": {
+    "meta": {
+      "title": "Bloq | Purity",
+      "description": "Dəri baxımı ipucları, tərkib hissələri bələdçiləri və gözəllik trendləri haqqında ən son məqalələrimizi oxuyun."
+    },
     "grid": {
       "title": "Gözəllik İlhamları",
+      "all": "Hamısı",
       "categories": [
         "Bütün Yazılar",
         "Hədiyyə",
@@ -562,6 +583,7 @@
     "comments": "Şərh",
     "tags": "Etiketlər:",
     "share": "Paylaş:",
+    "views": "baxış",
     "olderPost": "Köhnə Yazı",
     "newerPost": "Yeni Yazı",
     "tip": "İpucu:",
@@ -570,15 +592,20 @@
       "description": "Növbəti özünə qayğı anınızı ilhamlandırmaq üçün bir neçə seçilmiş məqalə."
     },
     "leaveComment": {
-      "title": "Şərh Yaz",
-      "description": "Şərhlər nəşr edilməzdən əvvəl təsdiqlənməlidir. * tələb olunan sahədir.",
+      "title": "Şərh Yazın",
+      "description": "E-poçt ünvanınız dərc edilməyəcək. Tələb olunan sahələr qeyd olunub *",
       "namePlaceholder": "Ad *",
       "emailPlaceholder": "E-poçt *",
-      "commentPlaceholder": "Şərhiniz *",
-      "submitBtn": "Şərh Göndər"
+      "commentPlaceholder": "Şərhinizi buraya yazın...",
+      "submitBtn": "Şərh Göndər",
+      "submitting": "Göndərilir..."
     }
   },
   "ShopPage": {
+    "meta": {
+      "title": "Mağaza | Purity Təmiz Gözəllik",
+      "description": "Təmiz gözəllik məhsulları kolleksiyamızı kəşf edin. Serumlardan nəmləndiricilərə qədər, ideal dəri baxım rutininizi tapın."
+    },
     "banner": {
       "breadcrumbHome": "Ana Səhifə",
       "title": "Dəri Qayğısı",
@@ -887,6 +914,10 @@
   },
   "AuthPages": {
     "login": {
+      "meta": {
+        "title": "Daxil Ol | Purity",
+        "description": "Sifarişlərinizə baxmaq, arzu siyahınızı idarə etmək və daha çoxu üçün Purity hesabınıza daxil olun."
+      },
       "title": "Daxil ol",
       "desc": "Sifariş tarixçənizə və digər fərdiləşdirilmiş xüsusiyyətlərə daxil olmaq üçün hesabınıza giriş edin.",
       "email": "E-poçt *",
@@ -899,6 +930,10 @@
       "breadcrumb": "Hesab"
     },
     "register": {
+      "meta": {
+        "title": "Qeydiyyat | Purity",
+        "description": "Fərdiləşdirilmiş alış-veriş təcrübəsi üçün Purity hesabı yaradın."
+      },
       "title": "Hesab Yarat",
       "desc": "İcmamıza qoşulmaq və eksklüziv təkliflərə, mükafatlara və kontentə giriş əldə etmək üçün yeni hesab yaradın.",
       "firstName": "Ad *",
@@ -912,6 +947,12 @@
       "breadcrumb": "Hesab Yarat"
     },
     "reset": {
+      "meta": {
+        "title": "Şifrəni Sıfırla | Purity",
+        "description": "Purity hesabınıza yenidən daxil olmaq üçün şifrənizi sıfırlayın."
+      },
+      "resetConfirmTitle": "Yeni Şifrə Yarat | Purity",
+      "resetConfirmDescription": "Purity hesabınız üçün yeni şifrə yaradın.",
       "title": "Şifrəni sıfırla",
       "desc": "Şifrənizi sıfırlamaq üçün təlimatlar almaq üçün e-poçtunuzu daxil edin.",
       "email": "E-poçt *",
@@ -928,6 +969,10 @@
     }
   },
   "CheckoutPage": {
+    "meta": {
+      "title": "Sifarişin Tamamlanması | Purity",
+      "description": "Təhlükəsiz ödənişlə sifarişinizi tamamlayın. 100$ üzəri sifarişlərdə pulsuz çatdırılma."
+    },
     "title": "Ödəniş",
     "breadcrumb": "Ödəniş",
     "contact": {
@@ -987,6 +1032,10 @@
       "processing": "Emal olunur..."
     },
     "orderSuccess": {
+      "meta": {
+        "title": "Sifariş Təsdiqləndi | Purity",
+        "description": "Sifarişiniz üçün təşəkkürlər! Təsdiq məlumatlarınız və izləmə detallarınız qısa müddətdə e-poçtla göndəriləcək."
+      },
       "title": "Sifariş Təsdiqləndi!",
       "desc": "Alışınız üçün təşəkkür edirik. Sifarişiniz qəbul edildi və emal olunur.",
       "orderNumber": "Sifariş nömrəsi",
@@ -1007,6 +1056,10 @@
       ]
     },
     "orderFail": {
+      "meta": {
+        "title": "Sifariş Uğursuz Oldu | Purity",
+        "description": "Sifarişiniz tamamlana bilmədi. Zəhmət olmasa yenidən cəhd edin və ya dəstək xidməti ilə əlaqə saxlayın."
+      },
       "title": "Ödəniş Uğursuz Oldu",
       "desc": "Ödənişinizi emal edə bilmədik. Məlumatlarınızı yoxlayın və yenidən cəhd edin.",
       "tryAgain": "Yenidən Cəhd Et",

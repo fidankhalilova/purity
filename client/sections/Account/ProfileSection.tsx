@@ -1,12 +1,12 @@
+// components/ProfileSection.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Camera, Loader2 } from "lucide-react";
 import { userService } from "@/services/userService";
-import { uploadService } from "@/services/uploadService";
 import { User } from "@/types/user";
 import { toast } from "react-hot-toast";
-import { getImageUrl } from "@/utils/imageUrl";
+import { useAuth } from "@/context/AuthContext";
 
 interface ProfileSectionProps {
   userId: string;
@@ -14,6 +14,7 @@ interface ProfileSectionProps {
 
 export default function ProfileSection({ userId }: ProfileSectionProps) {
   const t = useTranslations("AccountPage.profile");
+  const { accessToken } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -29,12 +30,12 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
 
   useEffect(() => {
     loadUser();
-  }, [userId]);
+  }, [userId, accessToken]);
 
   const loadUser = async () => {
     try {
       setLoading(true);
-      const data = await userService.getById(userId);
+      const data = await userService.getById(userId, accessToken);
       setUser(data);
       setForm({
         name: data.name,
@@ -43,6 +44,17 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
         birthday: data.birthday?.split("T")[0] || "",
         gender: data.gender || "other",
       });
+
+      // Sync localStorage with latest user data
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const currentUser = JSON.parse(storedUser);
+        const updatedStoredUser = {
+          ...currentUser,
+          ...data,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedStoredUser));
+      }
     } catch (error) {
       console.error("Error loading user:", error);
       toast.error("Failed to load profile");
@@ -51,8 +63,6 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
     }
   };
 
-  // In ProfileSection.tsx
-  // In ProfileSection.tsx, update handleAvatarUpload
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -69,10 +79,29 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
 
     try {
       setUploading(true);
-      const updatedUser = await userService.updateAvatar(userId, file);
+      const updatedUser = await userService.updateAvatar(
+        userId,
+        file,
+        accessToken,
+      );
       console.log("Avatar upload response:", updatedUser);
       console.log("Avatar URL:", updatedUser.avatar);
+
       setUser(updatedUser);
+
+      // Update localStorage
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const currentUser = JSON.parse(storedUser);
+        const updatedStoredUser = {
+          ...currentUser,
+          avatar: updatedUser.avatar,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedStoredUser));
+      }
+
+      window.dispatchEvent(new Event("storage"));
+
       toast.success("Avatar updated successfully");
     } catch (error) {
       console.error("Error uploading avatar:", error);
@@ -81,10 +110,30 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
       setUploading(false);
     }
   };
+
   const handleSave = async () => {
     try {
-      const updatedUser = await userService.update(userId, form);
+      const updatedUser = await userService.update(userId, form, accessToken);
       setUser(updatedUser);
+
+      // Update localStorage
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const currentUser = JSON.parse(storedUser);
+        const updatedStoredUser = {
+          ...currentUser,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          phone: updatedUser.phone,
+          birthday: updatedUser.birthday,
+          gender: updatedUser.gender,
+          avatar: updatedUser.avatar,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedStoredUser));
+      }
+
+      window.dispatchEvent(new Event("storage"));
+
       setSaved(true);
       setEditing(false);
       setTimeout(() => setSaved(false), 3000);
@@ -93,6 +142,25 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
       console.error("Error saving profile:", error);
       toast.error("Failed to save profile");
     }
+  };
+
+  const getDisplayAvatarUrl = (avatar: string | undefined): string | null => {
+    if (!avatar) return null;
+
+    console.log("Original avatar URL from user object:", avatar);
+
+    // Hardcode for testing
+    if (avatar.includes("avatar-")) {
+      return `http://localhost:3001/uploads/avatars/${avatar.split("/").pop()}`;
+    }
+
+    // If it's already a full URL
+    if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+      return avatar;
+    }
+
+    // For relative paths
+    return `http://localhost:3001${avatar}`;
   };
 
   const genderOptions = [
@@ -153,6 +221,9 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
     return <div>User not found</div>;
   }
 
+  const avatarUrl = getDisplayAvatarUrl(user.avatar);
+  console.log("Final avatar URL being used:", avatarUrl);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -194,18 +265,21 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
       <div className="bg-[#f0ebe2] rounded-3xl p-5 md:p-6 flex flex-col sm:flex-row items-center gap-4 md:gap-5">
         <div className="relative">
           <div className="w-20 h-20 rounded-full bg-[#1f473e] flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
-            {user.avatar ? (
+            {avatarUrl ? (
               <img
-                src={user.avatar} // Don't use getImageUrl for external Google URLs
+                src={avatarUrl}
                 alt={user.name}
                 className="w-full h-full object-cover"
-                referrerPolicy="no-referrer" // Important for Google images
+                referrerPolicy="no-referrer"
                 onError={(e) => {
-                  // If image fails to load, fallback to initials
+                  console.error("Image failed to load:", avatarUrl);
                   e.currentTarget.style.display = "none";
                   const parent = e.currentTarget.parentElement;
                   if (parent) {
                     parent.textContent = user.name.charAt(0);
+                    parent.style.display = "flex";
+                    parent.style.alignItems = "center";
+                    parent.style.justifyContent = "center";
                   }
                 }}
               />
@@ -213,6 +287,24 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
               user.name.charAt(0)
             )}
           </div>
+          <label
+            htmlFor="avatar-upload"
+            className="absolute bottom-0 right-0 w-7 h-7 bg-white rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors shadow-sm cursor-pointer"
+          >
+            {uploading ? (
+              <Loader2 className="w-3.5 h-3.5 text-gray-600 animate-spin" />
+            ) : (
+              <Camera className="w-3.5 h-3.5 text-gray-600" />
+            )}
+          </label>
+          <input
+            id="avatar-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarUpload}
+            className="hidden"
+            disabled={uploading}
+          />
         </div>
         <div className="text-center sm:text-left">
           <p className="font-bold text-gray-900 text-lg">{user.name}</p>

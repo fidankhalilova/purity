@@ -1,5 +1,9 @@
 {
   "HomePage": {
+    "meta": {
+      "title": "Purity | Clean Beauty for Radiant Skin",
+      "description": "Discover Purity's clean beauty products for glowing, healthy skin. Natural ingredients, sustainable packaging, and results you can see."
+    },
     "hero": {
       "slides": [
         {
@@ -170,6 +174,10 @@
     }
   },
   "AboutUs": {
+    "meta": {
+      "title": "About Us | Purity",
+      "description": "Learn about Purity's mission to create clean, effective skincare that nurtures both your skin and the planet."
+    },
     "AboutBanner": {
       "title": "Purity's Story",
       "description": "Skincare that begins with intention and ends with trust—crafted gently, honestly, and with purpose in every drop."
@@ -258,6 +266,10 @@
     }
   },
   "ContactPage": {
+    "meta": {
+      "title": "Contact Us | Purity",
+      "description": "Get in touch with our team. We're here to help with any questions about our products or your order."
+    },
     "Info": {
       "title": "Contact Us",
       "description": "Please use the below form. You can also call customer service on +1 (973) 3333-5555",
@@ -288,6 +300,10 @@
     }
   },
   "FAQPage": {
+    "meta": {
+      "title": "FAQ | Purity",
+      "description": "Find answers to commonly asked questions about our products, shipping, returns, and more."
+    },
     "StickyFAQ": {
       "badge": "Contact Us",
       "title": "Still Looking?",
@@ -420,8 +436,13 @@
     ]
   },
   "BlogPage": {
+    "meta": {
+      "title": "Blog | Purity",
+      "description": "Read our latest articles on skincare tips, ingredient guides, and beauty trends."
+    },
     "grid": {
       "title": "Beauty Inspirations",
+      "all": "All",
       "categories": [
         "All Posts",
         "Gifting",
@@ -547,20 +568,26 @@
     "olderPost": "Older Post",
     "newerPost": "Newer Post",
     "tip": "Tip:",
+    "views": "views",
     "beforeYouGo": {
       "title": "Before You Go...",
       "description": "Here are a few handpicked articles to inspire your next self-care moment."
     },
     "leaveComment": {
       "title": "Leave a Comment",
-      "description": "Please note, comments need to be approved before they are published. * is required field.",
+      "description": "Your email address will not be published. Required fields are marked *",
       "namePlaceholder": "Name *",
       "emailPlaceholder": "Email *",
-      "commentPlaceholder": "Your comment *",
-      "submitBtn": "Post Comment"
+      "commentPlaceholder": "Write your comment here...",
+      "submitBtn": "Post Comment",
+      "submitting": "Submitting..."
     }
   },
   "ShopPage": {
+    "meta": {
+      "title": "Shop | Purity Clean Beauty",
+      "description": "Shop our collection of clean beauty products. From serums to moisturizers, find your perfect skincare routine."
+    },
     "banner": {
       "breadcrumbHome": "Home",
       "title": "Skincare",
@@ -869,6 +896,10 @@
   },
   "AuthPages": {
     "login": {
+      "meta": {
+        "title": "Login | Purity",
+        "description": "Sign in to your Purity account to view orders, manage your wishlist, and more."
+      },
       "title": "Login",
       "desc": "Login to your account to access your order history and other personalized features.",
       "email": "Email *",
@@ -881,6 +912,10 @@
       "breadcrumb": "Account"
     },
     "register": {
+      "meta": {
+        "title": "Register | Purity",
+        "description": "Create a Purity account for a personalized shopping experience."
+      },
       "title": "Create Account",
       "desc": "Create a new account to join our community and get access to exclusive offers, rewards and content.",
       "firstName": "First name *",
@@ -894,6 +929,12 @@
       "breadcrumb": "Create Account"
     },
     "reset": {
+      "meta": {
+        "title": "Reset Password | Purity",
+        "description": "Reset your password to regain access to your Purity account."
+      },
+      "resetConfirmTitle": "Create New Password | Purity",
+      "resetConfirmDescription": "Create a new password for your Purity account.",
       "title": "Reset password",
       "desc": "Enter your e-mail below to receive instructions to reset your password.",
       "email": "Email *",
@@ -910,6 +951,10 @@
     }
   },
   "CheckoutPage": {
+    "meta": {
+      "title": "Checkout | Purity",
+      "description": "Complete your purchase with our secure checkout. Free shipping on orders over $100."
+    },
     "title": "Checkout",
     "breadcrumb": "Checkout",
     "contact": {
@@ -969,6 +1014,10 @@
       "processing": "Processing..."
     },
     "orderSuccess": {
+      "meta": {
+        "title": "Order Confirmed | Purity",
+        "description": "Thank you for your order! Your confirmation details and tracking information will be emailed shortly."
+      },
       "title": "Order Confirmed!",
       "desc": "Thank you for your purchase. Your order has been placed and is being processed.",
       "orderNumber": "Order number",
@@ -989,6 +1038,10 @@
       ]
     },
     "orderFail": {
+      "meta": {
+        "title": "Order Failed | Purity",
+        "description": "Your order could not be processed. Please try again or contact support."
+      },
       "title": "Payment Failed",
       "desc": "We couldn't process your payment. Please check your details and try again.",
       "tryAgain": "Try Again",

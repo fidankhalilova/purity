@@ -1,47 +1,68 @@
+// components/Blog/BlogGrid.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import BlogCard from "@/components/BlogCard_Two";
 import Pagination from "@/components/Pagination";
+import { blogService } from "@/services/blogService";
+import { BlogPost } from "@/types/blog";
+import { Loader2 } from "lucide-react";
 
 const POSTS_PER_PAGE = 6;
-
-const postImages = [
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-  "https://purity.nextsky.co/cdn/shop/articles/blog-15_0a8f86ee-b23c-4363-bd05-ddd1c60a428d.jpg?v=1747765188&width=720",
-];
 
 export default function BlogGrid() {
   const t = useTranslations("BlogPage");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const categories = t.raw("grid.categories") as string[];
 
-  const allPosts = (t.raw("posts") as any[]).map((post, i) => ({
-    ...post,
-    image: postImages[i % postImages.length],
-  }));
+  const categories = [
+    "All",
+    "Tips",
+    "Reviews",
+    "Guide",
+    "Holidays",
+    "Gifting",
+    "Self-Care",
+    "Trends",
+    "Ingredients",
+  ];
+
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
 
   const urlPage = Number(searchParams?.get("page")) || 1;
-  const urlCategory = searchParams?.get("category") || categories[0];
+  const urlCategory = searchParams?.get("category") || "All";
   const [active, setActive] = useState(urlCategory);
   const [page, setPage] = useState(urlPage);
 
   useEffect(() => {
+    loadPosts();
+  }, [page, active]);
+
+  useEffect(() => {
     setPage(Number(searchParams?.get("page")) || 1);
-    setActive(searchParams?.get("category") || categories[0]);
+    setActive(searchParams?.get("category") || "All");
   }, [searchParams]);
+
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const category = active === "All" ? undefined : active;
+      const { blogs, pagination } = await blogService.getAll(
+        page,
+        POSTS_PER_PAGE,
+        category,
+      );
+      setPosts(blogs);
+      setTotalPages(pagination.pages);
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateURL = (newPage: number, newCategory: string) => {
     const params = new URLSearchParams(searchParams?.toString());
@@ -62,16 +83,13 @@ export default function BlogGrid() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const filtered =
-    active === categories[0]
-      ? allPosts
-      : allPosts.filter((p) => p.category === active);
-
-  const totalPages = Math.ceil(filtered.length / POSTS_PER_PAGE);
-  const paginated = filtered.slice(
-    (page - 1) * POSTS_PER_PAGE,
-    page * POSTS_PER_PAGE,
-  );
+  if (loading && posts.length === 0) {
+    return (
+      <div className="flex justify-center items-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
+      </div>
+    );
+  }
 
   return (
     <section className="pb-12 pt-8">
@@ -90,19 +108,47 @@ export default function BlogGrid() {
                 : "bg-white text-gray-700 border-gray-200 hover:border-gray-400"
             }`}
           >
-            {i === categories.length - 1 ? t("grid.editorsPick") : cat}
+            {i === 0 ? t("grid.all") : cat}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {paginated.map((post, i) => (
-          <BlogCard key={`${post.href}-${i}`} {...post} />
-        ))}
-      </div>
+      {posts.length === 0 ? (
+        <div className="text-center py-20">
+          <p className="text-gray-500">No blog posts found in this category.</p>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post, i) => (
+              <BlogCard
+                key={post._id}
+                category={post.category}
+                title={post.title}
+                date={
+                  post.publishedAt
+                    ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    : post.createdAt.split("T")[0]
+                }
+                author={post.author}
+                image={post.featuredImage}
+                href={post.slug}
+              />
+            ))}
+          </div>
 
-      {filtered.length > POSTS_PER_PAGE && (
-        <Pagination totalPages={totalPages} onPageChange={handlePageChange} />
+          {totalPages > 1 && (
+            <Pagination
+              totalPages={totalPages}
+              currentPage={page}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
       )}
     </section>
   );

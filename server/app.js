@@ -79,6 +79,7 @@ const formulationRoutes = require('./routes/formulationRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -100,6 +101,8 @@ app.use('/api/formulations', formulationRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/blogs', blogRoutes);
+
 
 const PORT = process.env.PORT || 3001;
 

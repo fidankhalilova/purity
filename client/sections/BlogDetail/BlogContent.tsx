@@ -1,3 +1,4 @@
+// components/Blog/BlogContent.tsx
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { BlogPost, ContentBlock } from "@/types/blog";
@@ -33,7 +34,10 @@ function renderBlock(block: ContentBlock, i: number, tipLabel: string) {
       );
     case "tip":
       return (
-        <p key={i} className="text-base text-gray-600 leading-relaxed">
+        <p
+          key={i}
+          className="text-base text-gray-600 leading-relaxed bg-[#f5f0e8] p-4 rounded-2xl"
+        >
           <span className="font-semibold text-gray-800">{tipLabel} </span>
           {block.text}
         </p>
@@ -43,7 +47,7 @@ function renderBlock(block: ContentBlock, i: number, tipLabel: string) {
         <figure key={i} className="my-6">
           <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
             <Image
-              src={block.src}
+              src={block.src || ""}
               alt={block.alt ?? ""}
               fill
               className="object-cover"
@@ -56,15 +60,34 @@ function renderBlock(block: ContentBlock, i: number, tipLabel: string) {
           )}
         </figure>
       );
+    case "quote":
+      return (
+        <blockquote
+          key={i}
+          className="border-l-4 border-[#1f473e] pl-6 py-2 my-4 italic text-gray-600"
+        >
+          {block.text}
+        </blockquote>
+      );
+    case "list":
+      return (
+        <ul key={i} className="list-disc pl-6 space-y-2 text-gray-600">
+          {block.items?.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      );
     case "link-p":
       return (
         <p key={i} className="text-base text-gray-600 leading-relaxed">
-          {block.parts.map((part, j) =>
+          {block.parts?.map((part, j) =>
             part.href ? (
               <a
                 key={j}
                 href={part.href}
-                className="font-bold underline text-gray-900"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold underline text-[#1f473e] hover:text-[#163830]"
               >
                 {part.text}
               </a>
@@ -95,16 +118,28 @@ export default async function BlogContent({ post }: { post: BlogPost }) {
         {post.title}
       </h1>
       <div className="flex flex-wrap items-center gap-2 text-sm text-gray-400 mb-8">
-        <span>{post.date}</span>
+        <span>
+          {post.publishedAt
+            ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : post.createdAt.split("T")[0]}
+        </span>
         <span className="w-1 h-1 rounded-full bg-gray-300 inline-block" />
         <span>{post.author}</span>
         <span className="w-1 h-1 rounded-full bg-gray-300 inline-block" />
         <span>
           {post.comments ?? 0} {t("comments")}
         </span>
+        <span className="w-1 h-1 rounded-full bg-gray-300 inline-block" />
+        <span>
+          {post.views} {t("views")}
+        </span>
       </div>
       <div className="flex flex-col gap-5">
-        {post.blocks.map((block, i) => renderBlock(block, i, t("tip")))}
+        {post.content.map((block, i) => renderBlock(block, i, t("tip")))}
       </div>
     </article>
   );

@@ -1,19 +1,25 @@
+// sections/BlogDetail/BlogNav.tsx
 "use client";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
-type BlogNavProps = {
+interface BlogNavProps {
   older?: { title: string; href: string };
   newer?: { title: string; href: string };
-};
+}
 
 export default function BlogNav({ older, newer }: BlogNavProps) {
   const t = useTranslations("BlogDetail");
+  const locale = useLocale();
 
   return (
     <div className="flex flex-col sm:flex-row justify-between gap-4 py-8 border-t border-gray-200">
       {older ? (
-        <Link href={older.href} className="group flex flex-col gap-1 max-w-xs">
+        <Link
+          href={`/${locale}/blog/${older.href}`}
+          className="group flex flex-col gap-1 max-w-xs"
+        >
           <span className="flex items-center gap-1 text-xs md:text-sm text-gray-400">
             <svg
               className="w-4 h-4 shrink-0"
@@ -36,7 +42,7 @@ export default function BlogNav({ older, newer }: BlogNavProps) {
 
       {newer ? (
         <Link
-          href={newer.href}
+          href={`/${locale}/blog/${newer.href}`}
           className="group flex flex-col gap-1 sm:items-end max-w-xs sm:ml-auto"
         >
           <span className="flex items-center gap-1 text-xs md:text-sm text-gray-400">

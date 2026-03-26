@@ -237,6 +237,7 @@ const removeFromWishlist = async (req, res) => {
     }
 };
 
+// controllers/userController.js - Fix updateAvatar
 const updateAvatar = async (req, res) => {
     try {
         console.log('=== updateAvatar called ===');
@@ -248,20 +249,23 @@ const updateAvatar = async (req, res) => {
             return res.status(400).json({ success: false, message: 'No file uploaded' });
         }
 
-        console.log('File details:', {
-            filename: req.file.filename,
-            path: req.file.path,
-            url: req.file.url,
-            size: req.file.size,
-            mimetype: req.file.mimetype
-        });
+        // Get the filename from multer
+        const filename = req.file.filename;
+        console.log('Filename:', filename);
 
-        const avatarUrl = req.file.url;
-        console.log('Saving avatar URL to user:', avatarUrl);
+        // Get the base URL from the request
+        const protocol = req.protocol;
+        const host = req.get('host');
+        const baseUrl = `${protocol}://${host}`;
+
+        // Construct the full URL for the uploaded file
+        const fullAvatarUrl = `${baseUrl}/uploads/avatars/${filename}`;
+
+        console.log('Full avatar URL:', fullAvatarUrl);
 
         const user = await User.findByIdAndUpdate(
             req.params.id,
-            { avatar: avatarUrl },
+            { avatar: fullAvatarUrl },
             { new: true }
         ).select('-password -refreshToken');
 
@@ -270,8 +274,7 @@ const updateAvatar = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        console.log('User updated successfully:', user._id);
-        console.log('New avatar URL:', user.avatar);
+        console.log('User updated with avatar:', user.avatar);
 
         res.status(200).json({
             success: true,
