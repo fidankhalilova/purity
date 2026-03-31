@@ -1,4 +1,3 @@
-// components/OrdersSection.tsx (updated)
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -21,6 +20,14 @@ import OrderDetailModal from "@/components/OrderDetailModal";
 interface OrdersSectionProps {
   userId: string;
 }
+
+// Helper to get token from localStorage
+const getToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("accessToken");
+  }
+  return null;
+};
 
 const statusConfig = {
   paid: {
@@ -66,7 +73,8 @@ export default function OrdersSection({ userId }: OrdersSectionProps) {
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getUserOrders(userId);
+      const token = getToken(); // Get token from localStorage
+      const data = await orderService.getUserOrders(userId, token);
       setOrders(data);
       if (data.length > 0) setExpanded(data[0]._id);
     } catch (error) {
@@ -81,7 +89,8 @@ export default function OrdersSection({ userId }: OrdersSectionProps) {
     if (!confirm("Are you sure you want to cancel this order?")) return;
     try {
       setCancelling(orderId);
-      await orderService.cancel(orderId);
+      const token = getToken();
+      await orderService.cancel(orderId, token);
       await loadOrders();
       toast.success("Order cancelled successfully");
     } catch (error) {

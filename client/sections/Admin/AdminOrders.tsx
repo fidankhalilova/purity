@@ -1,269 +1,575 @@
-// app/[locale]/admin/reviews/page.tsx (updated)
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { Plus, Pencil, Trash2, Eye, Loader2, Upload, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Eye,
+  Pencil,
+  Loader2,
+  Package,
+  Truck,
+  CheckCircle,
+  XCircle,
+  Clock,
+} from "lucide-react";
+import Image from "next/image";
 import AdminTable, { Column } from "@/components/Admin/AdminTable";
 import AdminModal from "@/components/Admin/AdminModal";
 import AdminPageHeader from "@/components/Admin/AdminPageHeader";
 import AdminBadge from "@/components/Admin/AdminBadge";
-import Image from "next/image";
-import { reviewService } from "@/services/reviewService";
-import { uploadService } from "@/services/uploadService";
-import { Review } from "@/types/review";
+import { orderService } from "@/services/orderService";
+import { Order, UserInfo } from "@/types/order";
 import { toast } from "react-hot-toast";
 import { getImageUrl } from "@/utils/imageUrl";
 
-const inputClass =
-  "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors";
+type AdminOrder = {
+  _id: string;
+  orderNumber: string;
+  customer: string;
+  email: string;
+  date: string;
+  total: string;
+  items: number;
+  status: Order["status"];
+  address: string;
+  trackingNumber?: string;
+  rawOrder?: Order;
+};
 
-function Stars({ rating }: { rating: number }) {
+const statusColor: Record<
+  Order["status"],
+  "green" | "blue" | "yellow" | "red" | "gray"
+> = {
+  paid: "yellow",
+  getting_ready: "blue",
+  shipped: "blue",
+  delivered: "green",
+  cancelled: "red",
+};
+
+const statusSteps: {
+  key: Order["status"];
+  label: string;
+  icon: React.ComponentType<any>;
+}[] = [
+  { key: "paid", label: "Order Paid", icon: Clock },
+  { key: "getting_ready", label: "Getting Ready", icon: Package },
+  { key: "shipped", label: "Shipped", icon: Truck },
+  { key: "delivered", label: "Delivered", icon: CheckCircle },
+];
+
+const inputClass =
+  "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors bg-white";
+
+// Helper to get token from localStorage
+const getToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("accessToken");
+  }
+  return null;
+};
+
+function OrderTimeline({ status }: { status: Order["status"] }) {
+  if (status === "cancelled") {
+    return (
+      <div className="flex items-center gap-3 p-3 bg-red-50 rounded-2xl">
+        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <XCircle className="w-4 h-4 text-red-500" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-red-600">Order Cancelled</p>
+          <p className="text-xs text-red-400">This order has been cancelled</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentIndex = statusSteps.findIndex((s) => s.key === status);
+
   return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg
-          key={i}
-          className={`w-3 h-3 ${i < rating ? "text-yellow-400" : "text-gray-200"}`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
+    <div className="flex items-center gap-0">
+      {statusSteps.map((step, i) => {
+        const Icon = step.icon;
+        const isDone = i <= currentIndex;
+        const isCurrent = i === currentIndex;
+        const isLast = i === statusSteps.length - 1;
+
+        return (
+          <div
+            key={step.key}
+            className="flex items-center flex-1 last:flex-none"
+          >
+            <div className="flex flex-col items-center gap-1.5">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                  isDone ? "bg-[#1f473e]" : "bg-gray-100"
+                } ${isCurrent ? "ring-2 ring-[#1f473e]/30 ring-offset-1" : ""}`}
+              >
+                <Icon
+                  className={`w-4 h-4 ${isDone ? "text-white" : "text-gray-400"}`}
+                />
+              </div>
+              <p
+                className={`text-[10px] font-medium text-center leading-tight max-w-14 ${
+                  isDone ? "text-[#1f473e]" : "text-gray-400"
+                }`}
+              >
+                {step.label}
+              </p>
+            </div>
+            {!isLast && (
+              <div
+                className={`flex-1 h-0.5 mb-5 mx-1 transition-colors ${
+                  i < currentIndex ? "bg-[#1f473e]" : "bg-gray-200"
+                }`}
+              />
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-export default function AdminReviews() {
-  const [reviews, setReviews] = useState<Review[]>([]);
+function OrderDetailsModal({
+  order,
+  onClose,
+  onEdit,
+}: {
+  order: AdminOrder;
+  onClose: () => void;
+  onEdit: () => void;
+}) {
+  const raw = order.rawOrder;
+
+  const getUserEmail = (): string => {
+    if (!raw?.user) return "No email";
+    if (typeof raw.user === "string") return "No email";
+    return (raw.user as UserInfo).email || "No email";
+  };
+
+  const getCouponCode = (): string | undefined => {
+    return raw?.couponCode;
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+          <div>
+            <h2 className="text-base font-bold text-gray-900">
+              {order.orderNumber}
+            </h2>
+            <p className="text-xs text-gray-400 mt-0.5">{order.date}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <AdminBadge
+              label={order.status.replace("_", " ")}
+              color={statusColor[order.status]}
+            />
+            <button
+              onClick={onEdit}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1f473e] text-white text-xs font-semibold rounded-full hover:bg-[#163830] transition-colors"
+            >
+              <Pencil className="w-3 h-3" />
+              Edit Status
+            </button>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
+            >
+              <svg
+                className="w-4 h-4 text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-5">
+          {/* Timeline */}
+          <div className="bg-[#f5f0e8] rounded-2xl p-4">
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">
+              Order Progress
+            </p>
+            <OrderTimeline status={order.status} />
+            {order.trackingNumber && (
+              <div className="mt-4 pt-3 border-t border-[#e8dfd0] flex items-center gap-2">
+                <Truck className="w-3.5 h-3.5 text-[#1f473e] shrink-0" />
+                <span className="text-xs text-gray-600">Tracking:</span>
+                <span className="text-xs font-bold text-[#1f473e] font-mono">
+                  {order.trackingNumber}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Customer + Shipping */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="bg-gray-50 rounded-2xl p-4">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+                Customer
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#1f473e] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                  {order.customer.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {order.customer}
+                  </p>
+                  <p className="text-xs text-gray-400">{getUserEmail()}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 rounded-2xl p-4">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+                Shipping Address
+              </p>
+              <div className="flex items-start gap-2">
+                <svg
+                  className="w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                  />
+                </svg>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  {order.address}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Order items */}
+          <div>
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+              Items ({order.items})
+            </p>
+            <div className="flex flex-col gap-2">
+              {raw?.items?.length ? (
+                raw.items.map((item: any, i: number) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl"
+                  >
+                    <div className="relative w-12 h-12 shrink-0 rounded-xl overflow-hidden bg-[#f0ebe2]">
+                      {item.product?.images?.[0] ? (
+                        <Image
+                          src={getImageUrl(item.product.images[0])}
+                          alt={item.product?.name || "Product"}
+                          fill
+                          className="object-contain p-1"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="w-5 h-5 text-gray-300" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-gray-900 truncate">
+                        {item.product?.name || item.name || "Unknown Product"}
+                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {item.size && (
+                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                            {item.size}
+                          </span>
+                        )}
+                        {item.color && (
+                          <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                            {item.color}
+                          </span>
+                        )}
+                        <span className="text-xs text-gray-400">
+                          ×{item.quantity}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-sm font-bold text-gray-900 shrink-0">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl">
+                  <div className="w-12 h-12 shrink-0 rounded-xl bg-[#f0ebe2] flex items-center justify-center">
+                    <Package className="w-5 h-5 text-gray-300" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">
+                      {order.items} item{order.items > 1 ? "s" : ""}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      Open order to see details
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Order summary */}
+          <div className="bg-[#f5f0e8] rounded-2xl p-4">
+            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+              Order Summary
+            </p>
+            <div className="flex flex-col gap-2">
+              {raw?.subtotal !== undefined && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Subtotal</span>
+                  <span className="text-gray-700">
+                    ${raw.subtotal?.toFixed(2)}
+                  </span>
+                </div>
+              )}
+              {raw?.shippingCost !== undefined && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Shipping</span>
+                  <span
+                    className={
+                      raw.shippingCost === 0
+                        ? "text-green-600 font-medium"
+                        : "text-gray-700"
+                    }
+                  >
+                    {raw.shippingCost === 0
+                      ? "Free"
+                      : `$${raw.shippingCost?.toFixed(2)}`}
+                  </span>
+                </div>
+              )}
+              {raw?.discount !== undefined && raw.discount > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Discount</span>
+                  <span className="text-green-600">
+                    -${raw.discount?.toFixed(2)}
+                  </span>
+                </div>
+              )}
+              {getCouponCode() && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-500">Coupon Code</span>
+                  <span className="font-mono text-xs font-bold text-[#1f473e] bg-[#1f473e]/10 px-2 py-0.5 rounded-full">
+                    {getCouponCode()}
+                  </span>
+                </div>
+              )}
+              <div className="border-t border-[#e8dfd0] pt-2 flex justify-between font-bold text-base">
+                <span>Total</span>
+                <span>{order.total}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function AdminOrders() {
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Review | null>(null);
-  const [form, setForm] = useState<Partial<Review>>({});
-  const [viewing, setViewing] = useState<Review | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selected, setSelected] = useState<AdminOrder | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [status, setStatus] = useState<Order["status"]>("paid");
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    loadReviews();
+    loadOrders();
   }, []);
 
-  const loadReviews = async () => {
+  const loadOrders = async () => {
     try {
       setLoading(true);
-      const data = await reviewService.getAll();
-      setReviews(data);
+      const token = getToken(); // Get token from localStorage
+      const { orders: fetchedOrders } = await orderService.getAll(
+        undefined,
+        undefined,
+        token,
+      );
+
+      const adminOrders: AdminOrder[] = fetchedOrders.map((order) => {
+        let customerName = "Unknown";
+        let customerEmail = "No email";
+
+        if (order.user) {
+          if (typeof order.user === "string") {
+            customerName = "User";
+          } else {
+            customerName = (order.user as UserInfo).name || "Unknown";
+            customerEmail = (order.user as UserInfo).email || "No email";
+          }
+        }
+
+        return {
+          _id: order._id,
+          orderNumber: order.orderNumber,
+          customer: customerName,
+          email: customerEmail,
+          date: new Date(order.orderedAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          total: `$${order.total.toFixed(2)}`,
+          items: order.items.reduce((sum, item) => sum + item.quantity, 0),
+          status: order.status,
+          address: order.shippingAddress
+            ? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.country}`
+            : "No address",
+          trackingNumber: order.trackingNumber,
+          rawOrder: order,
+        };
+      });
+
+      setOrders(adminOrders);
     } catch (error) {
-      console.error("Error loading reviews:", error);
-      toast.error("Failed to load reviews");
+      console.error("Error loading orders:", error);
+      toast.error("Failed to load orders");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploading(true);
-      const url = await uploadService.uploadReviewImage(file);
-      setForm({ ...form, images: [...(form.images || []), url] });
-      toast.success("Image uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Failed to upload image");
-    } finally {
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
+  const openDetails = (order: AdminOrder) => {
+    setSelected(order);
+    setDetailsOpen(true);
   };
 
-  const removeImage = (index: number) => {
-    setForm({
-      ...form,
-      images: form.images?.filter((_, i) => i !== index),
-    });
-  };
-
-  const openAdd = () => {
-    setEditing(null);
-    setForm({
-      status: "published",
-      rating: 5,
-      images: [],
-      date: new Date().toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "numeric",
-      }),
-    });
-    setModalOpen(true);
-  };
-
-  const openEdit = (r: Review) => {
-    setEditing(r);
-    setForm(r);
-    setModalOpen(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to permanently delete this review?"))
-      return;
-    try {
-      setSubmitting(true);
-      await reviewService.delete(id);
-      toast.success("Review deleted successfully");
-      await loadReviews();
-    } catch (error) {
-      console.error("Error deleting review:", error);
-      toast.error("Failed to delete review");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleSoftDelete = async (id: string, currentStatus: string) => {
-    const newStatus = currentStatus === "published" ? "deleted" : "published";
-    try {
-      setSubmitting(true);
-      await reviewService.updateStatus(id, newStatus);
-      toast.success(
-        `Review ${newStatus === "published" ? "restored" : "deleted"} successfully`,
-      );
-      await loadReviews();
-    } catch (error) {
-      console.error("Error updating review status:", error);
-      toast.error("Failed to update review status");
-    } finally {
-      setSubmitting(false);
-    }
+  const openEdit = (order?: AdminOrder) => {
+    const target = order ?? selected;
+    if (!target) return;
+    setSelected(target);
+    setStatus(target.status);
+    setTrackingNumber(target.trackingNumber || "");
+    setDetailsOpen(false);
+    setEditOpen(true);
   };
 
   const handleSave = async () => {
+    if (!selected) return;
     try {
-      setSubmitting(true);
-
-      // Prepare the review data
-      const reviewData = {
-        ...form,
-        // Ensure required fields are present
-        author: form.author || "Anonymous",
-        rating: form.rating || 5,
-        title: form.title || "",
-        body: form.body || "",
-        images: form.images || [],
-        status: form.status || "published",
-        date:
-          form.date ||
-          new Date().toLocaleDateString("en-US", {
-            month: "2-digit",
-            day: "2-digit",
-            year: "numeric",
-          }),
-      };
-
-      if (editing) {
-        await reviewService.update(editing._id, reviewData);
-        toast.success("Review updated successfully");
-      } else {
-        // For admin creation, use the regular create method (no productId)
-        await reviewService.create(reviewData);
-        toast.success("Review created successfully");
-      }
-      await loadReviews();
-      setModalOpen(false);
+      setUpdating(true);
+      const token = getToken();
+      const updatedOrder = await orderService.updateStatus(
+        selected._id,
+        status,
+        trackingNumber || undefined,
+        token,
+      );
+      setOrders(
+        orders.map((o) =>
+          o._id === selected._id
+            ? {
+                ...o,
+                status: updatedOrder.status,
+                trackingNumber: updatedOrder.trackingNumber,
+              }
+            : o,
+        ),
+      );
+      toast.success("Order status updated successfully");
+      setEditOpen(false);
     } catch (error) {
-      console.error("Error saving review:", error);
-      toast.error("Failed to save review");
+      console.error("Error updating order:", error);
+      toast.error("Failed to update order status");
     } finally {
-      setSubmitting(false);
+      setUpdating(false);
     }
   };
 
-  const columns: Column<Review>[] = [
+  const columns: Column<AdminOrder>[] = [
     {
-      key: "author",
-      label: "Author",
+      key: "orderNumber",
+      label: "Order ID",
       sortable: true,
       render: (row) => (
-        <span className="font-semibold text-gray-900">{row.author}</span>
+        <span className="font-bold text-gray-900">{row.orderNumber}</span>
       ),
     },
     {
-      key: "rating",
-      label: "Rating",
-      render: (row) => <Stars rating={row.rating} />,
-    },
-    {
-      key: "title",
-      label: "Title",
-      render: (row) => (
-        <span className="text-gray-700 text-xs font-medium">{row.title}</span>
-      ),
-    },
-    {
-      key: "date",
-      label: "Date",
+      key: "customer",
+      label: "Customer",
       sortable: true,
       render: (row) => (
-        <span className="text-xs text-gray-500">{row.date}</span>
+        <div>
+          <p className="font-semibold text-gray-900">{row.customer}</p>
+          <p className="text-xs text-gray-400">{row.email}</p>
+        </div>
+      ),
+    },
+    { key: "date", label: "Date", sortable: true },
+    {
+      key: "items",
+      label: "Items",
+      render: (row) => (
+        <span>
+          {row.items} item{row.items > 1 ? "s" : ""}
+        </span>
       ),
     },
     {
-      key: "images",
-      label: "Photos",
-      render: (row) =>
-        row.images && row.images.length > 0 ? (
-          <span className="text-xs text-[#1f473e] font-semibold">
-            {row.images.length} photo{row.images.length > 1 ? "s" : ""}
-          </span>
-        ) : (
-          <span className="text-xs text-gray-300">—</span>
-        ),
+      key: "total",
+      label: "Total",
+      sortable: true,
+      render: (row) => <span className="font-bold">{row.total}</span>,
     },
     {
       key: "status",
       label: "Status",
       render: (row) => (
-        <button
-          onClick={() => handleSoftDelete(row._id, row.status)}
-          disabled={submitting}
-          className="cursor-pointer"
-        >
-          <AdminBadge
-            label={row.status}
-            color={row.status === "published" ? "green" : "red"}
-          />
-        </button>
+        <AdminBadge
+          label={row.status.replace("_", " ")}
+          color={statusColor[row.status]}
+        />
       ),
     },
     {
       key: "actions",
       label: "",
-      width: "w-32",
+      width: "w-24",
       render: (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           <button
-            onClick={() => openEdit(row)}
-            disabled={submitting}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50"
-          >
-            <Pencil className="w-3.5 h-3.5 text-gray-500" />
-          </button>
-          <button
-            onClick={() => setViewing(row)}
-            disabled={submitting}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors disabled:opacity-50"
+            onClick={() => openDetails(row)}
+            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
+            title="View Details"
           >
             <Eye className="w-3.5 h-3.5 text-gray-500" />
           </button>
           <button
-            onClick={() => handleDelete(row._id)}
-            disabled={submitting}
-            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50"
+            onClick={() => openEdit(row)}
+            className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors"
+            title="Edit Status"
           >
-            <Trash2 className="w-3.5 h-3.5 text-red-400" />
+            <Pencil className="w-3.5 h-3.5 text-gray-500" />
           </button>
         </div>
       ),
@@ -272,7 +578,7 @@ export default function AdminReviews() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex justify-center items-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
       </div>
     );
@@ -281,238 +587,86 @@ export default function AdminReviews() {
   return (
     <div>
       <AdminPageHeader
-        title="Reviews"
-        subtitle={`${reviews.length} total reviews · ${reviews.filter((r) => r.status === "deleted").length} deleted`}
-        action={
-          <button
-            onClick={openAdd}
-            disabled={submitting}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#1f473e] text-white text-sm font-semibold rounded-full hover:bg-[#163830] transition-colors disabled:opacity-50"
-          >
-            <Plus className="w-4 h-4" /> Add Review
-          </button>
-        }
+        title="Orders"
+        subtitle={`${orders.length} total orders`}
       />
       <AdminTable
         columns={columns}
-        data={reviews}
-        searchKeys={["author", "title"]}
+        data={orders}
+        searchKeys={["orderNumber", "customer", "email"]}
       />
 
-      <AdminModal
-        title={editing ? "Edit Review" : "Add Review"}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSave}
-      >
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Author *
-            </label>
-            <input
-              value={form.author ?? ""}
-              onChange={(e) => setForm({ ...form, author: e.target.value })}
-              className={inputClass}
-              placeholder="John Doe"
-              required
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Rating *
-            </label>
-            <select
-              value={form.rating ?? 5}
-              onChange={(e) =>
-                setForm({ ...form, rating: parseInt(e.target.value) })
-              }
-              className={inputClass}
-              required
-            >
-              <option value={5}>5 Stars</option>
-              <option value={4}>4 Stars</option>
-              <option value={3}>3 Stars</option>
-              <option value={2}>2 Stars</option>
-              <option value={1}>1 Star</option>
-            </select>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Title *
-            </label>
-            <input
-              value={form.title ?? ""}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className={inputClass}
-              placeholder="Review title"
-              required
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Review Content *
-            </label>
-            <textarea
-              value={form.body ?? ""}
-              onChange={(e) => setForm({ ...form, body: e.target.value })}
-              className={`${inputClass} resize-none`}
-              rows={4}
-              placeholder="Write your review here..."
-              required
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Images
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                ref={fileInputRef}
-                className="hidden"
-                id="review-image-upload"
-              />
-              <label
-                htmlFor="review-image-upload"
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-xl cursor-pointer hover:bg-gray-200 transition-colors"
-              >
-                {uploading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Upload className="w-4 h-4" />
-                )}
-                Upload Image
-              </label>
-            </div>
-            {form.images && form.images.length > 0 && (
-              <div className="flex gap-2 flex-wrap mt-2">
-                {form.images.map((img, index) => (
-                  <div
-                    key={index}
-                    className="relative w-16 h-16 rounded-lg overflow-hidden border border-gray-200"
-                  >
-                    <img
-                      src={getImageUrl(img)}
-                      alt={`Review image ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-0 right-0 p-0.5 bg-red-500 text-white rounded-bl-lg"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-            <input
-              type="text"
-              value={form.images?.join(", ") ?? ""}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  images: e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter((s) => s),
-                })
-              }
-              className={inputClass}
-              placeholder="Or enter image URLs separated by commas"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Date
-            </label>
-            <input
-              type="date"
-              value={form.date ?? ""}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-              className={inputClass}
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Status
-            </label>
-            <select
-              value={form.status ?? "published"}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  status: e.target.value as "published" | "deleted",
-                })
-              }
-              className={inputClass}
-            >
-              <option value="published">Published</option>
-              <option value="deleted">Deleted</option>
-            </select>
-          </div>
-        </div>
-      </AdminModal>
+      {/* Order Details Modal */}
+      {detailsOpen && selected && (
+        <OrderDetailsModal
+          order={selected}
+          onClose={() => setDetailsOpen(false)}
+          onEdit={() => openEdit()}
+        />
+      )}
 
+      {/* Edit Status Modal */}
       <AdminModal
-        title="Review Details"
-        open={!!viewing}
-        onClose={() => setViewing(null)}
+        title="Update Order Status"
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        onSave={handleSave}
+        saveLabel={updating ? "Saving..." : "Save Changes"}
       >
-        {viewing && (
+        {selected && (
           <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#1f473e]/10 flex items-center justify-center text-[#1f473e] font-bold text-sm">
-                  {viewing.author.charAt(0)}
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">
-                    {viewing.author}
-                  </p>
-                  <p className="text-xs text-gray-400">{viewing.date}</p>
-                </div>
-              </div>
-              <Stars rating={viewing.rating} />
-            </div>
-            <div className="bg-[#f5f0e8] rounded-2xl p-4">
-              <p className="text-sm font-bold text-gray-900 mb-2">
-                {viewing.title}
+            <div className="bg-[#f5f0e8] rounded-2xl p-4 flex flex-col gap-1.5">
+              <p className="text-sm font-bold text-gray-900">
+                {selected.orderNumber}
               </p>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                {viewing.body}
+              <p className="text-sm text-gray-600">
+                {selected.customer} · {selected.email}
+              </p>
+              <p className="text-xs text-gray-400">{selected.address}</p>
+              <p className="text-sm font-semibold text-gray-900 mt-1">
+                {selected.total} · {selected.items} item
+                {selected.items > 1 ? "s" : ""}
               </p>
             </div>
-            {viewing.images && viewing.images.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                  Photos
-                </p>
-                <div className="flex gap-2 flex-wrap">
-                  {viewing.images.map((img, i) => (
-                    <div
-                      key={i}
-                      className="relative w-20 h-20 rounded-xl overflow-hidden"
-                    >
-                      <img
-                        src={getImageUrl(img)}
-                        alt="Review"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <AdminBadge
-                label={viewing.status}
-                color={viewing.status === "published" ? "green" : "red"}
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Status
+              </label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as Order["status"])}
+                className={inputClass}
+              >
+                <option value="paid">Paid</option>
+                <option value="getting_ready">Getting Ready</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Tracking Number
+              </label>
+              <input
+                type="text"
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+                placeholder="Enter tracking number"
+                className={inputClass}
               />
+            </div>
+
+            {/* Live preview of timeline in edit modal */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Preview
+              </label>
+              <div className="p-3 bg-gray-50 rounded-2xl">
+                <OrderTimeline status={status} />
+              </div>
             </div>
           </div>
         )}

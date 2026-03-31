@@ -24,10 +24,16 @@ export type Address = {
   isDefault: boolean;
 };
 
+export type UserInfo = {
+  _id: string;
+  name: string;
+  email: string;
+};
+
 export type Order = {
   _id: string;
   orderNumber: string;
-  user: string;
+  user: string | UserInfo;
   items: OrderItem[];
   subtotal: number;
   discount: number;
@@ -40,7 +46,7 @@ export type Order = {
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
   trackingNumber?: string;
   notes?: string;
-  couponCode?: string;
+  couponCode?: string; // Changed from promoCode to couponCode
   orderedAt: string;
   deliveredAt?: string;
   cancelledAt?: string;
