@@ -7,7 +7,7 @@ import Pagination from "@/components/Pagination";
 import { productService } from "@/services/productService";
 import { getImageUrl } from "@/utils/imageUrl";
 
-const PRODUCTS_PER_PAGE = 5;
+const PRODUCTS_PER_PAGE = 7;
 
 export default function ProductList() {
   const t = useTranslations("ShopPage.products");

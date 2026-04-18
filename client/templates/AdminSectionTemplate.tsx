@@ -19,6 +19,7 @@ import AdminHomeSections from "@/sections/Admin/AdminHomeSections";
 import AdminBadges from "@/sections/Admin/AdminBadges";
 import AdminBrands from "@/sections/Admin/AdminBrands";
 import AdminFormulations from "@/sections/Admin/AdminFormulations";
+import AdminGlowIngredients from "@/sections/Admin/AdminGlowIngredients";
 
 const sectionMap: Record<string, React.ComponentType> = {
   dashboard: AdminDashboard,
@@ -43,6 +44,7 @@ const sectionMap: Record<string, React.ComponentType> = {
   brands: AdminBrands,
   formulations: AdminFormulations,
   users: AdminUsers,
+  "glow-ingredients": AdminGlowIngredients,
 };
 
 export default function AdminSectionTemplate({ section }: { section: string }) {

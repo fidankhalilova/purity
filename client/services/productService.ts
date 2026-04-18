@@ -1,10 +1,12 @@
+// services/productService.ts
 import { Product, ProductListResponse, ApiResponse } from "@/types/product";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 // All fields to populate for full product detail
-const DETAIL_POPULATE = "productColors,productSizes,badges,brand,formulation";
+const DETAIL_POPULATE =
+  "productColors,productSizes,badges,brand,formulation,glowIngredients";
 const LIST_POPULATE =
   "collection,tags,badges,productColors,productSizes,brand,formulation";
 
@@ -96,7 +98,6 @@ export const productService = {
     if (options?.onSale) params.append("onSale", "true");
     if (options?.newArrivals) params.append("newArrivals", "true");
 
-    // FIX: Use LIST_POPULATE instead of hardcoded string
     params.append("populate", LIST_POPULATE);
 
     console.log("Fetching products with params:", params.toString());
@@ -129,25 +130,34 @@ export const productService = {
   async getById(id: string): Promise<Product> {
     try {
       const params = new URLSearchParams({
-        populate: "brand,formulation,productColors,productSizes,badges",
+        populate: DETAIL_POPULATE,
       });
 
-      // Try slug first
+      // First try: find by custom id field (e.g., "prd-123456789-abc123")
       let response = await fetch(
-        `${API_BASE_URL}/products/slug/${id}?${params.toString()}`,
+        `${API_BASE_URL}/products/id/${encodeURIComponent(id)}?${params.toString()}`,
       );
       let data: ApiResponse<Product> = await response.json();
 
+      // Second try: find by slug
       if (!data.success || !data.data) {
-        // Fallback to MongoDB _id
         response = await fetch(
-          `${API_BASE_URL}/products/${id}?${params.toString()}`,
+          `${API_BASE_URL}/products/slug/${encodeURIComponent(id)}?${params.toString()}`,
         );
         data = await response.json();
       }
 
-      if (!data.success)
+      // Third try: find by MongoDB _id
+      if (!data.success || !data.data) {
+        response = await fetch(
+          `${API_BASE_URL}/products/${encodeURIComponent(id)}?${params.toString()}`,
+        );
+        data = await response.json();
+      }
+
+      if (!data.success) {
         throw new Error(data.message || "Failed to fetch product");
+      }
       if (!data.data) throw new Error("Product not found");
       return data.data;
     } catch (error) {

@@ -1,43 +1,17 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import AdminSidebarLayout from "@/layout/AdminSidebarLayout";
-import { AdminAuthProvider, useAdminAuth } from "@/context/AdminAuthContext";
+// app/admin/layout.tsx
+import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
-import "../globals.css";
 
-// Create a separate component that uses useAdminAuth
-function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAdminAuth();
-  const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
+import { AdminAuthProvider } from "@/context/AdminAuthContext"; // ← Import the Provider only
+import AdminAuthGuard from "@/components/AdminAuthGuard"; // ← We'll create this
 
-  useEffect(() => {
-    if (!isLoading) {
-      if (!user) {
-        const returnUrl = encodeURIComponent("/admin");
-        router.push(`/account/login?returnUrl=${returnUrl}`);
-      } else if (user.role !== "admin") {
-        router.push("/");
-      } else {
-        setIsAdmin(true);
-      }
-    }
-  }, [user, isLoading, router]);
+// ✅ Metadata works here because this is a Server Component
+export const metadata: Metadata = {
+  title: "Admin - Purity",
+  description: "By Fidan Khalilova",
+};
 
-  if (isLoading || !isAdmin) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-[#1f473e]" />
-      </div>
-    );
-  }
-
-  return <AdminSidebarLayout>{children}</AdminSidebarLayout>;
-}
-
-// Main layout - wrap with AdminAuthProvider first
+// Main Layout (Server Component)
 export default function AdminLayout({
   children,
 }: {

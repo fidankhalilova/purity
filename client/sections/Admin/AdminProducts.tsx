@@ -25,6 +25,8 @@ import { homeSectionService } from "@/services/homeSectionService";
 import { tagService } from "@/services/tagService";
 import { collectionService } from "@/services/collectionService";
 import { badgeService } from "@/services/badgeService";
+import { brandService } from "@/services/brandService";
+import { glowIngredientService } from "@/services/glowIngredientService";
 import {
   Product,
   ProductColor,
@@ -37,7 +39,9 @@ import {
   Tag,
   HomeSection,
   Badge,
+  GlowIngredient,
 } from "@/types/product";
+import { Brand } from "@/types/brand";
 import { toast } from "react-hot-toast";
 import { uploadService } from "@/services/uploadService";
 import { Upload } from "lucide-react";
@@ -66,6 +70,7 @@ function MultiSelect({
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
   const buttonRef = useRef<HTMLButtonElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggle = (optId: string) =>
     onChange(
@@ -74,36 +79,70 @@ function MultiSelect({
         : [...value, optId],
     );
 
+  // Update dropdown position when open
   useEffect(() => {
-    if (open && buttonRef.current) {
-      const rect = buttonRef.current.getBoundingClientRect();
+    if (!open || !buttonRef.current) return;
+
+    const updatePosition = () => {
+      const rect = buttonRef.current?.getBoundingClientRect();
+      if (!rect) return;
+
       const dropdownHeight = Math.min(options.length * 40 + 16, 176);
       const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
 
       setDropdownStyle({
         position: "fixed",
         left: rect.left,
         width: rect.width,
         zIndex: 9999,
-        ...(spaceBelow < dropdownHeight
+        ...(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight
           ? { bottom: window.innerHeight - rect.top + 4 }
           : { top: rect.bottom + 4 }),
       });
-    }
+    };
+
+    updatePosition();
+    window.addEventListener("scroll", updatePosition);
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+    };
   }, [open, options.length]);
 
+  // Handle click outside
   useEffect(() => {
     if (!open) return;
+
     const handler = (e: MouseEvent) => {
       if (
         wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
+        !wrapperRef.current.contains(e.target as Node) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
       ) {
         setOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  // Close on escape
+  useEffect(() => {
+    if (!open) return;
+
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, [open]);
 
   return (
@@ -128,57 +167,55 @@ function MultiSelect({
           )}
         </button>
 
-        {open &&
-          typeof window !== "undefined" &&
-          createPortal(
-            <div
-              style={dropdownStyle}
-              className="bg-white border border-gray-100 rounded-2xl shadow-xl py-2 max-h-44 overflow-y-auto"
-            >
-              {options.length === 0 && (
-                <p className="text-xs text-gray-400 px-4 py-2">
-                  No options available
-                </p>
-              )}
-              {options.map((opt) => (
-                <button
-                  key={opt._id}
-                  type="button"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    toggle(opt._id);
-                  }}
-                  className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors ${
+        {open && typeof window !== "undefined" && (
+          <div
+            ref={dropdownRef}
+            style={dropdownStyle}
+            className="bg-white border border-gray-100 rounded-2xl shadow-xl py-2 max-h-44 overflow-y-auto"
+          >
+            {options.length === 0 && (
+              <p className="text-xs text-gray-400 px-4 py-2">
+                No options available
+              </p>
+            )}
+            {options.map((opt) => (
+              <button
+                key={opt._id}
+                type="button"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  toggle(opt._id);
+                }}
+                className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 hover:bg-gray-50 transition-colors ${
+                  value.includes(opt._id)
+                    ? "font-semibold text-[#1f473e]"
+                    : "text-gray-600"
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
                     value.includes(opt._id)
-                      ? "font-semibold text-[#1f473e]"
-                      : "text-gray-600"
+                      ? "bg-[#1f473e] border-[#1f473e]"
+                      : "border-gray-300"
                   }`}
                 >
-                  <div
-                    className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                      value.includes(opt._id)
-                        ? "bg-[#1f473e] border-[#1f473e]"
-                        : "border-gray-300"
-                    }`}
-                  >
-                    {value.includes(opt._id) && (
-                      <svg
-                        className="w-2.5 h-2.5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={3}
-                        viewBox="0 0 24 24"
-                      >
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    )}
-                  </div>
-                  {getOptionLabel(opt)}
-                </button>
-              ))}
-            </div>,
-            document.body,
-          )}
+                  {value.includes(opt._id) && (
+                    <svg
+                      className="w-2.5 h-2.5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                      viewBox="0 0 24 24"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  )}
+                </div>
+                {getOptionLabel(opt)}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {value.length > 0 && (
@@ -356,6 +393,8 @@ export default function AdminProducts() {
   const [skinConcerns, setSkinConcerns] = useState<SkinConcern[]>([]);
   const [skinShades, setSkinShades] = useState<SkinShade[]>([]);
   const [skinColors, setSkinColors] = useState<SkinColor[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [glowIngredients, setGlowIngredients] = useState<GlowIngredient[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadingType, setUploadingType] = useState<"main" | "action" | null>(
     null,
@@ -382,6 +421,8 @@ export default function AdminProducts() {
         skinConcernsData,
         skinShadesData,
         skinColorsData,
+        brandsData,
+        glowIngredientsData,
       ] = await Promise.all([
         productService.getAll(),
         collectionService.getAll(),
@@ -394,6 +435,8 @@ export default function AdminProducts() {
         skinConcernService.getAll(),
         skinShadeService.getAll(),
         skinColorService.getAll(),
+        brandService.getAll(),
+        glowIngredientService.getAll(),
       ]);
 
       setProducts(productsData.products);
@@ -407,6 +450,8 @@ export default function AdminProducts() {
       setSkinConcerns(skinConcernsData);
       setSkinShades(skinShadesData);
       setSkinColors(skinColorsData);
+      setBrands(brandsData);
+      setGlowIngredients(glowIngredientsData);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("Failed to load data");
@@ -417,7 +462,15 @@ export default function AdminProducts() {
 
   const openAdd = () => {
     setEditing(null);
+    // Generate a unique ID for the product (slug-like format)
+    const generateId = () => {
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 8);
+      return `prd-${timestamp}-${random}`;
+    };
+
     setForm({
+      id: generateId(),
       status: "active",
       inStock: true,
       rating: 0,
@@ -439,6 +492,7 @@ export default function AdminProducts() {
       actionImages: [],
       glowIngredients: [],
       collection: "",
+      brand: "",
       productInfo: "",
       howToUse: "",
       ingredients: "",
@@ -618,7 +672,6 @@ export default function AdminProducts() {
       render: (row) => (
         <div className="flex flex-wrap gap-1">
           {(row.tags || []).slice(0, 2).map((tagId, index) => {
-            // Handle both string ID and populated Tag object
             const tagIdString =
               typeof tagId === "string" ? tagId : (tagId as any)._id;
             const tag = tags.find((t) => t._id === tagIdString);
@@ -869,6 +922,21 @@ export default function AdminProducts() {
             </div>
           </FormSection>
 
+          {/* Brand */}
+          <FormSection title="Brand">
+            <SingleSelect
+              label="Brand"
+              options={brands}
+              value={
+                typeof form.brand === "object"
+                  ? (form.brand as any)?._id || ""
+                  : ((form.brand as string) ?? "")
+              }
+              onChange={(v) => setFormValue("brand", v)}
+              getOptionLabel={(opt) => opt.name}
+            />
+          </FormSection>
+
           {/* Variants */}
           <FormSection title="Variants">
             <MultiSelect
@@ -1036,22 +1104,17 @@ export default function AdminProducts() {
               onChange={(v) => setFormValue("benefits", v)}
               placeholder="e.g. Reduces puffiness"
             />
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Glow Ingredients
-              </label>
-              <input
-                value={form.glowIngredients?.join(", ") ?? ""}
-                onChange={(e) =>
-                  setFormValue(
-                    "glowIngredients",
-                    e.target.value.split(",").map((s) => s.trim()),
-                  )
-                }
-                className={inputClass}
-                placeholder="Niacinamide, Vitamin C, etc."
-              />
-            </div>
+            <MultiSelect
+              label="Glow Ingredients"
+              options={glowIngredients}
+              value={
+                (form.glowIngredients as any[])?.map((item) =>
+                  typeof item === "object" ? item._id : item,
+                ) ?? []
+              }
+              onChange={(v) => setFormValue("glowIngredients", v)}
+              getOptionLabel={(opt) => `${opt.title} - ${opt.tag}`}
+            />
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Product Info

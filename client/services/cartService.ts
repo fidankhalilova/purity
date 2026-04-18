@@ -20,6 +20,10 @@ export interface CartItem {
 export const cartService = {
   // Get cart from backend
   async getCart(userId: string, token?: string): Promise<CartItem[]> {
+    if (!userId) {
+      console.warn("getCart called with undefined userId");
+      return [];
+    }
     const headers: HeadersInit = {};
     if (token) {
       headers.Authorization = `Bearer ${token}`;

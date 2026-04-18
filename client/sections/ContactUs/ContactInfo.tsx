@@ -27,7 +27,7 @@ const socials = [
 ];
 
 export default function ContactInfo() {
-  const t = useTranslations("ContactPage.Info");
+  const t = useTranslations("ContactUsPage.Info");
 
   return (
     <div>

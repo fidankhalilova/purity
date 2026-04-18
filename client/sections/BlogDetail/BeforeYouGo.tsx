@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
-import "swiper/css";
+
 import BlogCard from "@/components/BlogCard_Two";
 import { blogService } from "@/services/blogService";
 import { BlogPost } from "@/types/blog";
 import { Loader2 } from "lucide-react";
+import "swiper/css";
 
 interface BeforeYouGoProps {
   currentPostId: string;

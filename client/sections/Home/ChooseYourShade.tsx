@@ -6,12 +6,12 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
-import "swiper/css";
 import ProductCard from "@/components/ProductCard";
 import { useTranslations } from "next-intl";
 import { skinShadeService } from "@/services/skinShadeService";
 import { productService } from "@/services/productService";
 import { getImageUrl } from "@/utils/imageUrl";
+import "swiper/css";
 
 export default function ChooseYourShade() {
   const locale = useLocale();

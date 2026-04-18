@@ -60,6 +60,10 @@ export default function ProductCard({ product }: { product: Product }) {
   // Check if product is in wishlist on mount
   useEffect(() => {
     const checkWishlist = async () => {
+      if (!user?._id) {
+        setIsWishlisted(false);
+        return;
+      }
       if (user) {
         try {
           const userData = await userService.getById(user._id, accessToken);

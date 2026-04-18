@@ -73,6 +73,13 @@ export const adminTabs: AdminTab[] = [
     group: "Catalog",
   },
   {
+    id: "glow-ingredients",
+    label: "Glow Ingredients",
+    icon: Droplets,
+    description: "Manage glow ingredients",
+    group: "Catalog",
+  },
+  {
     id: "formulations",
     label: "Formulations",
     icon: FlaskConical,

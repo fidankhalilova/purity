@@ -72,6 +72,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Load cart count when user changes
   useEffect(() => {
     const loadCartCount = async () => {
+      if (!user?._id) {
+        const localCart = cartService.getLocalCart();
+        const totalItems = localCart.reduce((sum, item) => sum + item.qty, 0);
+        setCartCount(totalItems);
+        return;
+      }
       if (user && accessToken) {
         try {
           const cart = await cartService.getCart(user._id, accessToken);

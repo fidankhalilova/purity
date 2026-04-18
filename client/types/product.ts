@@ -136,15 +136,16 @@ export type Review = {
   updatedAt?: string;
 };
 
-// Glow Ingredient Type
-export type GlowIngredient = {
-  _id?: string;
+export interface GlowIngredient {
+  _id: string;
   tag: string;
   subtitle: string;
   title: string;
   description: string;
   image: string;
-};
+  createdAt: string;
+  updatedAt: string;
+}
 
 // Brand Type
 export type Brand = {

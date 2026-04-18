@@ -12,7 +12,7 @@ const subjects = [
 ];
 
 export default function ContactForm() {
-  const t = useTranslations("ContactPage.Form");
+  const t = useTranslations("ContactUsPage.Form");
   const subjects = t.raw("subjects") as string[];
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
