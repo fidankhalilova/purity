@@ -7,7 +7,7 @@ const productSizeSchema = new mongoose.Schema({
         trim: true
     },
     ml: {
-        type: Number, // Size in ml
+        type: Number,
         required: true
     },
     inStock: {

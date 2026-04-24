@@ -1,4 +1,3 @@
-// app/[locale]/checkout/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -11,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { cartService, CartItem } from "@/services/cartService";
 import { orderService } from "@/services/orderService";
 import { toast } from "react-hot-toast";
+import { getImageUrl } from "@/utils/imageUrl";
 
 export default function CheckoutTemplate() {
   const t = useTranslations("CheckoutPage");
@@ -28,7 +28,6 @@ export default function CheckoutTemplate() {
   const [countryOpen, setCountryOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("");
 
-  // Form states
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -44,12 +43,10 @@ export default function CheckoutTemplate() {
 
   const countries = t.raw("shipping.countries") as string[];
 
-  // Load cart items
   useEffect(() => {
     loadCart();
   }, [user]);
 
-  // Pre-fill user data if logged in
   useEffect(() => {
     if (user) {
       setEmail(user.email || "");
@@ -57,7 +54,6 @@ export default function CheckoutTemplate() {
       setLastName(user.name?.split(" ")[1] || "");
       setPhone(user.phone || "");
 
-      // Pre-fill default address if exists
       const defaultAddress = user.addresses?.find((addr) => addr.isDefault);
       if (defaultAddress) {
         setAddress(defaultAddress.street);
@@ -121,7 +117,32 @@ export default function CheckoutTemplate() {
     return v;
   };
 
-  // In checkout/page.tsx, update handlePlaceOrder
+  useEffect(() => {
+    const directCheckout = sessionStorage.getItem("directCheckout");
+    if (directCheckout) {
+      try {
+        const directItem = JSON.parse(directCheckout);
+        const cartItem: CartItem = {
+          id: `direct_${Date.now()}`,
+          productId: directItem.productId,
+          name: directItem.name,
+          price: directItem.price,
+          image: directItem.image,
+          qty: directItem.quantity,
+          size: directItem.size,
+          color: directItem.color,
+          sizeId: directItem.sizeId,
+          colorId: directItem.colorId,
+          inStock: true,
+        };
+        setItems([cartItem]);
+        sessionStorage.removeItem("directCheckout");
+      } catch (error) {
+        console.error("Error parsing direct checkout:", error);
+      }
+    }
+  }, []);
+
   const handlePlaceOrder = async () => {
     if (!user) {
       toast.error("Please login to place an order");
@@ -129,7 +150,6 @@ export default function CheckoutTemplate() {
       return;
     }
 
-    // Validate required fields
     if (
       !email ||
       !phone ||
@@ -152,7 +172,6 @@ export default function CheckoutTemplate() {
     try {
       setPlacing(true);
 
-      // Format items for order
       const orderItems = items.map((item) => ({
         productId: item.productId,
         quantity: item.qty,
@@ -193,16 +212,19 @@ export default function CheckoutTemplate() {
 
       console.log("Sending order data:", JSON.stringify(orderData, null, 2));
 
-      const order = await orderService.create(orderData);
+      const order = await orderService.create(orderData, accessToken);
 
-      // Clear cart after successful order
       if (user) {
         for (const item of items) {
-          await cartService.removeItem(
-            user._id,
-            item.id,
-            accessToken || undefined,
-          );
+          try {
+            await cartService.removeItem(
+              user._id,
+              item.id,
+              accessToken || undefined,
+            );
+          } catch (error) {
+            console.error("Error removing item:", error);
+          }
         }
       } else {
         cartService.clearLocalCart();
@@ -216,8 +238,25 @@ export default function CheckoutTemplate() {
       console.error("Full error object:", error);
       console.error("Error message:", error.message);
       console.error("Error response:", error.response);
-      toast.error(error.message || "Failed to place order. Please try again.");
-      router.push(`/${locale}/checkout/fail`);
+
+      if (
+        error.message.includes("401") ||
+        error.message.includes("unauthorized")
+      ) {
+        toast.error("Session expired. Please login again.");
+        router.push(`/${locale}/account/login?returnUrl=/${locale}/checkout`);
+      } else if (
+        error.message.includes("stock") ||
+        error.message.includes("inventory")
+      ) {
+        toast.error("Some items are out of stock. Please update your cart.");
+      } else {
+        toast.error(
+          error.message || "Failed to place order. Please try again.",
+        );
+      }
+    } finally {
+      setPlacing(false);
     }
   };
 
@@ -621,6 +660,3 @@ export default function CheckoutTemplate() {
     </div>
   );
 }
-
-// Add import for getImageUrl at the top
-import { getImageUrl } from "@/utils/imageUrl";

@@ -1,4 +1,3 @@
-// types/order.ts
 export type OrderItem = {
   product: string;
   name: string;
@@ -46,7 +45,7 @@ export type Order = {
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
   trackingNumber?: string;
   notes?: string;
-  couponCode?: string; // Changed from promoCode to couponCode
+  couponCode?: string;
   orderedAt: string;
   deliveredAt?: string;
   cancelledAt?: string;

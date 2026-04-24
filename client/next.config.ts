@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
         pathname: "/uploads/**",
       },
     ],
-    unoptimized: process.env.NODE_ENV === "development", // Disable optimization in dev
+    unoptimized: process.env.NODE_ENV === "development",
   },
   async rewrites() {
     return [

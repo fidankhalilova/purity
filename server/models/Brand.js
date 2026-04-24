@@ -38,7 +38,6 @@ const brandSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Virtual for product count
 brandSchema.virtual('productCount', {
     ref: 'Product',
     localField: '_id',
@@ -46,7 +45,6 @@ brandSchema.virtual('productCount', {
     count: true
 });
 
-// Ensure virtuals are included in JSON
 brandSchema.set('toJSON', { virtuals: true });
 brandSchema.set('toObject', { virtuals: true });
 

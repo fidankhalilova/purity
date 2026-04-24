@@ -46,7 +46,6 @@ export default function Navbar() {
 
   const t = useTranslations("Navigation");
 
-  // Handle click outside to close search
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -61,7 +60,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle escape key to close search
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -73,7 +71,6 @@ export default function Navbar() {
     return () => document.removeEventListener("keydown", handleEsc);
   }, []);
 
-  // Search products
   useEffect(() => {
     const searchProducts = async () => {
       if (searchQuery.trim().length < 2) {
@@ -192,7 +189,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4 text-gray-700">
           <LanguageSwitcher />
 
-          {/* Search Button with Modal */}
+          {/* Search */}
           <div ref={searchRef} className="relative mt-1.5">
             <button
               onClick={() => {
@@ -204,7 +201,7 @@ export default function Navbar() {
               <Search size={20} />
             </button>
 
-            {/* Search Modal */}
+            {/* Search - Modal */}
             {isSearchOpen && (
               <div className="absolute top-full right-0 mt-2 w-[calc(100vw-2rem)] sm:w-96 bg-white border border-gray-200 rounded-2xl shadow-xl z-50 overflow-hidden">
                 <form onSubmit={handleSearch} className="p-4">

@@ -34,7 +34,7 @@ export default function GlowIngredients({ ingredients }: GlowIngredientsProps) {
           </h2>
         </div>
 
-        {/* Mobile — stacked */}
+        {/* Mobile */}
         <div className="flex flex-col gap-3 md:hidden">
           {ingredients.map((item, i) => (
             <div key={i} className="relative rounded-2xl overflow-hidden h-48">
@@ -64,7 +64,7 @@ export default function GlowIngredients({ ingredients }: GlowIngredientsProps) {
           ))}
         </div>
 
-        {/* Desktop — flex expand */}
+        {/* Desktop */}
         <div className="hidden md:flex gap-4" style={{ height: "420px" }}>
           {ingredients.map((item, i) => (
             <div

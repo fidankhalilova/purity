@@ -1,4 +1,3 @@
-// app/admin/dashboard/page.tsx
 "use client";
 import {
   Package,
@@ -35,7 +34,6 @@ type TopProduct = {
   image: string;
 };
 
-// Update status colors to match AdminBadge accepted types
 const statusColor: Record<
   Order["status"],
   "green" | "blue" | "yellow" | "red" | "gray" | "orange"
@@ -67,7 +65,7 @@ export default function AdminDashboard() {
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
 
-  // Get token from localStorage
+  // Token from localStorage
   const getToken = () => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("accessToken");
@@ -78,7 +76,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const token = getToken();
     if (!token) {
-      // Redirect to login if no token
+      // login if no token
       router.push("/account/login");
       return;
     }
@@ -100,7 +98,6 @@ export default function AdminDashboard() {
       const products = productsData.products;
       const users = usersData;
 
-      // Calculate total revenue
       const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
 
       setStats({
@@ -110,7 +107,6 @@ export default function AdminDashboard() {
         totalUsers: users.length,
       });
 
-      // Get recent orders (last 5)
       const recent = orders.slice(0, 5).map((order) => ({
         _id: order._id,
         orderNumber: order.orderNumber,
@@ -121,7 +117,6 @@ export default function AdminDashboard() {
       }));
       setRecentOrders(recent);
 
-      // Calculate top products by sales
       const productSales: Record<
         string,
         { name: string; sales: number; image: string }
@@ -129,7 +124,6 @@ export default function AdminDashboard() {
 
       orders.forEach((order) => {
         order.items.forEach((item: any) => {
-          // Safely get product ID
           let productId: string;
 
           if (typeof item.product === "string") {

@@ -1,4 +1,3 @@
-// components/OrderDetailModal.tsx
 "use client";
 import {
   X,

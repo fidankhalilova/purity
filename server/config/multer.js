@@ -1,4 +1,3 @@
-// config/multer.js
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -53,7 +52,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB
+        fileSize: 5 * 1024 * 1024,
         files: 10
     },
     fileFilter: fileFilter

@@ -1,4 +1,3 @@
-// app/[locale]/shop/[id]/page.tsx
 import { Metadata } from "next";
 import { productService } from "@/services/productService";
 import ProductDetailTemplate from "@/templates/ProductDetailTemplate";

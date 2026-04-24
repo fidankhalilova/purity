@@ -1,4 +1,3 @@
-// services/userService.ts
 import { User, ApiResponse } from "@/types/user";
 import { Address } from "@/types/order";
 import { Product } from "@/types/product";
@@ -95,7 +94,6 @@ export const userService = {
     return data.data;
   },
 
-  // Address methods
   async addAddress(
     userId: string,
     address: Partial<Address>,
@@ -164,7 +162,6 @@ export const userService = {
     return data.data || [];
   },
 
-  // Wishlist methods
   async addToWishlist(
     userId: string,
     productId: string,
@@ -211,7 +208,6 @@ export const userService = {
     return data.data || [];
   },
 
-  // Avatar upload
   async updateAvatar(
     userId: string,
     file: File,
@@ -237,7 +233,6 @@ export const userService = {
     return data.data;
   },
 
-  // Password update
   async updatePassword(
     userId: string,
     currentPassword: string,

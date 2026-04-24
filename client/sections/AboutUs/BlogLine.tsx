@@ -1,4 +1,3 @@
-// components/AboutUs/BlogLine.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -20,15 +19,11 @@ export default function BlogLine() {
   const loadRandomBlogs = async () => {
     try {
       setLoading(true);
-      // Get all published blogs
       const { blogs: allBlogs } = await blogService.getAll(1, 100);
-
-      // Filter only published posts
       const publishedBlogs = allBlogs.filter(
         (blog) => blog.status === "published",
       );
 
-      // Shuffle and take first 3
       const shuffled = [...publishedBlogs].sort(() => 0.5 - Math.random());
       const randomBlogs = shuffled.slice(0, 3);
 

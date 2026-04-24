@@ -1,4 +1,3 @@
-// utils/transformProduct.ts
 import { Product, ProductDetail } from "@/types/product";
 
 export const transformToProductDetail = (
@@ -49,7 +48,6 @@ export const transformToProductDetail = (
     description: product.description,
     images: product.images,
 
-    // Brand
     brand: product.brand
       ? {
           _id:
@@ -83,7 +81,6 @@ export const transformToProductDetail = (
         }
       : undefined,
 
-    // Formulation
     formulation: product.formulation
       ? {
           _id:
@@ -97,7 +94,6 @@ export const transformToProductDetail = (
         }
       : undefined,
 
-    // Product Colors - ensure it's always an array with proper structure
     productColors:
       product.productColors && Array.isArray(product.productColors)
         ? product.productColors
@@ -110,7 +106,6 @@ export const transformToProductDetail = (
             }))
         : [],
 
-    // Product Sizes - ensure it's always an array with proper structure
     productSizes:
       product.productSizes && Array.isArray(product.productSizes)
         ? product.productSizes

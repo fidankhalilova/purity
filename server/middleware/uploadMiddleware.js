@@ -1,7 +1,6 @@
 const upload = require('../config/multer');
 const path = require('path');
 
-// Single file upload
 const uploadSingle = (fieldName) => {
     return (req, res, next) => {
         const uploadSingleFile = upload.single(fieldName);
@@ -12,7 +11,6 @@ const uploadSingle = (fieldName) => {
             }
 
             if (req.file) {
-                // Generate the URL for the uploaded file
                 const filePath = req.file.path.replace(/\\/g, '/');
                 req.file.url = `/uploads/${path.relative('uploads', filePath)}`;
             }
@@ -22,7 +20,6 @@ const uploadSingle = (fieldName) => {
     };
 };
 
-// Multiple files upload
 const uploadMultiple = (fieldName, maxCount = 10) => {
     return (req, res, next) => {
         const uploadMultipleFiles = upload.array(fieldName, maxCount);
@@ -44,7 +41,6 @@ const uploadMultiple = (fieldName, maxCount = 10) => {
     };
 };
 
-// Upload with different fields
 const uploadFields = (fields) => {
     return (req, res, next) => {
         const uploadFieldsMiddleware = upload.fields(fields);

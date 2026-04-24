@@ -1,5 +1,3 @@
-import { Product } from "./product";
-
 export type Brand = {
   _id: string;
   name: string;

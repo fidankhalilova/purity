@@ -1,9 +1,7 @@
-// controllers/reviewController.js
 const Review = require('../models/Review');
 const Product = require('../models/Product');
 const User = require('../models/User');
 
-// Get all reviews (admin)
 const getAllReviews = async (req, res) => {
     try {
         const reviews = await Review.find()
@@ -17,7 +15,6 @@ const getAllReviews = async (req, res) => {
     }
 };
 
-// Get review by ID
 const getReviewById = async (req, res) => {
     try {
         const review = await Review.findById(req.params.id)
@@ -33,7 +30,6 @@ const getReviewById = async (req, res) => {
     }
 };
 
-// Get reviews by product
 const getReviewsByProduct = async (req, res) => {
     try {
         const reviews = await Review.find({
@@ -50,7 +46,6 @@ const getReviewsByProduct = async (req, res) => {
     }
 };
 
-// Update product rating and review count
 const updateProductRating = async (productId) => {
     try {
         const reviews = await Review.find({
@@ -71,19 +66,16 @@ const updateProductRating = async (productId) => {
     }
 };
 
-// Create product review
 const createProductReview = async (req, res) => {
     try {
         const { productId, rating, title, body, images } = req.body;
         const userId = req.userId;
 
-        // Check if product exists
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        // Check if user has already reviewed this product
         const existingReview = await Review.findOne({
             user: userId,
             product: productId,
@@ -97,10 +89,8 @@ const createProductReview = async (req, res) => {
             });
         }
 
-        // Get user info
         const user = await User.findById(userId);
 
-        // Create the review
         const review = new Review({
             user: userId,
             product: productId,
@@ -114,11 +104,9 @@ const createProductReview = async (req, res) => {
 
         await review.save();
 
-        // Add review reference to product
         product.reviews.push(review._id);
         await product.save();
 
-        // Update product rating and review count
         await updateProductRating(productId);
 
         await review.populate('user', 'name email');
@@ -130,7 +118,6 @@ const createProductReview = async (req, res) => {
     }
 };
 
-// Create general review (for admin testimonials - no product)
 const createGeneralReview = async (req, res) => {
     try {
         const { author, rating, title, body, images, date, status } = req.body;
@@ -153,14 +140,11 @@ const createGeneralReview = async (req, res) => {
     }
 };
 
-// Main create review - handles both types
 const createReview = async (req, res) => {
     try {
-        // If productId exists, it's a product review
         if (req.body.productId) {
             return await createProductReview(req, res);
         }
-        // Otherwise it's a general testimonial
         return await createGeneralReview(req, res);
     } catch (error) {
         console.error('Error in createReview:', error);
@@ -168,7 +152,6 @@ const createReview = async (req, res) => {
     }
 };
 
-// Update review
 const updateReview = async (req, res) => {
     try {
         const { rating, title, body, images, status } = req.body;
@@ -180,7 +163,6 @@ const updateReview = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Review not found' });
         }
 
-        // Check if user is owner or admin
         if (review.user && review.user.toString() !== userId && req.userRole !== 'admin') {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
@@ -195,7 +177,6 @@ const updateReview = async (req, res) => {
 
         await review.save();
 
-        // If rating changed and it's a product review, update product rating
         if (review.product && rating !== undefined && rating !== oldRating) {
             await updateProductRating(review.product);
         }
@@ -207,7 +188,6 @@ const updateReview = async (req, res) => {
     }
 };
 
-// Update review status (soft delete)
 const updateReviewStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -225,7 +205,6 @@ const updateReviewStatus = async (req, res) => {
         review.status = status;
         await review.save();
 
-        // If it's a product review, update product rating
         if (review.product) {
             await updateProductRating(review.product);
         }
@@ -237,7 +216,6 @@ const updateReviewStatus = async (req, res) => {
     }
 };
 
-// Delete review (permanent delete)
 const deleteReview = async (req, res) => {
     try {
         const review = await Review.findById(req.params.id);
@@ -248,7 +226,6 @@ const deleteReview = async (req, res) => {
 
         const productId = review.product;
 
-        // Remove review reference from product if it exists
         if (productId) {
             await Product.findByIdAndUpdate(productId, {
                 $pull: { reviews: review._id }

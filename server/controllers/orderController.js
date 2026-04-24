@@ -1,9 +1,7 @@
-// controllers/orderController.js
 const Order = require('../models/Order');
 const User = require('../models/User');
 const Product = require('../models/Product');
 
-// Get all orders (admin only)
 const getAllOrders = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -50,7 +48,6 @@ const getOrderById = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
 
-        // Check if user is authorized (admin or order owner)
         if (req.userRole !== 'admin' && order.user._id.toString() !== req.userId) {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
@@ -62,10 +59,8 @@ const getOrderById = async (req, res) => {
     }
 };
 
-// Get user's orders
 const getUserOrders = async (req, res) => {
     try {
-        // Check if user is authorized (admin or requesting their own orders)
         if (req.userRole !== 'admin' && req.params.userId !== req.userId) {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
@@ -81,7 +76,6 @@ const getUserOrders = async (req, res) => {
     }
 };
 
-// Create order
 const createOrder = async (req, res) => {
     try {
         const { userId, items, shippingAddress, billingAddress, paymentMethod, couponCode, notes } = req.body;
@@ -90,12 +84,10 @@ const createOrder = async (req, res) => {
         console.log('User ID:', userId);
         console.log('Items count:', items?.length);
 
-        // Check if user is authorized
         if (req.userId !== userId && req.userRole !== 'admin') {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
 
-        // Validate required fields
         if (!userId) {
             return res.status(400).json({ success: false, message: 'User ID is required' });
         }
@@ -108,13 +100,11 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Shipping address is required' });
         }
 
-        // Check if user exists
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // Calculate totals
         let subtotal = 0;
         const orderItems = [];
 
@@ -127,7 +117,6 @@ const createOrder = async (req, res) => {
                 });
             }
 
-            // Get price
             let price = item.price;
             if (!price) {
                 if (typeof product.price === 'string') {
@@ -153,12 +142,10 @@ const createOrder = async (req, res) => {
             });
         }
 
-        // Calculate shipping (free over $100)
         const shippingCost = subtotal > 100 ? 0 : 10;
-        const discount = 0; // TODO: Apply coupon logic
+        const discount = 0;
         const total = subtotal - discount + shippingCost;
 
-        // Generate order number
         const date = new Date();
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -186,17 +173,14 @@ const createOrder = async (req, res) => {
         await order.save();
         console.log('Order created successfully:', order.orderNumber);
 
-        // Update user's order count and total spent
         await User.findByIdAndUpdate(userId, {
             $inc: { orderCount: 1, totalSpent: total }
         });
 
-        // Clear user's cart after order
         await User.findByIdAndUpdate(userId, {
             $set: { cart: [] }
         });
 
-        // Populate the order before sending response
         const populatedOrder = await Order.findById(order._id)
             .populate('items.product', 'name images');
 
@@ -213,7 +197,6 @@ const createOrder = async (req, res) => {
     }
 };
 
-// Update order status (admin only)
 const updateOrderStatus = async (req, res) => {
     try {
         const { status, trackingNumber } = req.body;
@@ -244,7 +227,6 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
-// Cancel order (user or admin)
 const cancelOrder = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -253,12 +235,10 @@ const cancelOrder = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Order not found' });
         }
 
-        // Check if user is authorized (admin or order owner)
         if (req.userRole !== 'admin' && order.user.toString() !== req.userId) {
             return res.status(403).json({ success: false, message: 'Unauthorized' });
         }
 
-        // Check if order can be cancelled
         if (order.status !== 'paid' && order.status !== 'getting_ready') {
             return res.status(400).json({
                 success: false,

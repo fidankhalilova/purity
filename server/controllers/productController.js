@@ -1,47 +1,37 @@
-// controllers/productController.js
-const mongoose = require('mongoose'); // MUST be at the top
+const mongoose = require('mongoose');
 const Product = require('../models/Product');
 
-// Get all products
 const getAllProducts = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        // Build filter query
         let filter = {};
 
-        // Search by name
         if (req.query.search) {
             filter.name = { $regex: req.query.search, $options: 'i' };
         }
 
-        // Filter by collection (ObjectId)
         if (req.query.collection) {
             filter.collection = req.query.collection;
         }
 
-        // Filter by tag (ObjectId)
         if (req.query.tag) {
             filter.tags = req.query.tag;
         }
 
-        // Filter by stock status
         if (req.query.inStock !== undefined) {
             filter.inStock = req.query.inStock === 'true';
         }
 
-        // Filter by status
         if (req.query.status) {
             filter.status = req.query.status;
         }
 
-        // Filter by price range - FIX: price is stored as string like "$85.00"
         if (req.query.priceMin || req.query.priceMax) {
             filter.price = {};
             if (req.query.priceMin) {
-                // Convert price string to number for comparison
                 filter.price.$gte = `$${parseFloat(req.query.priceMin).toFixed(2)}`;
             }
             if (req.query.priceMax) {
@@ -49,7 +39,6 @@ const getAllProducts = async (req, res) => {
             }
         }
 
-        // Build sort
         let sort = {};
         if (req.query.sort) {
             const sortOrder = req.query.order === 'desc' ? -1 : 1;
@@ -62,13 +51,10 @@ const getAllProducts = async (req, res) => {
             sort = { createdAt: -1 };
         }
 
-        // Get populate fields
         const populateFields = req.query.populate ? req.query.populate.split(',') : [];
 
-        // Execute query with population
         let query = Product.find(filter);
 
-        // Apply populate
         populateFields.forEach(field => {
             if (field.trim()) {
                 query = query.populate(field.trim());
@@ -77,10 +63,8 @@ const getAllProducts = async (req, res) => {
 
         let products = await query;
 
-        // Apply array filters after population
         let filteredProducts = products;
 
-        // Filter by colors (productColors names)
         if (req.query.colors) {
             const colorNames = req.query.colors.split(',');
             filteredProducts = filteredProducts.filter(product => {
@@ -91,7 +75,6 @@ const getAllProducts = async (req, res) => {
             });
         }
 
-        // Filter by sizes (productSizes size)
         if (req.query.sizes) {
             const sizeLabels = req.query.sizes.split(',');
             filteredProducts = filteredProducts.filter(product => {
@@ -102,7 +85,6 @@ const getAllProducts = async (req, res) => {
             });
         }
 
-        // Filter by brands (brand name)
         if (req.query.brands) {
             const brandNames = req.query.brands.split(',');
             filteredProducts = filteredProducts.filter(product => {
@@ -112,7 +94,6 @@ const getAllProducts = async (req, res) => {
             });
         }
 
-        // Filter by categories (collection name)
         if (req.query.categories) {
             const categoryNames = req.query.categories.split(',');
             filteredProducts = filteredProducts.filter(product => {
@@ -122,7 +103,6 @@ const getAllProducts = async (req, res) => {
             });
         }
 
-        // Filter by concerns (skinConcerns names)
         if (req.query.concerns) {
             const concernNames = req.query.concerns.split(',');
             filteredProducts = filteredProducts.filter(product => {
@@ -134,7 +114,6 @@ const getAllProducts = async (req, res) => {
             });
         }
 
-        // Filter by formulations (formulation name)
         if (req.query.formulations) {
             const formulationNames = req.query.formulations.split(',');
             filteredProducts = filteredProducts.filter(product => {
@@ -144,14 +123,12 @@ const getAllProducts = async (req, res) => {
             });
         }
 
-        // Filter by sale (products with originalPrice)
         if (req.query.onSale === 'true') {
             filteredProducts = filteredProducts.filter(product =>
                 product.originalPrice && product.originalPrice !== ''
             );
         }
 
-        // Filter by new arrivals (products created in last 30 days)
         if (req.query.newArrivals === 'true') {
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -160,14 +137,11 @@ const getAllProducts = async (req, res) => {
             );
         }
 
-        // Apply pagination after filtering
         const total = filteredProducts.length;
         const paginatedProducts = filteredProducts.slice(skip, skip + limit);
 
-        // FIX: Ensure inStock has a default value for all products
         const productsWithDefaultStock = paginatedProducts.map(product => {
             const productObj = product.toObject ? product.toObject() : product;
-            // Set default inStock to true if undefined or null
             if (productObj.inStock === undefined || productObj.inStock === null) {
                 productObj.inStock = true;
             }
@@ -190,7 +164,6 @@ const getAllProducts = async (req, res) => {
     }
 };
 
-// Add a helper to add priceValue for sorting
 const addPriceValue = async (products) => {
     return products.map(product => {
         const priceNum = parseFloat(product.price.replace('$', ''));
@@ -201,7 +174,6 @@ const addPriceValue = async (products) => {
     });
 };
 
-// Get product by custom ID field (e.g., "prd-123456789-abc123")
 const getProductByCustomId = async (req, res) => {
     try {
         const { id } = req.params;
@@ -209,7 +181,6 @@ const getProductByCustomId = async (req, res) => {
 
         let query = Product.findOne({ id: id });
 
-        // Apply population
         populateFields.forEach(field => {
             if (field && field.trim()) {
                 query = query.populate(field);
@@ -229,7 +200,6 @@ const getProductByCustomId = async (req, res) => {
     }
 };
 
-// Get product by slug
 const getProductBySlug = async (req, res) => {
     try {
         const { slug } = req.params;
@@ -256,13 +226,11 @@ const getProductBySlug = async (req, res) => {
     }
 };
 
-// Get product by MongoDB _id
 const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
         const populateFields = req.query.populate ? req.query.populate.split(',') : [];
 
-        // Check if it's a valid MongoDB ObjectId
         const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
 
         if (!isValidObjectId) {
@@ -290,7 +258,6 @@ const getProductById = async (req, res) => {
     }
 };
 
-// Create product
 const createProduct = async (req, res) => {
     try {
         const product = new Product(req.body);
@@ -302,7 +269,6 @@ const createProduct = async (req, res) => {
     }
 };
 
-// Update product
 const updateProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndUpdate(
@@ -320,7 +286,6 @@ const updateProduct = async (req, res) => {
     }
 };
 
-// Delete product
 const deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
@@ -405,7 +370,6 @@ const bulkDelete = async (req, res) => {
     }
 };
 
-// Make sure all functions are exported
 module.exports = {
     getAllProducts,
     getProductById,

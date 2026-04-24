@@ -18,7 +18,6 @@ export default function Pagination({
 
   if (totalPages <= 1) return null;
 
-  // Build visible page numbers with ellipsis
   const getPages = () => {
     if (totalPages <= 5) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);

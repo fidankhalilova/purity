@@ -1,4 +1,3 @@
-// components/QuickView.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -49,9 +48,8 @@ function QuickViewContent({
   onClose: () => void;
 }) {
   const t = useTranslations("ProductDetail");
-  const { user, accessToken, refreshCartCount } = useAuth(); // ✅ Call hook at top level
+  const { user, accessToken, refreshCartCount } = useAuth();
 
-  // Debug log to see what's coming in
   useEffect(() => {
     console.log("QuickView received product:", {
       name: product.name,
@@ -62,7 +60,6 @@ function QuickViewContent({
     });
   }, [product]);
 
-  // Get first available size and color
   const firstSize =
     product.sizes?.find((s) => s.inStock)?.size ||
     product.sizes?.[0]?.size ||
@@ -79,7 +76,6 @@ function QuickViewContent({
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
-  // Check if product is in wishlist
   useEffect(() => {
     const checkWishlist = async () => {
       if (user) {
@@ -128,11 +124,8 @@ function QuickViewContent({
     }
   };
 
-  // components/QuickView.tsx - Updated handleAddToCart function
   const handleAddToCart = async () => {
-    // Check if user is logged in
     if (!user) {
-      // Store in local storage for guest
       const guestCart = cartService.getLocalCart();
       const existingItemIndex = guestCart.findIndex(
         (item) =>
@@ -156,8 +149,8 @@ function QuickViewContent({
           qty: qtyToAdd,
           size: selectedSize || undefined,
           color: selectedColor || undefined,
-          sizeId: undefined, // Don't send sizeId as it's not available
-          colorId: undefined, // Don't send colorId as it's not available
+          sizeId: undefined,
+          colorId: undefined,
           inStock: product.inStock,
         });
       }
@@ -174,7 +167,6 @@ function QuickViewContent({
       return;
     }
 
-    // Logged in user - add to backend
     try {
       setAddingToCart(true);
 
@@ -183,14 +175,12 @@ function QuickViewContent({
         {
           productId: product._id,
           quantity: quantity,
-          // Only send size and color as strings, not IDs
           size: selectedSize || undefined,
           color: selectedColor || undefined,
         },
         accessToken || undefined,
       );
 
-      // Refresh cart count
       if (refreshCartCount) {
         refreshCartCount();
       }
@@ -251,7 +241,7 @@ function QuickViewContent({
             <span className="text-gray-800">{product.rating.toFixed(1)}</span>
           </span>
 
-          {/* Wishlist button - heart icon */}
+          {/* Wishlist button */}
           <button
             onClick={handleWishlist}
             disabled={wishlistLoading}
@@ -270,7 +260,7 @@ function QuickViewContent({
             />
           </button>
 
-          {/* Out of Stock overlay */}
+          {/* Out of Stock */}
           {!product.inStock && (
             <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-15">
               <span className="text-white text-sm font-bold bg-black/60 px-3 py-1.5 rounded-full">

@@ -1,4 +1,3 @@
-// context/AuthContext.tsx
 "use client";
 import {
   createContext,
@@ -55,7 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [cartCount, setCartCount] = useState(0);
 
-  // Load user on mount
   useEffect(() => {
     const loadUser = async () => {
       const storedUser = localStorage.getItem("user");
@@ -69,7 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
-  // Load cart count when user changes
   useEffect(() => {
     const loadCartCount = async () => {
       if (!user?._id) {
@@ -87,7 +84,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.error("Error loading cart count:", error);
         }
       } else if (!user) {
-        // Guest cart count from localStorage
         const guestCart = cartService.getLocalCart();
         const totalItems = guestCart.reduce((sum, item) => sum + item.qty, 0);
         setCartCount(totalItems);
@@ -148,20 +144,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const data = await response.json();
     if (!data.success) throw new Error(data.message);
 
-    // Store user and token
     setUser(data.data.user);
     setAccessToken(data.data.accessToken);
     localStorage.setItem("user", JSON.stringify(data.data.user));
     localStorage.setItem("accessToken", data.data.accessToken);
     setCookie("accessToken", data.data.accessToken, 0.0104);
 
-    // Sync guest cart to backend after login
     try {
       await cartService.syncLocalCartToBackend(
         data.data.user._id,
         data.data.accessToken,
       );
-      // Refresh cart count after sync
       await refreshCartCount();
     } catch (error) {
       console.error("Error syncing cart after login:", error);
@@ -191,7 +184,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("accessToken", data.data.accessToken);
     setCookie("accessToken", data.data.accessToken, 0.0104);
 
-    // Sync guest cart to backend after registration
     try {
       await cartService.syncLocalCartToBackend(
         data.data.user._id,
@@ -230,10 +222,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("accessToken", token);
       setCookie("accessToken", token, 0.0104);
 
-      // Sync guest cart to backend after Google login
       try {
         await cartService.syncLocalCartToBackend(userData._id, token);
-        // Refresh cart count after sync
         const cart = await cartService.getCart(userData._id, token);
         const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
         setCartCount(totalItems);

@@ -1,4 +1,3 @@
-// components/CustomerReviews.tsx (updated)
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -78,7 +77,6 @@ function WriteReview({
   const fileRef = useRef<HTMLInputElement>(null);
   const ratingLabels = t.raw("ratingLabels") as string[];
 
-  // Check if user is logged in
   if (!user) {
     return (
       <div className="bg-white rounded-2xl p-5 md:p-8 border border-gray-100 mt-6 text-center">

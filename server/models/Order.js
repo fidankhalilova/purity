@@ -1,4 +1,3 @@
-// models/Order.js - Fixed version without next()
 const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
@@ -146,9 +145,7 @@ const orderSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Generate order number before saving - FIXED: Use async function without next
 orderSchema.pre('save', async function () {
-    // If order number already exists, skip
     if (this.orderNumber) {
         return;
     }

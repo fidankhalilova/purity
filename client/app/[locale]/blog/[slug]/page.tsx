@@ -1,4 +1,3 @@
-// app/[locale]/blog/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { blogService } from "@/services/blogService";
@@ -31,7 +30,6 @@ export async function generateMetadata({
   }
 }
 
-// Generate static params for all blog posts
 export async function generateStaticParams() {
   try {
     const { blogs } = await blogService.getAll(1, 100);
@@ -58,7 +56,6 @@ export default async function BlogDetailPage({ params }: BlogDetailPageProps) {
   try {
     post = await blogService.getBySlug(slug);
 
-    // Get related posts for navigation
     const related = await blogService.getRelated(post._id);
     if (related.length > 0) {
       const index = related.findIndex((p) => p.slug === slug);

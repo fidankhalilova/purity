@@ -29,7 +29,6 @@ export default function FindYourSolutions() {
       const types = await skinTypeService.getAll();
       setSkinTypes(types);
 
-      // Build concerns map by skin type
       const allConcerns = await skinConcernService.getAll();
       const map: Record<string, any[]> = {};
       types.forEach((type) => {

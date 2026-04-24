@@ -1,4 +1,3 @@
-// routes/glowIngredientRoutes.js
 const express = require('express');
 const router = express.Router();
 const glowIngredientController = require('../controllers/glowIngredientController');

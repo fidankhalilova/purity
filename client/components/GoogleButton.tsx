@@ -15,7 +15,6 @@ export default function GoogleButton({ label, onClick }: Props) {
     if (onClick) {
       onClick();
     } else {
-      // Default behavior: redirect to Google OAuth
       window.location.href = `${API_BASE_URL}/auth/google`;
     }
   };

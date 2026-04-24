@@ -1,4 +1,3 @@
-// app/[locale]/reset-password/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ResetPasswordTemplate from "@/templates/ResetPasswordTemplate";

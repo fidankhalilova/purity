@@ -1,10 +1,7 @@
-// routes/orderRoutes.js
 const express = require('express');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
 const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
-
-// Public routes (if any) - none here, all require auth
 
 // Admin only routes
 router.get('/', verifyToken, verifyAdmin, orderController.getAllOrders);

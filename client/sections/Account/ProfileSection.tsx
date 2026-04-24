@@ -1,4 +1,3 @@
-// components/ProfileSection.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -45,7 +44,7 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
         gender: data.gender || "other",
       });
 
-      // Sync localStorage with latest user data
+      // Syncing localStorage with latest user data
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const currentUser = JSON.parse(storedUser);
@@ -149,17 +148,12 @@ export default function ProfileSection({ userId }: ProfileSectionProps) {
 
     console.log("Original avatar URL from user object:", avatar);
 
-    // Hardcode for testing
     if (avatar.includes("avatar-")) {
       return `http://localhost:3001/uploads/avatars/${avatar.split("/").pop()}`;
     }
-
-    // If it's already a full URL
     if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
       return avatar;
     }
-
-    // For relative paths
     return `http://localhost:3001${avatar}`;
   };
 

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-    // Basic Information
     id: {
         type: String,
         required: true,
@@ -40,7 +39,6 @@ const productSchema = new mongoose.Schema({
         required: true
     }],
 
-    // Product Variants
     productColors: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ProductColor'
@@ -50,7 +48,6 @@ const productSchema = new mongoose.Schema({
         ref: 'ProductSize'
     }],
 
-    // Skin Related (Multiple relations)
     skinColors: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SkinColor'
@@ -68,7 +65,6 @@ const productSchema = new mongoose.Schema({
         ref: 'SkinConcern'
     }],
 
-    // Organization
     collection: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Collection'
@@ -78,13 +74,11 @@ const productSchema = new mongoose.Schema({
         ref: 'Tag'
     }],
 
-    // Home Page Sections
     homeSections: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'HomeSection'
     }],
 
-    // Product Relations (Self-reference to Product model)
     pairsWell: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product'
@@ -98,7 +92,6 @@ const productSchema = new mongoose.Schema({
         ref: 'Product'
     }],
 
-    // Existing fields
     badges: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Badge'

@@ -1,7 +1,5 @@
-// sections/BlogDetail/ImgBanner.tsx
 "use client";
 import { BlogPost } from "@/types/blog";
-import Image from "next/image";
 
 interface ImgBannerProps {
   post: BlogPost;

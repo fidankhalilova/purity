@@ -20,7 +20,6 @@ const formulationSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Virtual for product count
 formulationSchema.virtual('productCount', {
     ref: 'Product',
     localField: '_id',

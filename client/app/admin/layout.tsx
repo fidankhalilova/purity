@@ -1,17 +1,15 @@
-// app/admin/layout.tsx
+// Admin Layout
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 
-import { AdminAuthProvider } from "@/context/AdminAuthContext"; // ← Import the Provider only
-import AdminAuthGuard from "@/components/AdminAuthGuard"; // ← We'll create this
+import { AdminAuthProvider } from "@/context/AdminAuthContext";
+import AdminAuthGuard from "@/components/AdminAuthGuard";
 
-// ✅ Metadata works here because this is a Server Component
 export const metadata: Metadata = {
   title: "Admin - Purity",
   description: "By Fidan Khalilova",
 };
 
-// Main Layout (Server Component)
 export default function AdminLayout({
   children,
 }: {

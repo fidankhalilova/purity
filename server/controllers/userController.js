@@ -2,14 +2,11 @@ const User = require('../models/User');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 
-// Get all users
 const getAllUsers = async (req, res) => {
     try {
         const users = await User.find()
             .select('-password -resetPasswordToken -resetPasswordExpire -verificationToken -refreshToken')
             .sort({ createdAt: -1 });
-
-        console.log(`Found ${users.length} users`); // Debug log
 
         res.status(200).json({ success: true, data: users });
     } catch (error) {
@@ -18,7 +15,6 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-// Get user by ID
 const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
@@ -35,8 +31,6 @@ const getUserById = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
-
-// Create user
 const createUser = async (req, res) => {
     try {
         const { name, email, password, role, status } = req.body;
@@ -67,7 +61,6 @@ const createUser = async (req, res) => {
     }
 };
 
-// Update user
 const updateUser = async (req, res) => {
     try {
         const { name, email, phone, birthday, gender, role, status, notificationSettings, displayLanguage } = req.body;
@@ -89,7 +82,6 @@ const updateUser = async (req, res) => {
     }
 };
 
-// Update user status
 const updateUserStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -111,7 +103,6 @@ const updateUserStatus = async (req, res) => {
     }
 };
 
-// Add address to user
 const addAddress = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -121,7 +112,6 @@ const addAddress = async (req, res) => {
 
         const newAddress = { ...req.body, isDefault: user.addresses.length === 0 ? true : req.body.isDefault };
 
-        // If this address is set as default, unset others
         if (newAddress.isDefault) {
             user.addresses.forEach(addr => { addr.isDefault = false; });
         }
@@ -136,7 +126,6 @@ const addAddress = async (req, res) => {
     }
 };
 
-// Update address
 const updateAddress = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -151,7 +140,6 @@ const updateAddress = async (req, res) => {
 
         Object.assign(address, req.body);
 
-        // If this address is set as default, unset others
         if (address.isDefault) {
             user.addresses.forEach(addr => {
                 if (addr._id.toString() !== req.params.addressId) {
@@ -168,7 +156,6 @@ const updateAddress = async (req, res) => {
     }
 };
 
-// Delete address
 const deleteAddress = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -191,7 +178,6 @@ const deleteAddress = async (req, res) => {
     }
 };
 
-// Add to wishlist
 const addToWishlist = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -217,7 +203,6 @@ const addToWishlist = async (req, res) => {
     }
 };
 
-// Remove from wishlist
 const removeFromWishlist = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -237,7 +222,6 @@ const removeFromWishlist = async (req, res) => {
     }
 };
 
-// controllers/userController.js - Fix updateAvatar
 const updateAvatar = async (req, res) => {
     try {
         console.log('=== updateAvatar called ===');
@@ -249,16 +233,13 @@ const updateAvatar = async (req, res) => {
             return res.status(400).json({ success: false, message: 'No file uploaded' });
         }
 
-        // Get the filename from multer
         const filename = req.file.filename;
         console.log('Filename:', filename);
 
-        // Get the base URL from the request
         const protocol = req.protocol;
         const host = req.get('host');
         const baseUrl = `${protocol}://${host}`;
 
-        // Construct the full URL for the uploaded file
         const fullAvatarUrl = `${baseUrl}/uploads/avatars/${filename}`;
 
         console.log('Full avatar URL:', fullAvatarUrl);
@@ -286,7 +267,6 @@ const updateAvatar = async (req, res) => {
     }
 };
 
-// Update password
 const updatePassword = async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
@@ -311,7 +291,6 @@ const updatePassword = async (req, res) => {
     }
 };
 
-// Delete user
 const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);

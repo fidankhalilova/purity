@@ -1,4 +1,3 @@
-// app/[locale]/account/register/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import RegisterTemplate from "@/templates/RegisterTemplate";

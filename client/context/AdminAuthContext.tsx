@@ -8,7 +8,6 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { User } from "@/types/user";
-import { toast } from "react-hot-toast";
 
 interface AuthContextType {
   user: User | null;

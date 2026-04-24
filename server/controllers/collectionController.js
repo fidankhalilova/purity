@@ -1,14 +1,11 @@
-// controllers/collectionController.js
 const mongoose = require('mongoose');
 const Collection = require('../models/Collection');
-const Product = require('../models/Product'); // Add this import
+const Product = require('../models/Product');
 
-// Get all collections
 const getAllCollections = async (req, res) => {
     try {
         const collections = await Collection.find().sort({ order: 1, name: 1 });
 
-        // Get product counts for each collection
         const collectionsWithCounts = await Promise.all(
             collections.map(async (collection) => {
                 const productCount = await Product.countDocuments({
@@ -29,7 +26,6 @@ const getAllCollections = async (req, res) => {
     }
 };
 
-// Get collection by ID
 const getCollectionById = async (req, res) => {
     try {
         const collection = await Collection.findById(req.params.id);
@@ -48,7 +44,6 @@ const getCollectionById = async (req, res) => {
     }
 };
 
-// Create collection
 const createCollection = async (req, res) => {
     try {
         const { name, description, image, isActive } = req.body;
@@ -68,7 +63,6 @@ const createCollection = async (req, res) => {
     }
 };
 
-// Update collection
 const updateCollection = async (req, res) => {
     try {
         const { name, description, image, isActive } = req.body;
@@ -90,7 +84,6 @@ const updateCollection = async (req, res) => {
     }
 };
 
-// Delete collection
 const deleteCollection = async (req, res) => {
     try {
         const collection = await Collection.findByIdAndDelete(req.params.id);
@@ -99,7 +92,6 @@ const deleteCollection = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Collection not found' });
         }
 
-        // Optional: Update products to remove this collection reference
         await Product.updateMany(
             { collection: collection._id },
             { $set: { collection: null } }

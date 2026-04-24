@@ -41,9 +41,9 @@ export default function ContactInfo() {
         </p>
       </div>
 
-      {/* Grid — stacks on mobile */}
+      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Image — hidden on mobile, shown on md+ */}
+        {/* Image */}
         <div className="hidden md:block relative w-full min-h-112.5 rounded-2xl overflow-hidden">
           <Image
             src="https://purity.nextsky.co/cdn/shop/files/contact-1.jpg?v=1745915834&width=720"

@@ -49,7 +49,6 @@ const reviewSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Index for faster queries
 reviewSchema.index({ product: 1, status: 1 });
 reviewSchema.index({ user: 1, product: 1 });
 

@@ -59,7 +59,6 @@ const statusSteps: {
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors bg-white";
 
-// Helper to get token from localStorage
 const getToken = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("accessToken");
@@ -408,7 +407,7 @@ export default function AdminOrders() {
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const token = getToken(); // Get token from localStorage
+      const token = getToken(); // Token from localStorage
       const { orders: fetchedOrders } = await orderService.getAll(
         undefined,
         undefined,
@@ -596,7 +595,6 @@ export default function AdminOrders() {
         searchKeys={["orderNumber", "customer", "email"]}
       />
 
-      {/* Order Details Modal */}
       {detailsOpen && selected && (
         <OrderDetailsModal
           order={selected}
@@ -605,7 +603,6 @@ export default function AdminOrders() {
         />
       )}
 
-      {/* Edit Status Modal */}
       <AdminModal
         title="Update Order Status"
         open={editOpen}
@@ -659,7 +656,6 @@ export default function AdminOrders() {
               />
             </div>
 
-            {/* Live preview of timeline in edit modal */}
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 Preview

@@ -1,4 +1,3 @@
-// app/[locale]/checkout/success/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import OrderSuccessTemplate from "@/templates/OrderSuccessTemplate";

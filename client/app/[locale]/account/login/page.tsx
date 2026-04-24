@@ -1,4 +1,3 @@
-// app/[locale]/account/login/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import LoginTemplate from "@/templates/LoginTemplate";

@@ -36,7 +36,6 @@ export default function Testimonials() {
     try {
       setLoading(true);
       const data = await reviewService.getAll();
-      // Get only published reviews
       const publishedReviews = data
         .filter((r) => r.status === "published")
         .slice(0, 6);

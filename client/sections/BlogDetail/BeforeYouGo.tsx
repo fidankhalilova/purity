@@ -1,4 +1,3 @@
-// components/Blog/BeforeYouGo.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";

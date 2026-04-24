@@ -21,7 +21,6 @@ export default function SkinConcerns() {
     try {
       setLoading(true);
       const data = await skinConcernService.getAll();
-      // Get first 6 concerns
       setConcerns(data.slice(0, 6));
     } catch (error) {
       console.error("Error loading skin concerns:", error);

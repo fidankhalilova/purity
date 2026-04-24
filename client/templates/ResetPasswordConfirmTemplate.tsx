@@ -1,4 +1,3 @@
-// app/[locale]/reset-password/[token]/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";

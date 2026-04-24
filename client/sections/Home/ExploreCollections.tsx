@@ -25,7 +25,6 @@ export default function ExploreCollections() {
     try {
       setLoading(true);
       const data = await collectionService.getAll();
-      // Get first 4 collections for the list
       const activeCollections = data.filter((c) => c.isActive).slice(0, 4);
       setCollections(
         activeCollections.map((c) => ({
@@ -36,7 +35,6 @@ export default function ExploreCollections() {
         })),
       );
 
-      // Get first 2 collections for category images
       setCategoryImages(
         activeCollections.slice(0, 2).map((c) => ({
           label: c.name,
@@ -74,7 +72,7 @@ export default function ExploreCollections() {
     <section className="py-16 md:py-24 px-4 md:px-6">
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Left — category image cards */}
+          {/* Left side */}
           <div className="flex gap-3 md:gap-4 h-64 sm:h-80 md:h-105 lg:h-130">
             {categoryImages.map((cat, i) => (
               <Link
@@ -103,7 +101,7 @@ export default function ExploreCollections() {
             ))}
           </div>
 
-          {/* Right — collection list */}
+          {/* Right side */}
           <div
             ref={containerRef}
             onMouseMove={handleMouseMove}
@@ -169,7 +167,7 @@ export default function ExploreCollections() {
               ))}
             </div>
 
-            {/* Floating image — desktop only */}
+            {/* Floating image */}
             {hoveredIndex !== null && collections[hoveredIndex]?.hoverImage && (
               <div
                 className="hidden md:block absolute pointer-events-none z-20 w-28 h-32 rounded-2xl overflow-hidden shadow-xl"

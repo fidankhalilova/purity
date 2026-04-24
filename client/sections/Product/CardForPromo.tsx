@@ -24,7 +24,7 @@ export default function CardForPromo({
 }: FeaturedPostProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden">
-      {/* Image — top on mobile, right on desktop */}
+      {/* Image */}
       <div className="relative w-full aspect-4/3 md:aspect-auto md:min-h-80 md:order-last">
         <Image src={image} alt={title} fill className="object-cover" />
       </div>

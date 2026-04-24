@@ -1,4 +1,3 @@
-// app/[locale]/blog/page.tsx
 import { blogService } from "@/services/blogService";
 import BlogCard_One from "@/components/BlogCard_One";
 import Breadcrumb from "@/components/BreadCrumb";
@@ -8,7 +7,6 @@ import { getTranslations } from "next-intl/server";
 export default async function BlogTemplate() {
   const t = await getTranslations("BlogPage");
 
-  // Get featured post (most viewed or latest)
   let featuredPost = null;
   try {
     const { blogs } = await blogService.getAll(1, 1);
@@ -19,7 +17,6 @@ export default async function BlogTemplate() {
     console.error("Error fetching featured post:", error);
   }
 
-  // Fallback data if no posts exist
   const fallbackFeatured = {
     category: "Tips",
     title: "Glow in 3 Steps",

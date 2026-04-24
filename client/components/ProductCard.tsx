@@ -34,7 +34,6 @@ export default function ProductCard({ product }: { product: Product }) {
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const { user, accessToken } = useAuth();
 
-  // Create the quickViewProduct object with proper defaults and inStock for colors
   const quickViewProduct = {
     _id: product._id,
     id: product.id,
@@ -48,16 +47,14 @@ export default function ProductCard({ product }: { product: Product }) {
     rating: product.rating,
     description: product.description,
     sizes: product.sizes || [],
-    // Add inStock property to each color (default to true if not provided)
     colors: (product.colors || []).map((color) => ({
       name: color.name,
       hex: color.hex,
-      inStock: product.inStock !== false, // Default to true
+      inStock: product.inStock !== false,
     })),
     inStock: product.inStock,
   };
 
-  // Check if product is in wishlist on mount
   useEffect(() => {
     const checkWishlist = async () => {
       if (!user?._id) {
@@ -141,13 +138,13 @@ export default function ProductCard({ product }: { product: Product }) {
             className={`object-cover transition-opacity duration-500 ${hovered ? "opacity-100" : "opacity-0"}`}
           />
 
-          {/* Rating badge — top right */}
+          {/* Rating badge */}
           <span className="absolute top-3 right-3 z-10 bg-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
             <span className="text-yellow-400 text-sm">★</span>
             <span className="text-gray-800">{product.rating.toFixed(1)}</span>
           </span>
 
-          {/* Wishlist button - heart icon (top left) */}
+          {/* Wishlist button */}
           <button
             onClick={handleWishlist}
             disabled={wishlistLoading}
@@ -175,7 +172,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Quick view — slides up on hover (only if in stock) */}
+          {/* Quick view */}
           {product.inStock && (
             <div
               className={`absolute bottom-0 inset-x-0 p-3 transition-all duration-300 ${
@@ -207,7 +204,7 @@ export default function ProductCard({ product }: { product: Product }) {
               {tag}
             </span>
           ))}
-          {/* Discount badge next to tags */}
+          {/* Discount badge */}
           {product.discount && (
             <span className="text-xs font-semibold bg-[#e8392a]/10 text-[#e8392a] px-2 py-0.5 rounded-full flex items-center justify-center">
               {product.discount}

@@ -1,4 +1,3 @@
-// app/[locale]/faq/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import FAQTemplate from "@/templates/FAQTemplate";

@@ -1,4 +1,3 @@
-// templates/BlogDetailTemplate.tsx
 import BlogContent from "@/sections/BlogDetail/BlogContent";
 import BlogTagsShare from "@/components/BlogTagsShare";
 import BlogNav from "@/sections/BlogDetail/BlogNav";

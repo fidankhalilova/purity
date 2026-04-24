@@ -26,16 +26,11 @@ type Props = {
   userId: string;
 };
 
-// Helper function to get the correct avatar URL
 const getAvatarUrl = (avatar?: string | null): string | null => {
   if (!avatar) return null;
-
-  // If it's already a full URL (http:// or https://), return as is
   if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
     return avatar;
   }
-
-  // Otherwise, treat it as a local path and use getImageUrl
   return getImageUrl(avatar);
 };
 
@@ -132,7 +127,6 @@ export default function AccountSidebar({
       );
     }
 
-    // Fallback to initials
     return user?.name?.charAt(0) || "U";
   };
 

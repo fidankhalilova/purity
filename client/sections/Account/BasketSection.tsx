@@ -1,4 +1,3 @@
-// app/[locale]/account/basket/page.tsx or components/BasketSection.tsx
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -30,14 +29,12 @@ export default function BasketSection() {
       setLoading(true);
 
       if (user) {
-        // Logged in user: get cart from backend
         const cartItems = await cartService.getCart(
           user._id,
           accessToken || undefined,
         );
         setItems(cartItems);
       } else {
-        // Guest user: get cart from localStorage
         const localCart = cartService.getLocalCart();
         setItems(localCart);
       }
@@ -65,7 +62,6 @@ export default function BasketSection() {
         setItems(updatedCart);
         if (refreshCartCount) refreshCartCount();
       } else {
-        // Update local storage
         const updatedItems = items.map((item) =>
           item.id === id ? { ...item, qty } : item,
         );

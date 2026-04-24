@@ -32,15 +32,12 @@ export default function LoginTemplate() {
       const loggedInUser = await login(email, password);
       toast.success("Login successful!");
 
-      // After login, get the user role from the stored user
       const storedUser = localStorage.getItem("user");
       const userData = storedUser ? JSON.parse(storedUser) : null;
 
       if (userData?.role === "admin") {
-        // Admin routes should NOT have locale prefix
         router.push("/admin");
       } else {
-        // Redirect to previous page or shop
         const returnUrl = searchParams?.get("returnUrl");
         if (returnUrl) {
           router.push(returnUrl);

@@ -1,4 +1,3 @@
-// services/cartService.ts
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
@@ -17,29 +16,66 @@ export interface CartItem {
   inStock: boolean;
 }
 
+function getAuthHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const token = localStorage.getItem("accessToken");
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
+}
+
+function isAuthenticated(): boolean {
+  if (typeof window === "undefined") return false;
+  return !!localStorage.getItem("accessToken");
+}
+
 export const cartService = {
-  // Get cart from backend
   async getCart(userId: string, token?: string): Promise<CartItem[]> {
     if (!userId) {
-      console.warn("getCart called with undefined userId");
+      console.log(
+        "getCart called with undefined userId - returning empty cart",
+      );
       return [];
     }
-    const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (!authToken) {
+      console.log("No auth token available - user not logged in");
+      return [];
     }
 
-    const response = await fetch(`${API_BASE_URL}/cart/${userId}`, {
-      headers,
-      credentials: "include",
-    });
+    try {
+      const headers: HeadersInit = {
+        Authorization: `Bearer ${authToken}`,
+      };
 
-    const data = await response.json();
-    if (!data.success) throw new Error(data.message);
-    return data.data;
+      const response = await fetch(`${API_BASE_URL}/cart/${userId}`, {
+        headers,
+        credentials: "include",
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        console.log(
+          "Authentication failed when fetching cart - user may be logged out",
+        );
+        return [];
+      }
+
+      const data = await response.json();
+      if (!data.success) {
+        if (data.message?.includes("token") || data.message?.includes("auth")) {
+          console.log("Auth error when fetching cart:", data.message);
+          return [];
+        }
+        throw new Error(data.message);
+      }
+      return data.data || [];
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      return [];
+    }
   },
 
-  // services/cartService.ts - Updated addToCart method
   async addToCart(
     userId: string,
     item: {
@@ -52,28 +88,33 @@ export const cartService = {
     },
     token?: string,
   ): Promise<CartItem[]> {
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-    };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    if (!userId) {
+      console.log("Cannot add to cart - no user ID");
+      throw new Error("Please log in to add items to cart");
     }
 
-    // Only include fields that are provided and not empty
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (!authToken) {
+      throw new Error("Please log in to add items to cart");
+    }
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    };
+
     const payload: any = {
       productId: item.productId,
       quantity: item.quantity,
     };
 
-    // Only add sizeId if it's a valid ObjectId string (24 hex chars or 12 bytes)
     if (item.sizeId && /^[0-9a-fA-F]{24}$/.test(item.sizeId)) {
       payload.sizeId = item.sizeId;
     }
-    // Only add colorId if it's a valid ObjectId string
     if (item.colorId && /^[0-9a-fA-F]{24}$/.test(item.colorId)) {
       payload.colorId = item.colorId;
     }
-    // Always add size and color as strings if provided
     if (item.size) payload.size = item.size;
     if (item.color) payload.color = item.color;
 
@@ -89,18 +130,23 @@ export const cartService = {
     return data.data;
   },
 
-  // Update quantity
   async updateQuantity(
     userId: string,
     itemId: string,
     quantity: number,
     token?: string,
   ): Promise<CartItem[]> {
+    if (!userId || !isAuthenticated()) {
+      throw new Error("Please log in to update cart");
+    }
+
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(
@@ -118,15 +164,20 @@ export const cartService = {
     return data.data;
   },
 
-  // Remove item
   async removeItem(
     userId: string,
     itemId: string,
     token?: string,
   ): Promise<CartItem[]> {
+    if (!userId || !isAuthenticated()) {
+      throw new Error("Please log in to remove items from cart");
+    }
+
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
     const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(
@@ -146,23 +197,19 @@ export const cartService = {
   getLocalCart(): CartItem[] {
     if (typeof window === "undefined") return [];
     const cart = localStorage.getItem("guestCart");
-    console.log("Getting local cart:", cart);
     return cart ? JSON.parse(cart) : [];
   },
 
   saveLocalCart(cart: CartItem[]) {
     if (typeof window === "undefined") return;
-    console.log("Saving local cart:", cart);
     localStorage.setItem("guestCart", JSON.stringify(cart));
   },
 
   clearLocalCart() {
     if (typeof window === "undefined") return;
-    console.log("Clearing local cart");
     localStorage.removeItem("guestCart");
   },
 
-  // Sync local cart to backend when user logs in
   async syncLocalCartToBackend(userId: string, token: string): Promise<void> {
     const localCart = this.getLocalCart();
     if (localCart.length === 0) return;

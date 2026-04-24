@@ -51,7 +51,6 @@ export default function Breadcrumb({
     } else if (translationKey) {
       title = t(translationKey);
     } else {
-      // fallback: prettify the slug
       title = segment
         .split("-")
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))

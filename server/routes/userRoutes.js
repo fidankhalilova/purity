@@ -1,10 +1,8 @@
-// routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const { uploadSingle } = require('../middleware/uploadMiddleware');
 
-// IMPORTANT: Specific routes must come BEFORE parameter routes
 router.patch('/:id/avatar', uploadSingle('avatar'), userController.updateAvatar);
 router.patch('/:id/password', userController.updatePassword);
 

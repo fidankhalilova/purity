@@ -13,7 +13,6 @@ const processImage = async (inputPath, outputPath, options = {}) => {
     try {
         let image = sharp(inputPath);
 
-        // Resize if width specified
         if (width) {
             image = image.resize(width, height, {
                 fit: 'inside',
@@ -21,7 +20,6 @@ const processImage = async (inputPath, outputPath, options = {}) => {
             });
         }
 
-        // Set format and quality
         if (format === 'webp') {
             image = image.webp({ quality });
         } else if (format === 'jpeg') {
@@ -32,7 +30,6 @@ const processImage = async (inputPath, outputPath, options = {}) => {
 
         await image.toFile(outputPath);
 
-        // Delete original file
         fs.unlinkSync(inputPath);
 
         return outputPath;

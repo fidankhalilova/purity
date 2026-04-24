@@ -1,4 +1,3 @@
-// types/blog.ts
 export type ContentBlock = {
   type:
     | "h1"

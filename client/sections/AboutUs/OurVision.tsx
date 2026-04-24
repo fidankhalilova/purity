@@ -82,7 +82,7 @@ export default function OurVision() {
         <p className="text-sm sm:text-base">{t("body")}</p>
       </div>
 
-      {/* Badges — desktop: 3-col grid / mobile: swiper */}
+      {/* Badges */}
       <div className="w-full mt-6 md:mt-8">
         {/* Desktop grid */}
         <div className="hidden md:grid grid-cols-3 gap-10">
@@ -95,7 +95,7 @@ export default function OurVision() {
           ))}
         </div>
 
-        {/* Mobile swiper with fixed pagination */}
+        {/* Mobile swiper */}
         <div className="md:hidden">
           <style>{`
             .ourvision-swiper {

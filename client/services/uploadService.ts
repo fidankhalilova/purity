@@ -47,7 +47,6 @@ export const uploadService = {
     const data = await response.json();
     if (!data.success) throw new Error(data.message);
 
-    // Return the URL path (e.g., /uploads/brands/xxx.jpg)
     console.log("Upload response:", data.data.url);
     return data.data.url;
   },

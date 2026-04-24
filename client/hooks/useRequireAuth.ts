@@ -13,7 +13,6 @@ export function useRequireAuth(allowedRoles?: string[]) {
   useEffect(() => {
     if (!isLoading) {
       if (!user) {
-        // Store the attempted URL to redirect back after login
         const returnUrl = pathname ? encodeURIComponent(pathname) : "";
         router.push(
           `/${locale}/account/login${returnUrl ? `?returnUrl=${returnUrl}` : ""}`,
@@ -22,7 +21,6 @@ export function useRequireAuth(allowedRoles?: string[]) {
       }
 
       if (allowedRoles && !allowedRoles.includes(user.role)) {
-        // User doesn't have permission, redirect to home
         router.push(`/${locale}`);
       }
     }

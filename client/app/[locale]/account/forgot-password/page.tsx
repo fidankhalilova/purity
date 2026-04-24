@@ -1,4 +1,3 @@
-// app/[locale]/account/forgot-password/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ForgotPasswordTemplate from "@/templates/ForgotPasswordTemplate";

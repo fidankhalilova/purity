@@ -1,4 +1,3 @@
-// hooks/useCart.ts
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 
@@ -22,7 +21,6 @@ export const useCart = () => {
   ) => {
     setLoading(true);
     try {
-      // API call to add to cart
       const response = await fetch("/api/cart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -1,4 +1,3 @@
-// utils/cookies.ts
 export const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
 

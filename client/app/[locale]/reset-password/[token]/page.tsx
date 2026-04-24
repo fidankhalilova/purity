@@ -1,4 +1,3 @@
-// app/[locale]/reset-password/[token]/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ResetPasswordConfirmTemplate from "@/templates/ResetPasswordConfirmTemplate";
@@ -12,8 +11,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "AuthPages.reset" });
 
   return {
-    title: t("meta.resetConfirmTitle"),
-    description: t("meta.resetConfirmDescription"),
+    title: t("meta.title"),
+    description: t("meta.description"),
   };
 }
 

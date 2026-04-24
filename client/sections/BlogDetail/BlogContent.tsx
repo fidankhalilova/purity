@@ -1,4 +1,3 @@
-// components/Blog/BlogContent.tsx
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { BlogPost, ContentBlock } from "@/types/blog";

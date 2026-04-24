@@ -1,4 +1,3 @@
-// services/glowIngredientService.ts
 import { GlowIngredient, ApiResponse } from "@/types/product";
 
 const API_BASE_URL =

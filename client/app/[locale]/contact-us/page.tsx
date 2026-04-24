@@ -1,4 +1,3 @@
-// app/[locale]/contact/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ContactUsTemplate from "@/templates/ContactUsTemplate";

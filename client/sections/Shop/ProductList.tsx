@@ -15,7 +15,6 @@ export default function ProductList() {
   const searchParams = useSearchParams();
   const sortOptions = t.raw("sortOptions") as string[];
 
-  // Get filter values from URL
   const urlPage = Number(searchParams?.get("page")) || 1;
   const urlSort = searchParams?.get("sort") || sortOptions[0];
   const searchQuery = searchParams?.get("search") || "";
@@ -120,14 +119,11 @@ export default function ProductList() {
         options,
       );
 
-      // In ProductList.tsx, update the product mapping to include proper sizes and colors
-
       const mappedProducts = data.products.map((p: any) => {
-        // Process sizes - check if productSizes exists and is an array
         let sizes = [];
         if (p.productSizes && Array.isArray(p.productSizes)) {
           sizes = p.productSizes
-            .filter((s: any) => s && s.size) // Filter out invalid entries
+            .filter((s: any) => s && s.size)
             .map((s: any) => ({
               size: s.size,
               inStock: s.inStock !== false,
@@ -135,11 +131,10 @@ export default function ProductList() {
             }));
         }
 
-        // Process colors - check if productColors exists and is an array
         let colors = [];
         if (p.productColors && Array.isArray(p.productColors)) {
           colors = p.productColors
-            .filter((c: any) => c && c.name && c.hexCode) // Filter out invalid entries
+            .filter((c: any) => c && c.name && c.hexCode)
             .map((c: any) => ({
               name: c.name,
               hex: c.hexCode,

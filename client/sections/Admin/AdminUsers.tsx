@@ -1,4 +1,3 @@
-// sections/Admin/AdminUsers.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
@@ -13,7 +12,6 @@ import { toast } from "react-hot-toast";
 const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors";
 
-// Default notification settings
 const defaultNotificationSettings: NotificationSettings = {
   orderUpdates: true,
   shippingDelivery: true,
@@ -32,7 +30,6 @@ export default function AdminUsers() {
   const [showPassword, setShowPassword] = useState(false);
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
 
-  // Get token directly from localStorage
   const getToken = () => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("accessToken");
@@ -127,7 +124,6 @@ export default function AdminUsers() {
       setSubmitting(true);
       const token = getToken();
 
-      // Ensure notificationSettings has all required fields
       const dataToSave = {
         ...form,
         notificationSettings: {
@@ -297,140 +293,6 @@ export default function AdminUsers() {
       ),
     },
   ];
-
-  // Expanded row component for detailed view
-  const renderExpandedRow = (user: User) => (
-    <div className="bg-gray-50 p-4 rounded-xl mt-2 border border-gray-100">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Personal Info
-          </p>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm">
-              <span className="font-medium">Name:</span> {user.name}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Email:</span> {user.email}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Phone:</span> {user.phone || "-"}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Birthday:</span>{" "}
-              {formatDate(user.birthday)}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Gender:</span>{" "}
-              {genderLabels[user.gender || "other"]}
-            </p>
-          </div>
-        </div>
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Account Info
-          </p>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm">
-              <span className="font-medium">Role:</span> {user.role}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Status:</span> {user.status}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Language:</span>{" "}
-              {languageLabels[user.displayLanguage || "en"]}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Total Spent:</span>{" "}
-              {formatTotalSpent(user.totalSpent)}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Order Count:</span>{" "}
-              {user.orderCount}
-            </p>
-            <p className="text-sm">
-              <span className="font-medium">Last Login:</span>{" "}
-              {formatDate(user.lastLogin)}
-            </p>
-          </div>
-        </div>
-        <div className="md:col-span-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Addresses ({user.addresses?.length || 0})
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {user.addresses && user.addresses.length > 0 ? (
-              user.addresses.map((addr, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white p-3 rounded-lg border border-gray-200 text-sm"
-                >
-                  <p className="font-medium">
-                    {addr.label}{" "}
-                    {addr.isDefault && (
-                      <span className="text-xs bg-[#1f473e]/10 text-[#1f473e] px-2 py-0.5 rounded-full ml-1">
-                        Default
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-gray-600 text-xs mt-1">
-                    {addr.street}, {addr.city}, {addr.state} {addr.zipCode}
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    {addr.country} | {addr.phone}
-                  </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-400">No addresses saved</p>
-            )}
-          </div>
-        </div>
-        <div className="md:col-span-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Notification Settings
-          </p>
-          <div className="mt-2 flex flex-wrap gap-3">
-            {user.notificationSettings?.orderUpdates && (
-              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                Order Updates
-              </span>
-            )}
-            {user.notificationSettings?.shippingDelivery && (
-              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                Shipping & Delivery
-              </span>
-            )}
-            {user.notificationSettings?.promotionsOffers && (
-              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                Promotions & Offers
-              </span>
-            )}
-            {user.notificationSettings?.newsletter && (
-              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                Newsletter
-              </span>
-            )}
-            {user.notificationSettings?.smsNotifications && (
-              <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                SMS
-              </span>
-            )}
-            {!user.notificationSettings?.orderUpdates &&
-              !user.notificationSettings?.shippingDelivery &&
-              !user.notificationSettings?.promotionsOffers &&
-              !user.notificationSettings?.newsletter &&
-              !user.notificationSettings?.smsNotifications && (
-                <span className="text-sm text-gray-400">
-                  No notifications enabled
-                </span>
-              )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   if (loading) {
     return (

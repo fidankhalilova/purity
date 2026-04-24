@@ -1,4 +1,3 @@
-// app/[locale]/account/[tab]/page.tsx
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";

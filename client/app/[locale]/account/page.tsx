@@ -1,4 +1,3 @@
-// app/[locale]/account/page.tsx
 import { redirect } from "next/navigation";
 
 type Props = {

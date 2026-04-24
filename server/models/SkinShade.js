@@ -8,7 +8,7 @@ const skinShadeSchema = new mongoose.Schema({
         trim: true
     },
     colorCode: {
-        type: String, // Hex code or color value
+        type: String,
         trim: true
     },
     description: {

@@ -8,13 +8,11 @@ router.post('/brand-logo', uploadSingle('brandLogo'), (req, res) => {
         return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    console.log('Uploaded file:', req.file); // Debug log
-
     res.status(200).json({
         success: true,
         data: {
             filename: req.file.filename,
-            url: req.file.url,  // This is the path: /uploads/brands/...
+            url: req.file.url,
             originalName: req.file.originalname,
             size: req.file.size
         }

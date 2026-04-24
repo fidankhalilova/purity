@@ -14,7 +14,7 @@ export type LocaleKey = keyof typeof locales;
 interface LanguageContextType {
   lang: LocaleKey;
   setLang: (lang: LocaleKey) => void;
-  t: typeof locales.en;
+  t: typeof locales.en | typeof locales.az | typeof locales.ru;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(

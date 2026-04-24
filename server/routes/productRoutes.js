@@ -1,10 +1,7 @@
-// routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
 const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
-
-// IMPORTANT: Specific routes MUST come BEFORE generic routes
 
 // Get by custom ID field (e.g., "prd-123456789-abc123")
 router.get('/id/:id', productController.getProductByCustomId);
@@ -24,7 +21,7 @@ router.get('/new-arrivals', productController.getNewArrivals);
 // Get related products
 router.get('/related/:productId', productController.getRelatedProducts);
 
-// Get by MongoDB _id - MUST be LAST
+// Get by MongoDB _id
 router.get('/:id', productController.getProductById);
 
 // Admin only routes

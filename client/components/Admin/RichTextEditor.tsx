@@ -1,4 +1,3 @@
-// components/Admin/RichTextEditor.tsx
 "use client";
 import { useState, useRef } from "react";
 import {
@@ -98,7 +97,6 @@ export default function RichTextEditor({
     newBlocks[index] = newBlocks[direction === "up" ? index - 1 : index + 1];
     newBlocks[direction === "up" ? index - 1 : index + 1] = temp;
 
-    // Update order
     newBlocks.forEach((block, i) => {
       block.order = i;
     });

@@ -15,13 +15,10 @@ export default function OthersBought() {
   const loadRandomProducts = async () => {
     try {
       setLoading(true);
-      // Fetch all active products
       const { products: allProducts } = await productService.getAll(1, 100, {
         status: "active",
         inStock: true,
       });
-
-      // Randomly select 4 products
       const shuffled = [...allProducts];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -29,7 +26,6 @@ export default function OthersBought() {
       }
       const randomProducts = shuffled.slice(0, 4);
 
-      // Map products to the format expected by ProductCard
       const mappedProducts = randomProducts.map((p: any) => ({
         _id: p._id,
         id: p.id,

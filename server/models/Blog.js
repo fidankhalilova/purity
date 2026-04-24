@@ -1,4 +1,3 @@
-// models/Blog.js
 const mongoose = require('mongoose');
 
 const contentBlockSchema = new mongoose.Schema({
@@ -93,6 +92,5 @@ const blogSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Remove the problematic pre-save hook - handle slug generation in the controller instead
 
 module.exports = mongoose.model('Blog', blogSchema);

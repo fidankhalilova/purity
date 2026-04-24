@@ -1,7 +1,6 @@
 const Brand = require('../models/Brand');
 const Product = require('../models/Product');
 
-// Get all brands
 const getAllBrands = async (req, res) => {
     try {
         const brands = await Brand.find().sort({ createdAt: -1 });
@@ -23,7 +22,6 @@ const getAllBrands = async (req, res) => {
     }
 };
 
-// Get brand by ID
 const getBrandById = async (req, res) => {
     try {
         const brand = await Brand.findById(req.params.id);
@@ -42,7 +40,6 @@ const getBrandById = async (req, res) => {
     }
 };
 
-// Create brand
 const createBrand = async (req, res) => {
     try {
         const { name, country, logo, website, description, isFeatured, isActive } = req.body;
@@ -70,7 +67,6 @@ const createBrand = async (req, res) => {
     }
 };
 
-// Update brand
 const updateBrand = async (req, res) => {
     try {
         const { name, country, logo, website, description, isFeatured, isActive } = req.body;
@@ -108,7 +104,6 @@ const updateBrand = async (req, res) => {
     }
 };
 
-// Toggle featured status
 const toggleFeatured = async (req, res) => {
     try {
         const brand = await Brand.findById(req.params.id);
@@ -126,7 +121,6 @@ const toggleFeatured = async (req, res) => {
     }
 };
 
-// Toggle active status
 const toggleActive = async (req, res) => {
     try {
         const brand = await Brand.findById(req.params.id);
@@ -144,7 +138,6 @@ const toggleActive = async (req, res) => {
     }
 };
 
-// Delete brand
 const deleteBrand = async (req, res) => {
     try {
         const brand = await Brand.findById(req.params.id);
@@ -168,7 +161,6 @@ const deleteBrand = async (req, res) => {
     }
 };
 
-// Get products by brand
 const getProductsByBrand = async (req, res) => {
     try {
         const brand = await Brand.findById(req.params.id);

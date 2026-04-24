@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -18,6 +19,8 @@ interface CollectionWithCount extends Collection {
 
 export default function CategoryList() {
   const t = useTranslations("ShopPage");
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const swiperRef = useRef<SwiperType | null>(null);
@@ -27,16 +30,16 @@ export default function CategoryList() {
   const [collections, setCollections] = useState<CollectionWithCount[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const currentCollection = searchParams?.get("collection") || "";
+
   useEffect(() => {
     const loadCollections = async () => {
       try {
-        // Load collections and products in parallel
         const [collectionsData, productsData] = await Promise.all([
           collectionService.getAll(),
-          productService.getAll(1, 1000), // Get all products to count
+          productService.getAll(1, 1000),
         ]);
 
-        // Count products per collection
         const productCounts: Record<string, number> = {};
         productsData.products.forEach((product: any) => {
           if (product.collection) {
@@ -49,7 +52,6 @@ export default function CategoryList() {
           }
         });
 
-        // Add count to each collection
         const activeCollections: CollectionWithCount[] = collectionsData
           .filter((c) => c.isActive)
           .map((collection) => ({
@@ -58,13 +60,6 @@ export default function CategoryList() {
           }));
 
         setCollections(activeCollections);
-        console.log(
-          "Collections loaded:",
-          activeCollections.map((c) => ({
-            name: c.name,
-            count: c.productCount,
-          })),
-        );
       } catch (error) {
         console.error("Error loading collections:", error);
       } finally {
@@ -73,6 +68,39 @@ export default function CategoryList() {
     };
     loadCollections();
   }, []);
+
+  const handleCollectionClick = (collectionId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams(searchParams?.toString());
+
+    if (currentCollection === collectionId) {
+      params.delete("collection");
+    } else {
+      params.set("collection", collectionId);
+    }
+
+    params.delete("page");
+
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  useEffect(() => {
+    if (
+      swiperRef.current &&
+      prevRef.current &&
+      nextRef.current &&
+      swiperRef.current.params.navigation
+    ) {
+      const navigation = swiperRef.current.params.navigation;
+      if (typeof navigation !== "boolean") {
+        navigation.prevEl = prevRef.current;
+        navigation.nextEl = nextRef.current;
+        swiperRef.current.navigation.init();
+        swiperRef.current.navigation.update();
+      }
+    }
+  }, [collections]);
 
   if (loading) {
     return (
@@ -103,7 +131,7 @@ export default function CategoryList() {
               ? "opacity-100 scale-100"
               : "opacity-0 scale-90 pointer-events-none"
           }`}
-          style={{ top: "calc(50% - 24px)", transform: "translateY(-50%)" }}
+          style={{ top: "calc(50% - 24px)" }}
         >
           <svg
             className="w-6 h-6"
@@ -124,7 +152,7 @@ export default function CategoryList() {
               ? "opacity-100 scale-100"
               : "opacity-0 scale-90 pointer-events-none"
           }`}
-          style={{ top: "calc(50% - 24px)", transform: "translateY(-50%)" }}
+          style={{ top: "calc(50% - 24px)" }}
         >
           <svg
             className="w-6 h-6"
@@ -146,12 +174,8 @@ export default function CategoryList() {
             prevEl: prevRef.current,
             nextEl: nextRef.current,
           }}
-          onBeforeInit={(swiper) => {
+          onSwiper={(swiper) => {
             swiperRef.current = swiper;
-            // @ts-ignore
-            swiper.params.navigation.prevEl = prevRef.current;
-            // @ts-ignore
-            swiper.params.navigation.nextEl = nextRef.current;
           }}
           onSlideChange={(swiper) => {
             setIsBeginning(swiper.isBeginning);
@@ -165,34 +189,59 @@ export default function CategoryList() {
             1024: { slidesPerView: 4, spaceBetween: 24 },
           }}
         >
-          {collections.map((collection) => (
-            <SwiperSlide key={collection._id}>
-              <Link
-                href={`/shop?collection=${collection._id}`}
-                className="flex flex-col gap-3 group"
-              >
-                {/* Image */}
-                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100">
-                  <Image
-                    src={getImageUrl(collection.image) || "/placeholder.jpg"}
-                    alt={collection.name}
-                    fill
-                    className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-                  />
-                </div>
+          {collections.map((collection) => {
+            const isActive = currentCollection === collection._id;
 
-                {/* Label with product count */}
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-medium text-gray-900">
-                    {collection.name}
-                  </span>
-                  <span className="text-sm text-gray-400">
-                    {collection.productCount || 0}
-                  </span>
-                </div>
-              </Link>
-            </SwiperSlide>
-          ))}
+            return (
+              <SwiperSlide key={collection._id}>
+                <button
+                  onClick={(e) => handleCollectionClick(collection._id, e)}
+                  className="flex flex-col gap-3 group w-full text-left"
+                >
+                  <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                    <Image
+                      src={getImageUrl(collection.image) || "/placeholder.jpg"}
+                      alt={collection.name}
+                      fill
+                      className={`object-cover transition-all duration-500 ease-in-out ${
+                        isActive
+                          ? "scale-105 opacity-70"
+                          : "group-hover:scale-105"
+                      }`}
+                    />
+                    {isActive && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <div className="bg-white rounded-full p-2">
+                          <svg
+                            className="w-5 h-5 text-[#1f473e]"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            viewBox="0 0 24 24"
+                          >
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-baseline gap-1.5">
+                    <span
+                      className={`text-base font-medium transition-colors ${
+                        isActive ? "text-[#1f473e]" : "text-gray-900"
+                      }`}
+                    >
+                      {collection.name}
+                    </span>
+                    <span className="text-sm text-gray-400">
+                      {collection.productCount || 0}
+                    </span>
+                  </div>
+                </button>
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </div>
     </section>

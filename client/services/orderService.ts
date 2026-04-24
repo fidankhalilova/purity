@@ -1,8 +1,14 @@
-// services/orderService.ts
 import { Order, ApiResponse, CreateOrderInput } from "@/types/order";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
+function getAuthHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const token = localStorage.getItem("accessToken");
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
+}
 
 export const orderService = {
   async getAll(
@@ -18,9 +24,11 @@ export const orderService = {
       url += `?${params.toString()}`;
     }
 
-    const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    const headers: Record<string, string> = {};
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(url, { headers });
@@ -40,9 +48,11 @@ export const orderService = {
   },
 
   async getById(id: string, token?: string | null): Promise<Order> {
-    const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    const headers: Record<string, string> = {};
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_BASE_URL}/orders/${id}`, { headers });
@@ -53,9 +63,11 @@ export const orderService = {
   },
 
   async getUserOrders(userId: string, token?: string | null): Promise<Order[]> {
-    const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    const headers: Record<string, string> = {};
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_BASE_URL}/orders/user/${userId}`, {
@@ -71,9 +83,13 @@ export const orderService = {
     orderData: CreateOrderInput,
     token?: string | null,
   ): Promise<Order> {
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_BASE_URL}/orders`, {
@@ -94,9 +110,13 @@ export const orderService = {
     trackingNumber?: string,
     token?: string | null,
   ): Promise<Order> {
-    const headers: HeadersInit = { "Content-Type": "application/json" };
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
@@ -112,9 +132,11 @@ export const orderService = {
   },
 
   async cancel(id: string, token?: string | null): Promise<Order> {
-    const headers: HeadersInit = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
+    const headers: Record<string, string> = {};
+    const authToken =
+      token || getAuthHeader().Authorization?.replace("Bearer ", "");
+    if (authToken) {
+      headers.Authorization = `Bearer ${authToken}`;
     }
 
     const response = await fetch(`${API_BASE_URL}/orders/${id}/cancel`, {

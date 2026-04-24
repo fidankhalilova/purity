@@ -1,4 +1,3 @@
-// app/[locale]/checkout/page.tsx
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import CheckoutTemplate from "@/templates/CheckoutTemplate";

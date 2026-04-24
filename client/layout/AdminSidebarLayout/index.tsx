@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { adminTabs } from "@/config/adminTabs";
-import { Menu, X, LogOut, Bell } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 
 export default function AdminSidebarLayout({
   children,
@@ -99,6 +99,13 @@ export default function AdminSidebarLayout({
                           >
                             {label}
                           </p>
+                          {description && (
+                            <p
+                              className={`text-xs mt-0.5 truncate ${isActive ? "text-[#1f473e]/60" : "text-white/40"}`}
+                            >
+                              {description}
+                            </p>
+                          )}
                         </div>
                       </Link>
                     );
@@ -137,11 +144,13 @@ export default function AdminSidebarLayout({
       <div className="px-3 py-4 border-t border-white/10">
         <div className="flex items-center gap-3 px-3 py-2.5 mb-2">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-bold shrink-0">
-            A
+            AD
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-white truncate">Admin</p>
-            <p className="text-xs text-white/40 truncate">admin@purity.com</p>
+            <p className="text-sm font-semibold text-white truncate">
+              Admin User
+            </p>
+            <p className="text-xs text-white/40 truncate">Administrator</p>
           </div>
         </div>
         <Link
@@ -197,12 +206,8 @@ export default function AdminSidebarLayout({
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
-              <Bell className="w-4 h-4 text-gray-500" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-            </button>
             <div className="w-9 h-9 rounded-xl bg-[#1f473e] flex items-center justify-center text-white text-sm font-bold">
-              A
+              AD
             </div>
           </div>
         </header>

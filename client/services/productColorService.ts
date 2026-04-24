@@ -5,15 +5,15 @@ const API_BASE_URL =
 
 export const productColorService = {
   async getAll(): Promise<ProductColor[]> {
-    console.log("Fetching from:", `${API_BASE_URL}/product-colors`); // Add this line
+    console.log("Fetching from:", `${API_BASE_URL}/product-colors`);
     try {
       const response = await fetch(`${API_BASE_URL}/product-colors`);
-      console.log("Response status:", response.status); // Add this line
+      console.log("Response status:", response.status);
       const data = await response.json();
       if (!data.success) throw new Error(data.message);
       return data.data;
     } catch (error) {
-      console.error("Fetch error details:", error); // Add this line
+      console.error("Fetch error details:", error);
       throw error;
     }
   },

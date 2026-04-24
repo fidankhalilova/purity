@@ -1,4 +1,3 @@
-// components/Blog/BlogTagsShare.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
@@ -43,7 +42,6 @@ export default function BlogTagsShare({
     if (url) window.open(url, "_blank", "noopener,noreferrer");
   };
 
-  // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
       <div className="flex flex-wrap items-center justify-between gap-4 py-6 border-t border-gray-100">

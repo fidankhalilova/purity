@@ -46,8 +46,8 @@ const cartItemSchema = new mongoose.Schema({
     quantity: { type: Number, required: true, min: 1 },
     sizeId: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductSize' },
     colorId: { type: mongoose.Schema.Types.ObjectId, ref: 'ProductColor' },
-    size: { type: String },  // Store size as string for products without sizeId reference
-    color: { type: String }, // Store color as string for products without colorId reference
+    size: { type: String },
+    color: { type: String },
     addedAt: { type: Date, default: Date.now }
 });
 
@@ -86,7 +86,6 @@ const userSchema = new mongoose.Schema({
     verificationToken: String
 }, { timestamps: true });
 
-// Hash password before saving
 userSchema.pre('save', async function () {
     if (this.isModified('password') && this.password) {
         const salt = await bcrypt.genSalt(10);
@@ -94,7 +93,6 @@ userSchema.pre('save', async function () {
     }
 });
 
-// Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword) {
     if (!this.password) return false;
     return await bcrypt.compare(candidatePassword, this.password);

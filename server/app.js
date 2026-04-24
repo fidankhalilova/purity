@@ -7,18 +7,14 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const session = require('express-session');
 
-// Load env vars
 dotenv.config();
 
-// Connect to database
 connectDB();
 
-// Import passport config
 require('./config/passport');
 
 const app = express();
 
-// CORS - MUST come first
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,
@@ -27,14 +23,11 @@ app.use(cors({
     exposedHeaders: ['Content-Length', 'X-Kuma-Revision']
 }));
 
-// Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Cookie parser - MUST be BEFORE routes
 app.use(cookieParser());
 
-// Session middleware - MUST be before passport
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-session-secret-key-change-in-production',
     resave: false,
@@ -42,23 +35,18 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
-// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Test route
 app.get('/', (req, res) => {
     res.send('API is running');
 });
 
-// Static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// API Routes - ALL routes after middleware
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const productColorRoutes = require('./routes/productColorRoutes');
@@ -81,6 +69,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const glowIngredientRoutes = require('./routes/glowIngredientRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -104,6 +93,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/glow-ingredients', glowIngredientRoutes);
+app.use('/api', contactRoutes);
 
 
 const PORT = process.env.PORT || 3001;

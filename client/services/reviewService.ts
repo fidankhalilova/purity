@@ -1,4 +1,3 @@
-// services/reviewService.ts
 import { Review, ApiResponse } from "@/types/review";
 
 const API_BASE_URL =
@@ -32,7 +31,6 @@ export const reviewService = {
     return data.data || [];
   },
 
-  // For customer reviews (requires productId)
   async createForProduct(
     review: {
       productId: string;
@@ -60,7 +58,6 @@ export const reviewService = {
     return data.data;
   },
 
-  // For admin reviews (no productId)
   async create(
     review: Partial<Review>,
     token?: string | null,

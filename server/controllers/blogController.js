@@ -1,7 +1,5 @@
-// controllers/blogController.js
 const Blog = require('../models/Blog');
 
-// Get all blogs (with filters)
 const getAllBlogs = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -19,7 +17,6 @@ const getAllBlogs = async (req, res) => {
             ];
         }
 
-        // Only show published posts for public
         if (!req.userId || req.userRole !== 'admin') {
             query.status = 'published';
         }
@@ -47,7 +44,6 @@ const getAllBlogs = async (req, res) => {
     }
 };
 
-// Get blog by slug
 const getBlogBySlug = async (req, res) => {
     try {
         console.log('Fetching blog by slug:', req.params.slug);
@@ -59,7 +55,6 @@ const getBlogBySlug = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Blog not found' });
         }
 
-        // Increment views
         blog.views += 1;
         await blog.save();
 
@@ -70,7 +65,6 @@ const getBlogBySlug = async (req, res) => {
     }
 };
 
-// Get blog by ID (admin)
 const getBlogById = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
@@ -86,12 +80,10 @@ const getBlogById = async (req, res) => {
     }
 };
 
-// Create blog
 const createBlog = async (req, res) => {
     try {
         const { title, slug, author, category, featuredImage, excerpt, content, status, tags, seoTitle, seoDescription } = req.body;
 
-        // Generate slug if not provided
         let blogSlug = slug;
         if (!blogSlug) {
             blogSlug = title
@@ -100,7 +92,6 @@ const createBlog = async (req, res) => {
                 .replace(/\s+/g, '-');
         }
 
-        // Check if slug exists
         const existingBlog = await Blog.findOne({ slug: blogSlug });
         if (existingBlog) {
             blogSlug = `${blogSlug}-${Date.now()}`;
@@ -130,7 +121,6 @@ const createBlog = async (req, res) => {
     }
 };
 
-// Update blog
 const updateBlog = async (req, res) => {
     try {
         const { title, slug, author, category, featuredImage, excerpt, content, status, tags, seoTitle, seoDescription } = req.body;
@@ -140,7 +130,6 @@ const updateBlog = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Blog not found' });
         }
 
-        // Update fields
         if (title) blog.title = title;
         if (slug) blog.slug = slug;
         if (author) blog.author = author;
@@ -152,7 +141,6 @@ const updateBlog = async (req, res) => {
         if (seoTitle) blog.seoTitle = seoTitle;
         if (seoDescription) blog.seoDescription = seoDescription;
 
-        // Handle status change
         if (status && status !== blog.status) {
             blog.status = status;
             if (status === 'published' && !blog.publishedAt) {
@@ -169,7 +157,6 @@ const updateBlog = async (req, res) => {
     }
 };
 
-// Delete blog
 const deleteBlog = async (req, res) => {
     try {
         const blog = await Blog.findByIdAndDelete(req.params.id);
@@ -185,7 +172,6 @@ const deleteBlog = async (req, res) => {
     }
 };
 
-// Get featured blogs
 const getFeaturedBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find({ status: 'published' })
@@ -199,7 +185,6 @@ const getFeaturedBlogs = async (req, res) => {
     }
 };
 
-// Get related blogs
 const getRelatedBlogs = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);

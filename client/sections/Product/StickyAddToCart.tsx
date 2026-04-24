@@ -3,25 +3,71 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { getImageUrl } from "@/utils/imageUrl";
+import { useRouter } from "next/navigation";
 
 interface StickyAddToCartProps {
   product: {
+    _id: string;
     name: string;
     price: string;
     images: string[];
+    inStock: boolean;
   };
+  selectedSize?: { _id: string; size: string; price: string } | null;
+  selectedColor?: { _id: string; name: string } | null;
+  qty?: number;
+  onQuantityChange?: (qty: number) => void;
 }
 
-export default function StickyAddToCart({ product }: StickyAddToCartProps) {
+export default function StickyAddToCart({
+  product,
+  selectedSize,
+  selectedColor,
+  qty = 1,
+  onQuantityChange,
+}: StickyAddToCartProps) {
   const t = useTranslations("ProductDetail");
+  const router = useRouter();
   const [visible, setVisible] = useState(false);
-  const [qty, setQty] = useState(1);
+  const [localQty, setLocalQty] = useState(qty);
+
+  useEffect(() => {
+    setLocalQty(qty);
+  }, [qty]);
 
   useEffect(() => {
     const handler = () => setVisible(window.scrollY > 600);
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
+
+  const displayPrice = selectedSize?.price || product.price;
+  const priceValue = parseFloat(displayPrice.replace("$", ""));
+  const totalPrice = priceValue * localQty;
+  const formattedTotalPrice = `$${totalPrice.toFixed(2)}`;
+
+  const handleQuantityChange = (newQty: number) => {
+    setLocalQty(newQty);
+    if (onQuantityChange) {
+      onQuantityChange(newQty);
+    }
+  };
+
+  const handleBuyNow = () => {
+    const checkoutItem = {
+      productId: product._id,
+      name: product.name,
+      price: displayPrice,
+      image: product.images[0],
+      quantity: localQty,
+      size: selectedSize?.size,
+      color: selectedColor?.name,
+      sizeId: selectedSize?._id,
+      colorId: selectedColor?._id,
+    };
+    sessionStorage.setItem("directCheckout", JSON.stringify(checkoutItem));
+    router.push("/checkout");
+  };
 
   if (!visible) return null;
 
@@ -40,11 +86,11 @@ export default function StickyAddToCart({ product }: StickyAddToCartProps) {
           <p className="text-xs md:text-sm font-semibold text-gray-900 truncate">
             {product.name}
           </p>
-          <p className="text-xs md:text-sm text-gray-500">{product.price}</p>
+          <p className="text-xs md:text-sm text-gray-500">{displayPrice}</p>
         </div>
         <div className="hidden sm:flex items-center gap-2 border border-gray-200 rounded-full px-3 py-1.5 shrink-0">
           <button
-            onClick={() => setQty(Math.max(1, qty - 1))}
+            onClick={() => handleQuantityChange(Math.max(1, localQty - 1))}
             className="text-gray-500 hover:text-gray-900"
           >
             <svg
@@ -57,9 +103,11 @@ export default function StickyAddToCart({ product }: StickyAddToCartProps) {
               <path d="M5 12h14" />
             </svg>
           </button>
-          <span className="text-sm font-medium w-4 text-center">{qty}</span>
+          <span className="text-sm font-medium w-4 text-center">
+            {localQty}
+          </span>
           <button
-            onClick={() => setQty(qty + 1)}
+            onClick={() => handleQuantityChange(localQty + 1)}
             className="text-gray-500 hover:text-gray-900"
           >
             <svg
@@ -73,8 +121,12 @@ export default function StickyAddToCart({ product }: StickyAddToCartProps) {
             </svg>
           </button>
         </div>
-        <button className="shrink-0 bg-[#1f473e] text-white px-4 md:px-5 py-2.5 rounded-full text-xs md:text-sm font-medium hover:bg-[#163830] transition-colors whitespace-nowrap">
-          {t("addToCart")} — {product.price}
+        <button
+          onClick={handleBuyNow}
+          disabled={!product.inStock}
+          className="shrink-0 bg-[#1f473e] text-white px-4 md:px-5 py-2.5 rounded-full text-xs md:text-sm font-medium hover:bg-[#163830] transition-colors whitespace-nowrap disabled:opacity-50"
+        >
+          {t("buyItNow")} — {formattedTotalPrice}
         </button>
       </div>
     </div>

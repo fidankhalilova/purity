@@ -1,4 +1,3 @@
-// sections/BlogDetail/LeaveComment.tsx
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
@@ -27,8 +26,6 @@ export default function LeaveComment({ postId }: LeaveCommentProps) {
 
     try {
       setSubmitting(true);
-      // TODO: Implement comment API when ready
-      // await commentService.create({ postId, name, email, comment });
       toast.success("Comment submitted! It will appear after approval.");
       setComment("");
       if (!user) {

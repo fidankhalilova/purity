@@ -1,4 +1,3 @@
-// controllers/authController.js
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -34,7 +33,6 @@ const register = async (req, res) => {
         const name = `${firstName} ${lastName}`.trim();
         console.log('Registration attempt:', { name, email });
 
-        // Check if user exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({
@@ -43,7 +41,6 @@ const register = async (req, res) => {
             });
         }
 
-        // Create user
         const user = new User({
             name,
             email,
@@ -56,10 +53,8 @@ const register = async (req, res) => {
         await user.save();
         console.log('User created:', user._id);
 
-        // Generate tokens
         const { accessToken, refreshToken } = generateTokens(user._id);
 
-        // Store refresh token in database
         user.refreshToken = refreshToken;
         await user.save();
 
@@ -67,7 +62,6 @@ const register = async (req, res) => {
         delete userData.password;
         delete userData.refreshToken;
 
-        // Set refresh token as HTTP-only cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -102,7 +96,6 @@ const login = async (req, res) => {
 
         console.log('Login attempt:', { email });
 
-        // Find user with password field
         const user = await User.findOne({ email }).select('+password');
 
         if (!user) {
@@ -113,7 +106,6 @@ const login = async (req, res) => {
             });
         }
 
-        // Check if user is blocked
         if (user.status === 'blocked') {
             console.log('User blocked:', email);
             return res.status(403).json({
@@ -122,7 +114,6 @@ const login = async (req, res) => {
             });
         }
 
-        // Verify password
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             console.log('Invalid password for:', email);
@@ -132,14 +123,11 @@ const login = async (req, res) => {
             });
         }
 
-        // Update last login
         user.lastLogin = new Date();
         await user.save();
 
-        // Generate tokens
         const { accessToken, refreshToken } = generateTokens(user._id);
 
-        // Store refresh token in database
         user.refreshToken = refreshToken;
         await user.save();
 
@@ -147,7 +135,6 @@ const login = async (req, res) => {
         delete userData.password;
         delete userData.refreshToken;
 
-        // Set refresh token as HTTP-only cookie
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -175,9 +162,7 @@ const googleLogin = passport.authenticate('google', {
     scope: ['profile', 'email']
 });
 
-// controllers/authController.js - Update googleCallback
 const googleCallback = (req, res, next) => {
-    // Use passport.authenticate as middleware with session: false
     passport.authenticate('google', { session: false, failureRedirect: `${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed` },
         async (err, user, info) => {
             try {
@@ -190,10 +175,8 @@ const googleCallback = (req, res, next) => {
                     return res.redirect(`${process.env.FRONTEND_URL}/en/account/login?error=google_auth_failed`);
                 }
 
-                // Generate tokens
                 const { accessToken, refreshToken } = generateTokens(user._id);
 
-                // Store refresh token in database
                 user.refreshToken = refreshToken;
                 await user.save();
 
@@ -201,7 +184,6 @@ const googleCallback = (req, res, next) => {
                 delete userData.password;
                 delete userData.refreshToken;
 
-                // Set refresh token as HTTP-only cookie
                 res.cookie('refreshToken', refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
@@ -210,7 +192,6 @@ const googleCallback = (req, res, next) => {
                     path: '/'
                 });
 
-                // Redirect to frontend with user data
                 const redirectUrl = `${process.env.FRONTEND_URL}/en/account/google/callback?token=${accessToken}&user=${encodeURIComponent(JSON.stringify(userData))}`;
                 console.log('Redirecting to:', redirectUrl);
                 res.redirect(redirectUrl);
@@ -338,7 +319,6 @@ const forgotPassword = async (req, res) => {
 
         const user = await User.findOne({ email });
 
-        // For security, don't reveal if user exists or not
         if (!user) {
             return res.status(200).json({
                 success: true,
@@ -346,20 +326,16 @@ const forgotPassword = async (req, res) => {
             });
         }
 
-        // Generate reset token
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const resetTokenExpire = Date.now() + 3600000; // 1 hour
+        const resetTokenExpire = Date.now() + 3600000;
 
-        // Save token to user
         user.resetPasswordToken = resetToken;
         user.resetPasswordExpire = resetTokenExpire;
         await user.save();
 
-        // Send email
         const emailSent = await sendPasswordResetEmail(email, resetToken, user.name);
 
         if (!emailSent) {
-            // If email fails, clear the token
             user.resetPasswordToken = undefined;
             user.resetPasswordExpire = undefined;
             await user.save();
@@ -383,7 +359,6 @@ const forgotPassword = async (req, res) => {
     }
 };
 
-// Reset password with token
 const resetPassword = async (req, res) => {
     try {
         const { token, newPassword } = req.body;
@@ -395,7 +370,6 @@ const resetPassword = async (req, res) => {
             });
         }
 
-        // Find user with valid token
         const user = await User.findOne({
             resetPasswordToken: token,
             resetPasswordExpire: { $gt: Date.now() }
@@ -408,7 +382,6 @@ const resetPassword = async (req, res) => {
             });
         }
 
-        // Update password
         user.password = newPassword;
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
@@ -427,7 +400,6 @@ const resetPassword = async (req, res) => {
     }
 };
 
-// Verify reset token
 const verifyResetToken = async (req, res) => {
     try {
         const { token } = req.params;

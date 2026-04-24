@@ -1,4 +1,3 @@
-// sections/Admin/AdminGlowIngredients.tsx
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Plus, Pencil, Trash2, Eye, Loader2, Upload, X } from "lucide-react";
@@ -230,7 +229,6 @@ export default function AdminGlowIngredients() {
         searchKeys={["title", "tag", "subtitle"]}
       />
 
-      {/* Add/Edit Modal */}
       <AdminModal
         title={editing ? "Edit Glow Ingredient" : "Add Glow Ingredient"}
         open={modalOpen}
@@ -238,7 +236,6 @@ export default function AdminGlowIngredients() {
         onSave={handleSave}
       >
         <div className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto px-1">
-          {/* Tag */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Tag * (e.g., "Hero Ingredient", "Key Active")
@@ -252,7 +249,6 @@ export default function AdminGlowIngredients() {
             />
           </div>
 
-          {/* Subtitle */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Subtitle *
@@ -266,7 +262,6 @@ export default function AdminGlowIngredients() {
             />
           </div>
 
-          {/* Title */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Title *
@@ -280,7 +275,6 @@ export default function AdminGlowIngredients() {
             />
           </div>
 
-          {/* Description */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Description *
@@ -297,7 +291,6 @@ export default function AdminGlowIngredients() {
             />
           </div>
 
-          {/* Image */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Image *
@@ -348,7 +341,6 @@ export default function AdminGlowIngredients() {
         </div>
       </AdminModal>
 
-      {/* View Modal */}
       <AdminModal
         title="Glow Ingredient Details"
         open={viewModalOpen}

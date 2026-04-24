@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import {
   Plus,
   Pencil,
@@ -52,7 +51,6 @@ const inputClass =
   "w-full px-4 py-3 border border-gray-200 rounded-2xl text-sm text-gray-700 outline-none focus:border-[#1f473e] transition-colors bg-white";
 const textareaClass = `${inputClass} resize-none`;
 
-// Multi-select pill component
 function MultiSelect({
   label,
   options,
@@ -244,7 +242,6 @@ function MultiSelect({
   );
 }
 
-// Single select
 function SingleSelect({
   label,
   options,
@@ -279,7 +276,6 @@ function SingleSelect({
   );
 }
 
-// String list editor
 function StringListEditor({
   label,
   value,
@@ -342,7 +338,6 @@ function StringListEditor({
   );
 }
 
-// Collapsible section
 function FormSection({
   title,
   children,
@@ -381,8 +376,6 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<Partial<Product>>({});
   const [submitting, setSubmitting] = useState(false);
-
-  // Reference data
   const [collections, setCollections] = useState<Collection[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [homeSections, setHomeSections] = useState<HomeSection[]>([]);
@@ -462,7 +455,6 @@ export default function AdminProducts() {
 
   const openAdd = () => {
     setEditing(null);
-    // Generate a unique ID for the product (slug-like format)
     const generateId = () => {
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 8);
@@ -545,7 +537,6 @@ export default function AdminProducts() {
   const setFormValue = <K extends keyof Product>(key: K, value: Product[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  // Add image upload handler
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: "main" | "action",

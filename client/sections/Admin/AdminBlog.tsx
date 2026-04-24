@@ -1,4 +1,3 @@
-// app/admin/blogs/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Eye, Loader2 } from "lucide-react";
@@ -42,7 +41,7 @@ export default function AdminBlog() {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Get token from localStorage
+  // Token from localStorage
   const getToken = () => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("accessToken");
@@ -125,7 +124,6 @@ export default function AdminBlog() {
     try {
       setSaving(true);
 
-      // Generate slug from title if not provided
       let slug = form.slug;
       if (!slug && form.title) {
         slug = form.title

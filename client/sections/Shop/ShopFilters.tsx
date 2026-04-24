@@ -18,7 +18,6 @@ export default function ShopFilters() {
   const searchParams = useSearchParams();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Filter data from API
   const [categories, setCategories] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   const [colors, setColors] = useState<any[]>([]);
@@ -27,8 +26,9 @@ export default function ShopFilters() {
   const [formulations, setFormulations] = useState<any[]>([]);
   const [tags, setTags] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const selectedCollection = searchParams?.get("collection") || "";
+  const [selectedCollectionName, setSelectedCollectionName] = useState("");
 
-  // Counts for each filter
   const [counts, setCounts] = useState({
     onSale: 0,
     newArrivals: 0,
@@ -46,6 +46,24 @@ export default function ShopFilters() {
     loadFilterData();
     loadFilterCounts();
   }, []);
+
+  useEffect(() => {
+    const loadCollectionName = async () => {
+      if (selectedCollection) {
+        try {
+          const collection =
+            await collectionService.getById(selectedCollection);
+          setSelectedCollectionName(collection.name);
+        } catch (error) {
+          console.error("Error loading collection:", error);
+          setSelectedCollectionName("");
+        }
+      } else {
+        setSelectedCollectionName("");
+      }
+    };
+    loadCollectionName();
+  }, [selectedCollection]);
 
   const loadFilterData = async () => {
     try {
@@ -83,10 +101,8 @@ export default function ShopFilters() {
 
   const loadFilterCounts = async () => {
     try {
-      // Get all products to calculate counts
       const { products } = await productService.getAll(1, 1000);
 
-      // Calculate counts
       const onSaleCount = products.filter(
         (p) => p.originalPrice && p.originalPrice !== "",
       ).length;
@@ -98,7 +114,6 @@ export default function ShopFilters() {
       const inStockCount = products.filter((p) => p.inStock).length;
       const outOfStockCount = products.filter((p) => !p.inStock).length;
 
-      // Category counts (by collection name)
       const categoryCounts: Record<string, number> = {};
       products.forEach((p) => {
         if (p.collection && typeof p.collection === "object") {
@@ -107,7 +122,6 @@ export default function ShopFilters() {
         }
       });
 
-      // Brand counts
       const brandCounts: Record<string, number> = {};
       products.forEach((p) => {
         if (p.brand && typeof p.brand === "object") {
@@ -116,7 +130,6 @@ export default function ShopFilters() {
         }
       });
 
-      // Color counts
       const colorCounts: Record<string, number> = {};
       products.forEach((p) => {
         if (p.productColors && Array.isArray(p.productColors)) {
@@ -128,7 +141,6 @@ export default function ShopFilters() {
         }
       });
 
-      // Size counts
       const sizeCounts: Record<string, number> = {};
       products.forEach((p) => {
         if (p.productSizes && Array.isArray(p.productSizes)) {
@@ -140,7 +152,6 @@ export default function ShopFilters() {
         }
       });
 
-      // Concern counts
       const concernCounts: Record<string, number> = {};
       products.forEach((p) => {
         if (p.skinConcerns && Array.isArray(p.skinConcerns)) {
@@ -153,7 +164,6 @@ export default function ShopFilters() {
         }
       });
 
-      // Formulation counts
       const formulationCounts: Record<string, number> = {};
       products.forEach((p) => {
         if (p.formulation && typeof p.formulation === "object") {
@@ -229,9 +239,7 @@ export default function ShopFilters() {
   );
 
   const clearAllFilters = useCallback(() => {
-    // Clear all filter parameters and keep only the page
     const params = new URLSearchParams();
-    // Keep page parameter if needed
     const page = searchParams?.get("page");
     if (page) params.set("page", page);
     router.push(`?${params.toString()}`, { scroll: false });
@@ -264,7 +272,11 @@ export default function ShopFilters() {
   };
 
   const hasActiveFilters =
-    activeCount > 0 || priceMin > 0 || priceMax < 585 || !!collectionFilter;
+    activeCount > 0 ||
+    priceMin > 0 ||
+    priceMax < 585 ||
+    !!collectionFilter ||
+    !!selectedCollection;
 
   const SectionHeader = ({ id, label }: { id: string; label: string }) => (
     <button
@@ -327,19 +339,16 @@ export default function ShopFilters() {
 
   const FilterContent = () => (
     <div className="flex flex-col divide-y divide-gray-100">
-      {/* Deals - Now using Tags */}
       <div className="py-5">
         <SectionHeader id="deals" label="Deals" />
         {isOpen("deals") && (
           <div className="mt-4 flex flex-col gap-3">
-            {/* Sale filter */}
             <CheckboxRow
               label={t("sale")}
               count={counts.onSale}
               checked={onSale}
               onChange={() => updateURL("sale", onSale ? "" : "true")}
             />
-            {/* New Arrivals filter */}
             <CheckboxRow
               label={t("newArrivals")}
               count={counts.newArrivals}
@@ -350,7 +359,33 @@ export default function ShopFilters() {
         )}
       </div>
 
-      {/* Availability */}
+      {selectedCollection && selectedCollectionName && (
+        <div className="py-5">
+          <div className="mb-3">
+            <span className="font-bold text-gray-900">Active Filter</span>
+          </div>
+          <div className="flex items-center justify-between bg-gray-50 rounded-xl px-3 py-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Collection:</span>
+              <span className="text-sm font-medium text-gray-900">
+                {selectedCollectionName}
+              </span>
+            </div>
+            <button
+              onClick={() => {
+                const params = new URLSearchParams(searchParams?.toString());
+                params.delete("collection");
+                params.delete("page");
+                router.push(`?${params.toString()}`, { scroll: false });
+              }}
+              className="p-1 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              <X className="w-3.5 h-3.5 text-gray-500" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="py-5">
         <SectionHeader id="availability" label={t("availability")} />
         {isOpen("availability") && (
@@ -375,7 +410,6 @@ export default function ShopFilters() {
         )}
       </div>
 
-      {/* Category */}
       {categories.length > 0 && (
         <div className="py-5">
           <SectionHeader id="category" label={t("category")} />
@@ -397,7 +431,6 @@ export default function ShopFilters() {
         </div>
       )}
 
-      {/* Brand */}
       {brands.length > 0 && (
         <div className="py-5">
           <SectionHeader id="brand" label={t("brand")} />
@@ -419,7 +452,6 @@ export default function ShopFilters() {
         </div>
       )}
 
-      {/* Price */}
       <div className="py-5">
         <SectionHeader id="price" label={t("price")} />
         {isOpen("price") && (
@@ -462,7 +494,6 @@ export default function ShopFilters() {
         )}
       </div>
 
-      {/* Color */}
       {colors.length > 0 && (
         <div className="py-5">
           <SectionHeader id="color" label={t("color")} />
@@ -500,7 +531,6 @@ export default function ShopFilters() {
         </div>
       )}
 
-      {/* Size */}
       {sizes.length > 0 && (
         <div className="py-5">
           <SectionHeader id="size" label={t("size")} />
@@ -522,7 +552,6 @@ export default function ShopFilters() {
         </div>
       )}
 
-      {/* Concern */}
       {concerns.length > 0 && (
         <div className="py-5">
           <SectionHeader id="concern" label={t("concern")} />
@@ -544,7 +573,6 @@ export default function ShopFilters() {
         </div>
       )}
 
-      {/* Formulation */}
       {formulations.length > 0 && (
         <div className="py-5">
           <SectionHeader id="formulation" label={t("formulation")} />
@@ -566,7 +594,6 @@ export default function ShopFilters() {
         </div>
       )}
 
-      {/* Clear all */}
       {hasActiveFilters && (
         <div className="py-5">
           <button

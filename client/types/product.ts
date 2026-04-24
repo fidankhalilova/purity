@@ -1,6 +1,3 @@
-// types/product.ts
-
-// Base API Response Type
 export type ApiResponse<T = any> = {
   success: boolean;
   data?: T;
@@ -13,7 +10,6 @@ export type ApiResponse<T = any> = {
   };
 };
 
-// Product Color Type
 export type ProductColor = {
   _id: string;
   name: string;
@@ -25,7 +21,6 @@ export type ProductColor = {
   updatedAt?: string;
 };
 
-// Product Size Type
 export type ProductSize = {
   _id: string;
   size: string;
@@ -38,7 +33,6 @@ export type ProductSize = {
   updatedAt?: string;
 };
 
-// Skin Type Type
 export type SkinType = {
   _id: string;
   name: string;
@@ -48,7 +42,6 @@ export type SkinType = {
   updatedAt?: string;
 };
 
-// Skin Concern Type
 export type SkinConcern = {
   _id: string;
   name: string;
@@ -58,7 +51,6 @@ export type SkinConcern = {
   updatedAt?: string;
 };
 
-// Skin Shade Type
 export type SkinShade = {
   _id: string;
   name: string;
@@ -68,7 +60,6 @@ export type SkinShade = {
   updatedAt?: string;
 };
 
-// Skin Color Type
 export type SkinColor = {
   _id: string;
   name: string;
@@ -78,19 +69,17 @@ export type SkinColor = {
   updatedAt?: string;
 };
 
-// Collection Type
 export type Collection = {
   _id: string;
   name: string;
   description?: string;
   image?: string;
   isActive: boolean;
-  productCount?: number; // Add this optional property
+  productCount?: number;
   createdAt?: string;
   updatedAt?: string;
 };
 
-// Tag Type
 export type Tag = {
   _id: string;
   name: string;
@@ -101,7 +90,6 @@ export type Tag = {
   updatedAt?: string;
 };
 
-// Home Section Type
 export type HomeSection = {
   _id: string;
   name: string;
@@ -112,7 +100,6 @@ export type HomeSection = {
   updatedAt?: string;
 };
 
-// Badge Type
 export type Badge = {
   _id: string;
   icon: string;
@@ -121,7 +108,6 @@ export type Badge = {
   updatedAt?: string;
 };
 
-// Review Type
 export type Review = {
   _id: string;
   author: string;
@@ -147,7 +133,6 @@ export interface GlowIngredient {
   updatedAt: string;
 }
 
-// Brand Type
 export type Brand = {
   _id: string;
   name: string;
@@ -161,7 +146,6 @@ export type Brand = {
   updatedAt?: string;
 };
 
-// Formulation Type
 export type Formulation = {
   _id: string;
   name: string;
@@ -171,10 +155,9 @@ export type Formulation = {
   updatedAt?: string;
 };
 
-// Product Type
 export type Product = {
   _id: string;
-  id?: string; // Custom slug field
+  id?: string;
   name: string;
   price: string;
   originalPrice?: string;
@@ -185,7 +168,6 @@ export type Product = {
   images: string[];
   status: "active" | "draft";
 
-  // References
   productColors?: ProductColor[] | string[];
   productSizes?: ProductSize[] | string[];
   skinColors?: SkinColor[] | string[];
@@ -200,12 +182,10 @@ export type Product = {
   brand?: Brand | string;
   formulation?: Formulation | string;
 
-  // Relations
   pairsWell?: Product[] | string[];
   boughtTogether?: Product[] | string[];
   similarProducts?: Product[] | string[];
 
-  // Additional fields
   benefits?: string[];
   actionImages?: string[];
   productInfo?: string;
@@ -217,7 +197,6 @@ export type Product = {
   updatedAt?: string;
 };
 
-// Product Service Response
 export type ProductListResponse = {
   products: Product[];
   pagination: {
@@ -228,7 +207,6 @@ export type ProductListResponse = {
   };
 };
 
-// Product Detail Type (for frontend display)
 export type ProductDetail = {
   _id: string;
   id: string;
@@ -247,7 +225,6 @@ export type ProductDetail = {
   howToUse: string;
   ingredients: string;
 
-  // Brand and Formulation
   brand?: {
     _id: string;
     name: string;
@@ -259,7 +236,6 @@ export type ProductDetail = {
   };
   formulation?: { _id: string; name: string };
 
-  // Colors and Sizes
   productColors?: {
     _id: string;
     name: string;
@@ -277,7 +253,6 @@ export type ProductDetail = {
     sku?: string;
   }[];
 
-  // Glow Ingredients
   glowIngredients: {
     _id?: string;
     tag: string;
@@ -287,7 +262,6 @@ export type ProductDetail = {
     image: string;
   }[];
 
-  // Related Products
   pairsWell: {
     _id: string;
     name: string;
@@ -317,7 +291,6 @@ export type ProductDetail = {
     href: string;
   }[];
 
-  // Reviews
   reviews: {
     author: string;
     rating: number;

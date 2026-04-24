@@ -25,7 +25,6 @@ export default function TopSellers() {
         inStock: true,
       });
 
-      // Split products into 3 tabs (4 products per tab)
       const chunkSize = 4;
       const tabsData: Record<number, any[]> = {};
       for (let i = 0; i < 3; i++) {

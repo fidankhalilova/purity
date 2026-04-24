@@ -1,4 +1,3 @@
-// services/blogService.ts
 import { BlogPost, ApiResponse } from "@/types/blog";
 
 const API_BASE_URL =
@@ -35,7 +34,6 @@ export const blogService = {
   },
 
   async getBySlug(slug: string): Promise<BlogPost> {
-    // For server-side rendering, we need to use absolute URL
     const baseUrl =
       typeof window === "undefined"
         ? process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"

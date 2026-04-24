@@ -1,8 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import { useLocale } from "next-intl";
-import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -55,11 +53,9 @@ export default function ChooseYourShade() {
     }, 200);
   };
 
-  // Get products for active skin shade (filter by skinShade)
   const getProductsByShade = () => {
     const currentShade = skinShades[activeTone];
     if (!currentShade) return [];
-    // Filter products that match this skin shade
     return products
       .filter((p) =>
         p.skinShades?.some(

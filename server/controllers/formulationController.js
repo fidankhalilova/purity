@@ -1,12 +1,10 @@
 const Formulation = require('../models/Formulation');
 const Product = require('../models/Product');
 
-// Get all formulations
 const getAllFormulations = async (req, res) => {
     try {
         const formulations = await Formulation.find().sort({ createdAt: -1 });
 
-        // Get product count for each formulation
         const formulationsWithCount = await Promise.all(
             formulations.map(async (formulation) => {
                 const productCount = await Product.countDocuments({ formulation: formulation._id });
@@ -24,7 +22,6 @@ const getAllFormulations = async (req, res) => {
     }
 };
 
-// Get formulation by ID
 const getFormulationById = async (req, res) => {
     try {
         const formulation = await Formulation.findById(req.params.id);
@@ -43,12 +40,10 @@ const getFormulationById = async (req, res) => {
     }
 };
 
-// Create formulation
 const createFormulation = async (req, res) => {
     try {
         const { name, description, isActive } = req.body;
 
-        // Check if formulation already exists
         const existingFormulation = await Formulation.findOne({ name });
         if (existingFormulation) {
             return res.status(400).json({ success: false, message: 'Formulation already exists' });
@@ -68,7 +63,6 @@ const createFormulation = async (req, res) => {
     }
 };
 
-// Update formulation
 const updateFormulation = async (req, res) => {
     try {
         const { name, description, isActive } = req.body;
@@ -78,7 +72,6 @@ const updateFormulation = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Formulation not found' });
         }
 
-        // Check if name is being changed and already exists
         if (name && name !== formulation.name) {
             const existingFormulation = await Formulation.findOne({ name });
             if (existingFormulation) {
@@ -103,7 +96,6 @@ const updateFormulation = async (req, res) => {
     }
 };
 
-// Toggle active status
 const toggleActive = async (req, res) => {
     try {
         const formulation = await Formulation.findById(req.params.id);
@@ -121,7 +113,6 @@ const toggleActive = async (req, res) => {
     }
 };
 
-// Delete formulation
 const deleteFormulation = async (req, res) => {
     try {
         const formulation = await Formulation.findById(req.params.id);
@@ -129,7 +120,6 @@ const deleteFormulation = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Formulation not found' });
         }
 
-        // Check if formulation has products
         const productCount = await Product.countDocuments({ formulation: formulation._id });
         if (productCount > 0) {
             return res.status(400).json({
@@ -146,7 +136,6 @@ const deleteFormulation = async (req, res) => {
     }
 };
 
-// Get products by formulation
 const getProductsByFormulation = async (req, res) => {
     try {
         const formulation = await Formulation.findById(req.params.id);

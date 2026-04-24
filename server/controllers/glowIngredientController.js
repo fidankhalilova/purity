@@ -1,7 +1,5 @@
-// controllers/glowIngredientController.js
 const GlowIngredient = require('../models/GlowIngredient');
 
-// Get all glow ingredients
 const getAllGlowIngredients = async (req, res) => {
     try {
         const ingredients = await GlowIngredient.find().sort({ createdAt: -1 });
@@ -12,7 +10,6 @@ const getAllGlowIngredients = async (req, res) => {
     }
 };
 
-// Get glow ingredient by ID
 const getGlowIngredientById = async (req, res) => {
     try {
         const ingredient = await GlowIngredient.findById(req.params.id);
@@ -26,7 +23,6 @@ const getGlowIngredientById = async (req, res) => {
     }
 };
 
-// Create glow ingredient
 const createGlowIngredient = async (req, res) => {
     try {
         const { tag, subtitle, title, description, image } = req.body;
@@ -47,7 +43,6 @@ const createGlowIngredient = async (req, res) => {
     }
 };
 
-// Update glow ingredient
 const updateGlowIngredient = async (req, res) => {
     try {
         const { tag, subtitle, title, description, image } = req.body;
@@ -69,7 +64,6 @@ const updateGlowIngredient = async (req, res) => {
     }
 };
 
-// Delete glow ingredient
 const deleteGlowIngredient = async (req, res) => {
     try {
         const ingredient = await GlowIngredient.findByIdAndDelete(req.params.id);

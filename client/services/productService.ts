@@ -1,14 +1,19 @@
-// services/productService.ts
 import { Product, ProductListResponse, ApiResponse } from "@/types/product";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
-// All fields to populate for full product detail
 const DETAIL_POPULATE =
   "productColors,productSizes,badges,brand,formulation,glowIngredients";
 const LIST_POPULATE =
   "collection,tags,badges,productColors,productSizes,brand,formulation";
+
+function getAuthHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const token = localStorage.getItem("accessToken");
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
+}
 
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
   if (!response.ok) {
@@ -21,8 +26,6 @@ async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
 }
 
 export const productService = {
-  // ─── READ ──────────────────────────────────────────────────────────────────
-
   async getAll(
     page?: number,
     limit?: number,
@@ -48,25 +51,20 @@ export const productService = {
   ): Promise<ProductListResponse> {
     const params = new URLSearchParams();
 
-    // Pagination
     if (page) params.append("page", page.toString());
     if (limit) params.append("limit", limit.toString());
 
-    // Search
     if (options?.search) params.append("search", options.search);
 
-    // Simple filters
     if (options?.collection) params.append("collection", options.collection);
     if (options?.tag) params.append("tag", options.tag);
     if (options?.inStock !== undefined)
       params.append("inStock", options.inStock.toString());
     if (options?.status) params.append("status", options.status);
 
-    // Sorting
     if (options?.sort) params.append("sort", options.sort);
     if (options?.order) params.append("order", options.order);
 
-    // Price range
     if (options?.priceMin && options.priceMin > 0) {
       params.append("priceMin", options.priceMin.toString());
     }
@@ -74,7 +72,6 @@ export const productService = {
       params.append("priceMax", options.priceMax.toString());
     }
 
-    // Array filters
     if (options?.colors && options.colors.length > 0) {
       params.append("colors", options.colors.join(","));
     }
@@ -94,7 +91,6 @@ export const productService = {
       params.append("formulations", options.formulations.join(","));
     }
 
-    // Special filters
     if (options?.onSale) params.append("onSale", "true");
     if (options?.newArrivals) params.append("newArrivals", "true");
 
@@ -133,13 +129,11 @@ export const productService = {
         populate: DETAIL_POPULATE,
       });
 
-      // First try: find by custom id field (e.g., "prd-123456789-abc123")
       let response = await fetch(
         `${API_BASE_URL}/products/id/${encodeURIComponent(id)}?${params.toString()}`,
       );
       let data: ApiResponse<Product> = await response.json();
 
-      // Second try: find by slug
       if (!data.success || !data.data) {
         response = await fetch(
           `${API_BASE_URL}/products/slug/${encodeURIComponent(id)}?${params.toString()}`,
@@ -147,7 +141,6 @@ export const productService = {
         data = await response.json();
       }
 
-      // Third try: find by MongoDB _id
       if (!data.success || !data.data) {
         response = await fetch(
           `${API_BASE_URL}/products/${encodeURIComponent(id)}?${params.toString()}`,
@@ -212,12 +205,15 @@ export const productService = {
     return data.data || [];
   },
 
-  // ─── WRITE ─────────────────────────────────────────────────────────────────
-
   async create(product: Partial<Product>): Promise<Product> {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...getAuthHeader(),
+    };
+
     const response = await fetch(`${API_BASE_URL}/products`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(product),
     });
     const data = await handleResponse<Product>(response);
@@ -226,9 +222,14 @@ export const productService = {
   },
 
   async update(id: string, product: Partial<Product>): Promise<Product> {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...getAuthHeader(),
+    };
+
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(product),
     });
     const data = await handleResponse<Product>(response);
@@ -237,9 +238,14 @@ export const productService = {
   },
 
   async patch(id: string, fields: Partial<Product>): Promise<Product> {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...getAuthHeader(),
+    };
+
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(fields),
     });
     const data = await handleResponse<Product>(response);
@@ -248,16 +254,24 @@ export const productService = {
   },
 
   async delete(id: string): Promise<void> {
+    const headers: Record<string, string> = getAuthHeader();
+
     const response = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: "DELETE",
+      headers,
     });
     await handleResponse(response);
   },
 
   async bulkDelete(ids: string[]): Promise<void> {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...getAuthHeader(),
+    };
+
     const response = await fetch(`${API_BASE_URL}/products/bulk-delete`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({ ids }),
     });
     await handleResponse(response);

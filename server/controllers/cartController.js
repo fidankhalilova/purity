@@ -1,8 +1,6 @@
-// controllers/cartController.js
 const User = require('../models/User');
 const Product = require('../models/Product');
 
-// Get user's cart
 const getCart = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId)
@@ -12,7 +10,6 @@ const getCart = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // Format cart items for frontend
         const cartItems = user.cart.map(item => ({
             id: item._id,
             productId: item.productId._id,
@@ -34,7 +31,6 @@ const getCart = async (req, res) => {
     }
 };
 
-// Add to cart
 const addToCart = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -47,13 +43,11 @@ const addToCart = async (req, res) => {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        // Check if product exists
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        // Check if same variant already exists in cart
         const existingItemIndex = user.cart.findIndex(item => {
             const sameProduct = item.productId.toString() === productId;
             const sameSize = item.size === size;
@@ -62,11 +56,9 @@ const addToCart = async (req, res) => {
         });
 
         if (existingItemIndex !== -1) {
-            // Update quantity
             user.cart[existingItemIndex].quantity += quantity;
             console.log('Updated existing item quantity:', user.cart[existingItemIndex].quantity);
         } else {
-            // Add new item
             user.cart.push({
                 productId,
                 quantity,
@@ -78,7 +70,6 @@ const addToCart = async (req, res) => {
 
         await user.save();
 
-        // Populate and return updated cart
         const updatedUser = await User.findById(userId)
             .populate('cart.productId', 'name price originalPrice images inStock');
 
@@ -103,7 +94,6 @@ const addToCart = async (req, res) => {
     }
 };
 
-// Update cart item quantity
 const updateCartItem = async (req, res) => {
     try {
         const { userId, itemId } = req.params;
@@ -131,7 +121,6 @@ const updateCartItem = async (req, res) => {
 
         await user.save();
 
-        // Populate and return updated cart
         const updatedUser = await User.findById(userId)
             .populate('cart.productId', 'name price originalPrice images inStock');
 
@@ -155,7 +144,6 @@ const updateCartItem = async (req, res) => {
     }
 };
 
-// Remove cart item
 const removeCartItem = async (req, res) => {
     try {
         const { userId, itemId } = req.params;
@@ -170,7 +158,6 @@ const removeCartItem = async (req, res) => {
         user.cart = user.cart.filter(item => item._id.toString() !== itemId);
         await user.save();
 
-        // Populate and return updated cart
         const updatedUser = await User.findById(userId)
             .populate('cart.productId', 'name price originalPrice images inStock');
 

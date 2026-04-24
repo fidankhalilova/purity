@@ -10,10 +10,9 @@ export default function GoogleCallbackPage() {
   const searchParams = useSearchParams();
   const { googleLogin, user } = useAuth();
   const [processing, setProcessing] = useState(true);
-  const hasProcessed = useRef(false); // Prevent double execution
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    // Prevent multiple executions
     if (hasProcessed.current) return;
 
     const handleCallback = async () => {
@@ -24,23 +23,20 @@ export default function GoogleCallbackPage() {
       if (error) {
         console.error("Google auth error:", error);
         toast.error("Google login failed. Please try again.");
-        router.replace("/en/account/login"); // Use replace instead of push
+        router.replace("/en/account/login");
         return;
       }
 
       if (token && userDataParam && !hasProcessed.current) {
         try {
-          hasProcessed.current = true; // Mark as processed immediately
+          hasProcessed.current = true;
 
-          // Parse user data
           const userData = JSON.parse(decodeURIComponent(userDataParam));
 
           console.log("Google login successful:", { token, userData });
 
-          // Use the googleLogin method from AuthContext
           googleLogin(token, userData);
 
-          // Check for redirect URL from session storage
           const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
 
           if (
@@ -50,7 +46,6 @@ export default function GoogleCallbackPage() {
             sessionStorage.removeItem("redirectAfterLogin");
             router.replace(redirectUrl);
           } else {
-            // Redirect based on role
             if (userData.role === "admin") {
               router.replace("/en/admin");
             } else {
@@ -72,9 +67,8 @@ export default function GoogleCallbackPage() {
     };
 
     handleCallback();
-  }, [searchParams, router, googleLogin]); // Remove 'user' from dependencies
+  }, [searchParams, router, googleLogin]);
 
-  // Show loading state
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh]">
       <Loader2 className="w-8 h-8 animate-spin text-[#1f473e] mb-4" />

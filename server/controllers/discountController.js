@@ -1,6 +1,5 @@
 const Discount = require('../models/Discount');
 
-// Get all discounts
 const getAllDiscounts = async (req, res) => {
     try {
         const discounts = await Discount.find().sort({ createdAt: -1 });
@@ -11,7 +10,6 @@ const getAllDiscounts = async (req, res) => {
     }
 };
 
-// Get discount by ID
 const getDiscountById = async (req, res) => {
     try {
         const discount = await Discount.findById(req.params.id);
@@ -25,7 +23,6 @@ const getDiscountById = async (req, res) => {
     }
 };
 
-// Get discount by code
 const getDiscountByCode = async (req, res) => {
     try {
         const discount = await Discount.findOne({
@@ -52,14 +49,12 @@ const getDiscountByCode = async (req, res) => {
     }
 };
 
-// Create discount - FIXED VERSION
 const createDiscount = async (req, res) => {
     try {
         const { code, type, value, maxUses, expires, status, product } = req.body;
 
         console.log('Creating discount with data:', { code, type, value, maxUses, expires, status, product });
 
-        // Check if discount code already exists
         const existingDiscount = await Discount.findOne({ code: code.toUpperCase() });
         if (existingDiscount) {
             return res.status(400).json({
@@ -68,7 +63,6 @@ const createDiscount = async (req, res) => {
             });
         }
 
-        // Create discount
         const discount = new Discount({
             code: code.toUpperCase(),
             type,
@@ -89,7 +83,6 @@ const createDiscount = async (req, res) => {
     }
 };
 
-// Update discount
 const updateDiscount = async (req, res) => {
     try {
         const { code, type, value, maxUses, expires, status, product } = req.body;
@@ -99,7 +92,6 @@ const updateDiscount = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Discount not found' });
         }
 
-        // Check if code is being changed and already exists
         if (code && code.toUpperCase() !== discount.code) {
             const existingDiscount = await Discount.findOne({ code: code.toUpperCase() });
             if (existingDiscount) {
@@ -128,7 +120,6 @@ const updateDiscount = async (req, res) => {
     }
 };
 
-// Update discount status
 const updateDiscountStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -154,7 +145,6 @@ const updateDiscountStatus = async (req, res) => {
     }
 };
 
-// Delete discount
 const deleteDiscount = async (req, res) => {
     try {
         const discount = await Discount.findByIdAndDelete(req.params.id);

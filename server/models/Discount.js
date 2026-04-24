@@ -40,19 +40,16 @@ const discountSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         default: null,
-        // Remove unique: true - this was causing the error
-        sparse: true // This allows multiple null values
+        sparse: true
     }
 }, {
     timestamps: true
 });
 
-// Virtual for formatted value
 discountSchema.virtual('formattedValue').get(function () {
     return this.type === 'percentage' ? `${this.value}%` : `$${this.value.toFixed(2)}`;
 });
 
-// Virtual for formatted expiry date
 discountSchema.virtual('formattedExpiry').get(function () {
     if (!this.expires) return '';
     const date = new Date(this.expires);

@@ -84,7 +84,6 @@ export default function SettingsSection({ userId }: SettingsSectionProps) {
         displayLanguage: newLang as "en" | "az" | "ru",
       });
       toast.success("Language updated");
-      // Reload page to apply language change
       setTimeout(() => window.location.reload(), 500);
     } catch (error) {
       console.error("Error updating language:", error);
@@ -130,7 +129,6 @@ export default function SettingsSection({ userId }: SettingsSectionProps) {
       setUpdating(true);
       await userService.delete(userId);
       toast.success("Account deleted successfully");
-      // Clear user data and redirect to home
       localStorage.removeItem("user");
       router.push("/");
     } catch (error) {

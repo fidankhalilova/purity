@@ -15,7 +15,7 @@ const productColorSchema = new mongoose.Schema({
         trim: true
     },
     image: {
-        type: String // Image showing the color variant
+        type: String
     },
     inStock: {
         type: Boolean,

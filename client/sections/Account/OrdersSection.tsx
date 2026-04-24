@@ -21,7 +21,6 @@ interface OrdersSectionProps {
   userId: string;
 }
 
-// Helper to get token from localStorage
 const getToken = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("accessToken");
@@ -73,7 +72,7 @@ export default function OrdersSection({ userId }: OrdersSectionProps) {
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const token = getToken(); // Get token from localStorage
+      const token = getToken();
       const data = await orderService.getUserOrders(userId, token);
       setOrders(data);
       if (data.length > 0) setExpanded(data[0]._id);
