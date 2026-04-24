@@ -1,0 +1,1076 @@
+{
+  "HomePage": {
+    "meta": {
+      "title": "Purity | Təmiz Gözəllik Parlaq Dəri Üçün",
+      "description": "Purity'nin təmiz gözəllik məhsullarını kəşf edin. Təbii tərkiblər, davamlı qablaşdırma və görünən nəticələr."
+    },
+    "hero": {
+      "slides": [
+        {
+          "tag": "Həssas Dəri",
+          "titleLine1": "Sakit Dəri",
+          "titleLine2": "Bütün Gün ",
+          "titleItalic": "Nəmləndirici",
+          "desc": "Hialuronik + Seramidlər. Bariyer-təhlükəsiz nəmləndirici.",
+          "btnText": "Alış-verişə başla",
+          "btnHref": "/shop"
+        },
+        {
+          "tag": "Yağ Kontrolu",
+          "titleLine1": "Bərabər Ton",
+          "titleLine2": "Botanik",
+          "titleItalic": "al Qarışıq",
+          "desc": "Skvalane + Qara Çay. Yağ nəzarəti bərabər ton.",
+          "btnText": "Alış-verişə başla",
+          "btnHref": "/shop"
+        },
+        {
+          "tag": "Məsamə Qayğısı",
+          "titleLine1": "Təmiz Dəri",
+          "titleLine2": "Məsamə",
+          "titleItalic": "Bulanıq Görünüş",
+          "desc": "Niasinamid + Sink. Yağ nəzarəti hamar görünüş.",
+          "btnText": "Alış-verişə başla",
+          "btnHref": "/shop"
+        }
+      ]
+    },
+    "marquee": {
+      "items": [
+        "Davamlı Gözəllik",
+        "Yumşaq Amma Effektiv",
+        "Təmiz Təhlükəsiz Tərkiblər",
+        "Dərin Nəmləndirici",
+        "Hədəflənmiş Məsamə Qayğısı",
+        "Hər Dəri Növü"
+      ]
+    },
+    "topSellers": {
+      "title": "Ən Çox Satılanlar",
+      "tabs": ["Ən Çox Satılan", "Trend", "Dəyər Dəstləri"]
+    },
+    "skinConcerns": {
+      "tag": "Uyğununuzu Tapın",
+      "title": "Dəri Problemlərinə Görə Alış-veriş",
+      "concerns": [
+        "Nəmləndirici",
+        "Parıltı",
+        "Məsamə Qayğısı",
+        "Yaşlanma Əleyhinə",
+        "Həssas Dəri",
+        "Yağ Nəzarəti"
+      ]
+    },
+    "cleanseYourSkin": {
+      "tag": "Sadə Addımlar",
+      "title": "Dərinizi Təmizləyin",
+      "steps": [
+        "Addım 1. Təmizləyici",
+        "Addım 2. Tonik",
+        "Addım 3. Serum",
+        "Addım 4. Müalicə"
+      ]
+    },
+    "featuredBanner": {
+      "tag": "Yeni Gələn",
+      "title": "Parıltı Redaksiyası",
+      "desc": "Ən yeni kolleksiyamızı kəşf edin — dəriniz üçün hazırlanmış, həyatınız üçün dizayn edilmişdir.",
+      "btnText": "İndi Kəşf Et"
+    },
+    "featuredBrands": {
+      "title": "Seçilmiş Brendlər",
+      "desc": "Satdığımız brendlərin loqolarını kəşf edin — orijinal, lisenziyalı və bu gün mövcuddur."
+    },
+    "exclusiveDeals": {
+      "badge": "✦ Gözəllik Təklifləri",
+      "title": "Eksklüziv Endirimlər!",
+      "desc": "Bütün yeniliklərimizi və təkliflərimizi almaq üçün abunə olun və ilk alışınızda 10% endirim əldə edin.",
+      "signIn": "Daxil ol",
+      "createAccount": "Hesab yarat"
+    },
+    "helpCenter": {
+      "tag": "Onlayn Dəstək",
+      "title": "Yardım Mərkəzi!",
+      "desc": "Məhsul təfərrüatlarından tutmuş geri qaytarma və mübadiləyə qədər suallarınıza sürətli həllər tapın.",
+      "visitBtn": "Yardım Mərkəzinə keçin",
+      "faqs": [
+        {
+          "q": "Çatdırılma nə qədər vaxt aparır?",
+          "a": "Sifarişlərimiz adətən 3–7 iş günü ərzində çatdırılır. Bayramlar, hava şəraiti və alış-veriş mövsümləri çatdırılma müddətinə təsir edə bilər."
+        },
+        {
+          "q": "Pulumu nə vaxt geri alacağam?",
+          "a": "Geri qaytarılan məhsulu aldıqdan sonra 5–10 iş günü ərzində ödəniş geri qaytarılır. Ödəniş həyata keçirildikdən sonra e-poçt bildirişi alacaqsınız."
+        },
+        {
+          "q": "Sifarişimi necə izləyə bilərəm?",
+          "a": "Sifarişiniz göndərildikdən sonra e-poçt vasitəsilə izləmə nömrəsi alacaqsınız."
+        },
+        {
+          "q": "Hədiyyə kartları təklif edirsinizmi?",
+          "a": "Bəli! Müxtəlif məbləğlərdə rəqəmsal hədiyyə kartlarımız mövcuddur. E-poçt vasitəsilə çatdırılır."
+        },
+        {
+          "q": "Beynəlxalq çatdırılma var?",
+          "a": "Bəli, əksər ölkələrə çatdırılma edirik. Müddət 7–14 iş günü arasında dəyişir."
+        }
+      ]
+    },
+    "findYourSolutions": {
+      "tag": "Parıltı Buradan Başlayır",
+      "title": "Həllinizi Tapın",
+      "iHave": "Məndə",
+      "skin": "dəri var",
+      "topConcernIs": "və əsas dəri problemim",
+      "seeBtn": "Həllərimi Gör",
+      "skinTypeBtn": "Dəri növüm nədir?",
+      "skinTypes": [
+        "Quru",
+        "Balanslaşdırılmış",
+        "Həssas",
+        "Yağlı",
+        "Kombinasiya"
+      ],
+      "concerns": {
+        "Quru": ["Yoğun Nəmləndirici", "Bariyer Xilas", "Parıltılı Görünüş"],
+        "Balanslaşdırılmış": [
+          "Gündəlik Əsaslar",
+          "Təbii Parıltı",
+          "Hamar Parlaqlıq"
+        ],
+        "Həssas": ["Bariyer Xilas", "Bariyer Dəstəyi", "Sakit Təmizlik"],
+        "Yağlı": ["Yağ Kontrolu", "Məsamə Aydınlığı", "Sızanaqlara Qarşı"],
+        "Kombinasiya": ["Çox Maskalaşdırma", "Məsamə Susuzluğu", "Hidra Balans"]
+      }
+    },
+    "spotless": {
+      "title": "1 Həftədə Ləkəsiz",
+      "desc": "Anti-Aging Serum ilə görünən dərəcədə hamar, parlaq dəri. 🍀",
+      "viewBtn": "Məhsula Bax",
+      "leftBenefits": [
+        "Xətləri Hamarlaşdırır",
+        "Kollagen Artırır",
+        "Yaşlanma Qalxanı"
+      ],
+      "rightBenefits": [
+        "Dərini Parıldadır",
+        "48s Nəmləndirici",
+        "Sürətli Sorulma"
+      ]
+    },
+    "communityStories": {
+      "tag": "Göründüyü Kimi",
+      "title": "İcma Hekayələri"
+    },
+    "whatTheyAreSaying": {
+      "tag": "17k+ Müştəri Tərəfindən Sevilir",
+      "title": "Onlar Nə Deyir"
+    },
+    "editorChoice": {
+      "tag": "Məhdud Müddətli Redaksiya",
+      "title": "Redaktorun",
+      "titleHighlight": "Seçim Dəsti",
+      "addAllToCart": "Hamısını səbətə əlavə et",
+      "viewGuide": "İstifadə Bələdçisinə Bax",
+      "addToCart": "Səbətə əlavə et",
+      "color": "Rəng"
+    },
+    "exploreCollections": {
+      "tag": "Özünə Qayğı Məhsulu",
+      "title": "Kəşf Et",
+      "titleHighlight": "Kolleksiyalar"
+    },
+    "chooseYourShade": {
+      "title": "Çalarınızı",
+      "titleHighlight": "Seçin",
+      "skinTones": ["Açıq Dəri", "İşıqlı Dəri", "Orta Dəri", "Tünd Dəri"]
+    },
+    "testimonials": {
+      "tag": "Həqiqi Nəticələr",
+      "title": "Müştərilərimiz Nə Deyir"
+    },
+    "instagramTitle": "Səyahətimizdə Bizi İzləyin"
+  },
+  "AboutUs": {
+    "meta": {
+      "title": "Haqqımızda | Purity",
+      "description": "Purity'nin dərinizə və planetə qayğı göstərən təmiz, effektiv dəri baxımı yaratmaq missiyası haqqında məlumat əldə edin."
+    },
+    "AboutBanner": {
+      "title": "Purity'nin Hekayəsi",
+      "description": "Niyyətlə başlayan və etibarla sona çatan dəri qayğısı — hər damcısında həssaslıqla, dürüstlüklə və məqsədlə hazırlanmışdır."
+    },
+    "OurVision": {
+      "tag": "Fəlsəfəmiz",
+      "title": "Özgüvənlə Parlayın",
+      "description": "Təmiz formulalarımız dərinizi qidalandırmaq, bərpa etmək və təbii parıltısını ortaya çıxarmaq üçün hazırlanıb — özgüvən həqiqi, əbədi gözəllik kimi əziyyətsiz və parlaq hiss etdirir.",
+      "body": "Hər formula qəsdən yaradılıb — həssas, effektiv və düşüncəlidir. Xammalın seçimindən qablaşdırmaya qədər heç nə tələsdirilmir. İnanırıq ki, gözəllik şəxsi, məsuliyyətli və əbədi olmalıdır — trend deyil, dizaynla yaradılır.",
+      "badges": {
+        "crueltyFreeTitle": "Heyvan Sınaqsız",
+        "crueltyFreeDesc": "Hər zaman və əbədi heyvan sınaqsızıq, çünki inanırıq ki, mərhəmət əsl gözəllikdir.",
+        "parabenFreeTitle": "Paraben Yoxdur",
+        "parabenFreeDesc": "Məhsullarımız hər zaman paraben yoxdur, çünki hamı üçün təmiz və təhlükəsiz gözəlliyə inanırıq.",
+        "earthTitle": "Ekoloji Şüurlu",
+        "earthDesc": "Planetə bağlılığımız məhsulumuzun hər addımında və prosesindədir."
+      }
+    },
+    "OthersBought": {
+      "title": "Digərləri də aldı",
+      "description": "İnsanların sevdiyi oxşar məhsullara baxın. Trend stilleri kəşf etmək üçün klikləyin."
+    },
+    "Timeline": {
+      "tag": "Tariximiz",
+      "title": "Zamanda Hekayəmiz",
+      "slides": [
+        {
+          "date": "05/2017",
+          "title": "Hər Şeyin Başladığı Yer",
+          "desc": "Purity bir sadə sualdan başladı: həssas dəriyə ən çox nə lazımdır?"
+        },
+        {
+          "date": "08/2019",
+          "title": "Öz Studiyamız",
+          "desc": "Kiçik bir mətbəxdən ilk laboratoriyamıza—hər partiya kütləvi istehsal deyil, qayğı ilə hazırlandı."
+        },
+        {
+          "date": "07/2021",
+          "title": "10.000 Güclü",
+          "desc": "İlk 10.000 müştərimiz inanclı oldular və Purity-nin ruhunu formalaşdırdılar."
+        },
+        {
+          "date": "01/2023",
+          "title": "Sərhədlərin Ötəsində",
+          "desc": "Təmiz, davamlı gözəllik öhdəliyi ilə qlobal bazarlara çıxdıq."
+        }
+      ]
+    },
+    "Quote": {
+      "text": "Hər məhsulumuz elm, təbiət və sənətin harmoniyasıdır — müasir gözəlliyin nə demək olduğunu yenidən müəyyən edir.",
+      "author": "Ava Collins / Baş İcraçı Direktor və Qurucu",
+      "marquee": [
+        { "text": "Gözəlliyiniz" },
+        { "text": "Gözəlliyinizə Qayğı" },
+        { "text": "Gözəllik Kolleksiyası" },
+        { "text": "Hər Gün Parıldayın" },
+        { "text": "Təmiz Dəri Ritualu" },
+        { "text": "Parlaq Siz" }
+      ]
+    },
+    "PromoGrids": {
+      "leftTitle": "Həqiqi Gözəllik \n Niyyətlə Rəhbərlik Edilir",
+      "leftDesc": "İnanırıq ki, gözəllik trendlərlə deyil, həqiqətlə şəkillənir. Hər formula qayğı ilə rəhbərlik edilir, məqsədlə hazırlanır.",
+      "leftBtn": "Məhsulları Kəşf Et",
+      "rightTitle": "Hər Damcıda \n Zülmsüz",
+      "rightDesc": "İnanırıq ki, gözəllik heç vaxt mərhəmətin hesabına gəlməməlidir. Buna görə hər formula 100% zülmsüzdür.",
+      "rightBtn": "Vədimiz"
+    },
+    "BlogLine": {
+      "tag": "Etibar Haradan Başlayır",
+      "title": "Etibarınızı Qazanmaq Üçün Qurulmuş",
+      "cards": [
+        {
+          "title": "Dizayn ilə Davamlı",
+          "description": "Davamlılıq nəzərə alınaraq hazırlanmış, təmiz formulalar, etik mənbə və təkrar istifadə edilə bilən qablaşdırma ilə."
+        },
+        {
+          "title": "Universal Uyğunlaşma",
+          "description": "Bütün dəri növlərində işləmək üçün hazırlanmış, görünən balans və sağlam parıltı təşviq edir."
+        },
+        {
+          "title": "Ultra Yumşaq Qayğı",
+          "description": "Təmiz və ultra yumşaq olmaq üçün formalaşdırılmış, dəri bariyerini bərpa edir, bütün dəri növlərini nəmləndirir."
+        }
+      ]
+    }
+  },
+  "ContactUsPage": {
+    "meta": {
+      "title": "Bizimlə Əlaqə | Purity",
+      "description": "Komandamızla əlaqə saxlayın. Məhsullarımız və ya sifarişinizlə bağlı suallarınıza cavab verməyə hazırıq."
+    },
+    "Info": {
+      "title": "Bizimlə Əlaqə",
+      "description": "Aşağıdakı formu istifadə edin. Müştəri xidmətinə +1 (973) 3333-5555 nömrəsi ilə də zəng edə bilərsiniz.",
+      "boxTitle": "Kömək lazımdır?",
+      "boxDesc": "Sualınız var? Aşağıdakı dəstək kanallarından istifadə edərək bizimlə əlaqə saxlayın.",
+      "supportTitle": "Dəstək:",
+      "phone": "Telefon: +1 (973) 435-3638",
+      "email": "E-poçt: info@puritycosmetics.com",
+      "hours": "İş saatları: hər gün saat 8:00-dan 19:30-a qədər",
+      "followTitle": "Bizi İzləyin:"
+    },
+    "Form": {
+      "title": "Əlaqəyə Keçin",
+      "description": "Ümumi sorğularınızı aşağıdakı əlaqə formu vasitəsilə göndərin, tezliklə sizinlə əlaqə saxlayacağıq.",
+      "namePlaceholder": "Ad *",
+      "emailPlaceholder": "E-poçt *",
+      "subjectPlaceholder": "Mövzu",
+      "commentPlaceholder": "Şərhiniz *",
+      "submitBtn": "Göndər",
+      "subjects": [
+        "Ümumi Sorğu",
+        "Sifariş Dəstəyi",
+        "Məhsul Sualı",
+        "Qaytarma və Geri Ödəmə",
+        "Tərəfdaşlıq",
+        "Digər"
+      ]
+    }
+  },
+  "FAQPage": {
+    "meta": {
+      "title": "Tez-tez Verilən Suallar | Purity",
+      "description": "Məhsullarımız, çatdırılma, geri qaytarma və daha çox şey haqqında tez-tez verilən suallara cavab tapın."
+    },
+    "StickyFAQ": {
+      "badge": "Bizimlə Əlaqə",
+      "title": "Hələ Axtarırsınız?",
+      "description": "Sualınız var? Bizə e-poçt göndərin — tez kömək edərik.",
+      "namePlaceholder": "Ad *",
+      "emailPlaceholder": "E-poçt *",
+      "commentPlaceholder": "Şərhiniz *",
+      "submitBtn": "Göndər"
+    },
+    "Benefits": {
+      "shipping": {
+        "title": "Pulsuz Çatdırılma",
+        "desc": "Gömrük və vergilər daxil olmaqla, dünya üzrə pulsuz çatdırılma və iadədən zövq alın."
+      },
+      "moneyBack": {
+        "title": "100 Günlük Geri Qaytarma",
+        "desc": "100 gün ərzində pulsuz iade — məhsulun zədələnmədiyindən əmin olun."
+      },
+      "support": {
+        "title": "Onlayn Dəstək",
+        "desc": "Müştərilərə 7/24 dəstək göstəririk, suallarınızı göndərin, dərhal həll edərik."
+      }
+    },
+    "Sections": [
+      {
+        "title": "Çatdırılma",
+        "items": [
+          {
+            "question": "Çatdırılma nə qədər vaxt alır?",
+            "answer": "Sifarişlərimiz adətən yerinizə və seçdiyiniz çatdırılma üsuluna görə 3–7 iş günü ərzində çatır."
+          },
+          {
+            "question": "Çatdırılma ünvanımı dəyişə bilərəmmi?",
+            "answer": "Bəli, sifarişi verdikdən sonra 24 saat ərzində dəstək komandasımızla əlaqə saxlayaraq ünvanı yeniləyə bilərsiniz."
+          },
+          {
+            "question": "Sifarişimi necə izləyə bilərəm?",
+            "answer": "Sifarişiniz göndərildikdən sonra e-poçt vasitəsilə izləmə nömrəsi alacaqsınız."
+          },
+          {
+            "question": "Beynəlxalq çatdırılma təklif edirsinizmi?",
+            "answer": "Bəli, 50-dən çox ölkəyə çatdırılma edirik. Beynəlxalq çatdırılma adətən 7–14 iş günü çəkir."
+          }
+        ]
+      },
+      {
+        "title": "İade və Geri Ödəmə",
+        "items": [
+          {
+            "question": "İade siyasətiniz nədir?",
+            "answer": "Çatdırılmadan sonra 30 gün ərzində iade qəbul edirik. Məhsullar istifadə edilməmiş və orijinal qablaşdırmada olmalıdır."
+          },
+          {
+            "question": "İadəni necə başlada bilərəm?",
+            "answer": "Sifariş nömrəniz və iade səbəbinizlə dəstək komandasımızla əlaqə saxlayın."
+          },
+          {
+            "question": "Geri ödəməmi nə vaxt alacağam?",
+            "answer": "İadenizi aldıqdan və yoxladıqdan sonra 5–7 iş günü ərzində geri ödəmə ediləcək."
+          },
+          {
+            "question": "Məhsulu dəyişdirə bilərəmmi?",
+            "answer": "Bəli, fərqli ölçü və ya rəng üçün dəyişdirmə mümkündür."
+          }
+        ]
+      },
+      {
+        "title": "Məhsullar və Tərkib",
+        "items": [
+          {
+            "question": "Məhsullarınız zülmsüzdürmü?",
+            "answer": "Bəli, bütün Purity məhsulları 100% zülmsüzdür. İstehsalın heç bir mərhələsində heyvanlarda sınaq aparmırıq."
+          },
+          {
+            "question": "Məhsullar həssas dəri üçün uyğundurmu?",
+            "answer": "Əlbəttə. Formulalarımız dermatologlar tərəfindən sınaqdan keçirilmiş və həssas dəri nəzərə alınaraq hazırlanmışdır."
+          },
+          {
+            "question": "Tam tərkib siyahısını harada tapa bilərəm?",
+            "answer": "Hər məhsulun səhifəsində tam tərkib siyahısı mövcuddur."
+          },
+          {
+            "question": "Məhsullarınız veqandırmı?",
+            "answer": "Məhsullarımızın böyük əksəriyyəti vegandır. Hər məhsul səhifəsində vegan sertifikatı göstərilir."
+          }
+        ]
+      },
+      {
+        "title": "Sifarişlər və Ödənişlər",
+        "items": [
+          {
+            "question": "Hansı ödəniş üsullarını qəbul edirsiniz?",
+            "answer": "Visa, Mastercard, Amex, PayPal, Apple Pay, Google Pay və Shop Pay qəbul edirik."
+          },
+          {
+            "question": "Sifarişimi ləğv edə və ya dəyişdirə bilərəmmi?",
+            "answer": "Sifarişlər verilməsindən sonra 1 saat ərzində ləğv edilə və ya dəyişdirilə bilər."
+          },
+          {
+            "question": "Ödəniş məlumatlarım təhlükəsizdirnmi?",
+            "answer": "Bəli. Bütün əməliyyatlar SSL texnologiyası ilə şifrələnir."
+          },
+          {
+            "question": "Endirim və ya promo kodları təklif edirsinizmi?",
+            "answer": "Bəli! Xəbər bülletenimizdə abunə olun və ilk sifarişinizdə 10% endirim əldə edin."
+          }
+        ]
+      },
+      {
+        "title": "Hesab və Məxfilik",
+        "items": [
+          {
+            "question": "Sifariş vermək üçün hesab lazımdırmı?",
+            "answer": "Xeyr, qonaq kimi ödəniş edə bilərsiniz. Lakin hesab yaratmaq sifariş tarixçənizə giriş imkanı verir."
+          },
+          {
+            "question": "Şifrəmi necə sıfırlaya bilərəm?",
+            "answer": "Giriş səhifəsindəki 'Şifrəni unutdum' düyməsinə klikləyin və e-poçtunuzu daxil edin."
+          },
+          {
+            "question": "Şəxsi məlumatlarım necə istifadə olunur?",
+            "answer": "Məlumatlarınızı yalnız sifarişləri emal etmək üçün istifadə edirik. Üçüncü tərəflərə satmırıq."
+          },
+          {
+            "question": "Hesabımı necə silə bilərəm?",
+            "answer": "Dəstək komandasımızla əlaqə saxlayaraq hesabın silinməsini tələb edə bilərsiniz."
+          }
+        ]
+      }
+    ]
+  },
+  "BlogPage": {
+    "meta": {
+      "title": "Bloq | Purity",
+      "description": "Dəri baxımı ipucları, tərkib hissələri bələdçiləri və gözəllik trendləri haqqında ən son məqalələrimizi oxuyun."
+    },
+    "grid": {
+      "title": "Gözəllik İlhamları",
+      "all": "Hamısı",
+      "categories": [
+        "Bütün Yazılar",
+        "Hədiyyə",
+        "Bayramlar",
+        "Özünə Qayğı",
+        "İpuçları",
+        "Redaktorun Seçimi"
+      ],
+      "viewDetails": "Ətraflı Bax",
+      "editorsPick": "✦ Redaktorun Seçimi"
+    },
+    "posts": [
+      {
+        "category": "İpuçları",
+        "title": "Görünüşü Əldə Et: 3 Addımda Parıltı",
+        "date": "01 May 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Bestseller məhsullarımızla sadəcə üç addımda təbii parıltı əldə edin.",
+        "href": "glow-in-3-steps"
+      },
+      {
+        "category": "Özünə Qayğı",
+        "title": "Dəri Dövriyyəsinə Başlanğıc Bələdçisi",
+        "date": "27 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dəri dövriyyəsi hamının danışdığı yeni trend. Necə başlamaq olar.",
+        "href": "skin-cycling"
+      },
+      {
+        "category": "İpuçları",
+        "title": "Məhsulları Layihələndirməyin Ən Yaxşı Yolu",
+        "date": "26 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dəri qayğısını düzgün qatlamaq böyük fərq yaradır.",
+        "href": "layer-your-products"
+      },
+      {
+        "category": "Hədiyyə",
+        "title": "Bayram Özünə Qayğısı üçün Ən Yaxşı Dəstlər",
+        "date": "31 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Bayramlar həyəcanlıdır, lakin özünüzə qayğınız belə olmaq məcburiyyətində deyil.",
+        "href": "holiday-self-care"
+      },
+      {
+        "category": "Bayramlar",
+        "title": "Qış Dəri Qayğısı Rutininiz",
+        "date": "20 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Soyuq hava əlavə qayğı tələb edir. Dərinizi yumşaq saxlayan qış rutini qurun.",
+        "href": "winter-skincare"
+      },
+      {
+        "category": "Redaktorun Seçimi",
+        "title": "İstifadəni Dayandıra Bilmədiyimiz Məhsullar",
+        "date": "10 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Redaktorlarımız heç vaxt rəfdən götürmədiyi sevimli Purity məhsullarını paylaşır.",
+        "href": "editors-picks"
+      },
+      {
+        "category": "Özünə Qayğı",
+        "title": "Həqiqətən İşə Yarayan Səhər Ritualları",
+        "date": "05 Feb 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Gününüzə niyyətlə başlayın. Bu sadə addımlar dərinizdə böyük fərq yaradacaq.",
+        "href": "morning-rituals"
+      },
+      {
+        "category": "İpuçları",
+        "title": "Dəri Qayğısı Etiketlərini Necə Oxumaq Olar",
+        "date": "28 Jan 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Tərkib siyahılarından çaşırsınız? Hər etiketdə nəyə diqqət etmək lazım olduğunu izah edirik.",
+        "href": "read-skincare-labels"
+      },
+      {
+        "category": "Hədiyyə",
+        "title": "Sevgililər Günü Gözəllik Hədiyyə Bələdçisi",
+        "date": "10 Jan 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Dərisinə həqiqətən faydalı, zərif və düşüncəli bir hədiyyə ilə sevginizi göstərin.",
+        "href": "valentines-gift-guide"
+      },
+      {
+        "category": "Bayramlar",
+        "title": "Yay Parıltısı: Mövsümi Keçidiniz",
+        "date": "02 Jan 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Mövsümlər dəyişdikcə rutininiz də dəyişməlidir.",
+        "href": "summer-glow-routine"
+      },
+      {
+        "category": "Redaktorun Seçimi",
+        "title": "Pula Dəyən 5 Serum",
+        "date": "20 Dec 2024",
+        "author": "Olivia Bennett",
+        "excerpt": "Bütün serumlar eyni deyil. Redaktorlarımız onlarcasını sınadı və bu beşi həmişə zirvədə çıxdı.",
+        "href": "serums-worth-splurge"
+      },
+      {
+        "category": "İpuçları",
+        "title": "Hər Gün SPF: Səbəbi Budur",
+        "date": "12 Dec 2024",
+        "author": "Olivia Bennett",
+        "excerpt": "Günəş kremi yalnız günəşli günlər üçün deyil.",
+        "href": "spf-every-day"
+      }
+    ],
+    "featured": {
+      "category": "Hədiyyə",
+      "title": "Bayram Özünə Qayğısı üçün Ən Yaxşı Dəstlər",
+      "date": "31 Mar 2025",
+      "author": "Olivia Bennett",
+      "excerpt": "Bayramlar həyəcanlıdır, lakin özünüzə qayğınız belə olmaq məcburiyyətində deyil.",
+      "href": "holiday-self-care"
+    }
+  },
+  "BlogDetail": {
+    "comments": "Şərh",
+    "tags": "Etiketlər:",
+    "share": "Paylaş:",
+    "views": "baxış",
+    "olderPost": "Köhnə Yazı",
+    "newerPost": "Yeni Yazı",
+    "tip": "İpucu:",
+    "beforeYouGo": {
+      "title": "Getməzdən Əvvəl...",
+      "description": "Növbəti özünə qayğı anınızı ilhamlandırmaq üçün bir neçə seçilmiş məqalə."
+    },
+    "leaveComment": {
+      "title": "Şərh Yazın",
+      "description": "E-poçt ünvanınız dərc edilməyəcək. Tələb olunan sahələr qeyd olunub *",
+      "namePlaceholder": "Ad *",
+      "emailPlaceholder": "E-poçt *",
+      "commentPlaceholder": "Şərhinizi buraya yazın...",
+      "submitBtn": "Şərh Göndər",
+      "submitting": "Göndərilir..."
+    }
+  },
+  "ShopPage": {
+    "meta": {
+      "title": "Mağaza | Purity Təmiz Gözəllik",
+      "description": "Təmiz gözəllik məhsulları kolleksiyamızı kəşf edin. Serumlardan nəmləndiricilərə qədər, ideal dəri baxım rutininizi tapın."
+    },
+    "banner": {
+      "breadcrumbHome": "Ana Səhifə",
+      "title": "Dəri Qayğısı",
+      "description": "Təmizləyən, müalicə edən və qidalandıran əsas vasitələrlə dəri qayğısı rutininizi yüksəldin."
+    },
+    "filters": {
+      "availability": "Mövcudluq",
+      "inStock": "Stokda var",
+      "outOfStock": "Stokda yoxdur",
+      "price": "Qiymət",
+      "highestPrice": "Ən yüksək qiymət $585.00-dır",
+      "color": "Rəng",
+      "size": "Ölçü",
+      "brand": "Brend",
+      "category": "Kateqoriya",
+      "concern": "Narahatlıq",
+      "formulation": "Formulasiya",
+      "sale": "Endirimli",
+      "saleDesc": "Yalnız endirimli məhsulları göstər",
+      "newArrivals": "Yeni Gələnlər",
+      "newArrivalsDesc": "Yalnız yeni məhsulları göstər",
+      "clearAll": "Bütün filterləri təmizlə"
+    },
+    "products": {
+      "count": "məhsul",
+      "sortBy": "Sıralama:",
+      "sortOptions": [
+        "Ən çox satılan",
+        "Qiymət: Azdan çoxa",
+        "Qiymət: Çoxdan aza",
+        "Ən yeni",
+        "Ən yüksək reytinq"
+      ]
+    }
+  },
+  "ProductDetail": {
+    "taxesIncluded": "Vergilər daxildir.",
+    "shippingCalculated": "ödənişdə hesablanır.",
+    "shipping": "Çatdırılma",
+    "inStock": "Stokda var və göndərilməyə hazırdır",
+    "addToCart": "Səbətə əlavə et",
+    "buyItNow": "İndi al",
+    "freeShipping": "175$+ üçün pulsuz çatdırılma. Bax",
+    "shippingPolicy": "çatdırılma siyasəti",
+    "returns": "30 günlük iade. Bax",
+    "returnPolicy": "iade siyasəti",
+    "topBenefits": "Əsas Faydalar",
+    "seeInAction": "İstifadədə Gör",
+    "productInfo": "Məhsul Məlumatı",
+    "howToUse": "Necə İstifadə Etməli",
+    "ingredients": "Tərkib",
+    "pairsWell": "Birlikdə Yaxşı İşləyir",
+    "whatsInside": "İçərisində Nə Var",
+    "glowIngredients": "Parıltı Tərkibləri",
+    "lovedByCustomers": "Müştərilər Tərəfindən Sevilir",
+    "boughtTogether": "Birlikdə Alındı",
+    "totalPrice": "Ümumi Qiymət",
+    "save": "Qənaət",
+    "addToCartCount": "Səbətə əlavə et",
+    "compareWith": "Müqayisə Et",
+    "similarProducts": "Oxşar Məhsullar",
+    "price": "Qiymət",
+    "ratings": "Reytinqlər",
+    "ingredient": "Tərkib",
+    "availability": "Mövcudluq",
+    "inStockLabel": "Stokda var",
+    "customerReviews": "Müştəri Rəyləri",
+    "basedOn": "Əsaslanır",
+    "reviews": "rəy",
+    "outOf5": "5 üzərindən",
+    "writeReview": "Rəy yaz",
+    "cancelReview": "Ləğv et",
+    "mostRecent": "Ən Son",
+    "highestRated": "Ən Yüksək Reytinq",
+    "lowestRated": "Ən Aşağı Reytinq",
+    "writeReviewTitle": "Rəy Yaz",
+    "yourRating": "Reytinqiniz",
+    "name": "Ad",
+    "email": "E-poçt",
+    "reviewTitle": "Rəy Başlığı",
+    "reviewTitlePlaceholder": "Təcrübənizi ümumiləşdirin",
+    "yourReview": "Rəyiniz",
+    "yourReviewPlaceholder": "Fikirlərinizi bildirin...",
+    "addPhotos": "Foto əlavə et",
+    "photoLimit": "Maksimum 5 foto. JPG, PNG qəbul edilir.",
+    "photo": "Foto",
+    "submitReview": "Rəy Göndər",
+    "cancel": "Ləğv et",
+    "ratingLabels": ["", "Zəif", "Orta", "Yaxşı", "Çox Yaxşı", "Əla"],
+    "promoItems": [
+      "Qara Cümə 75% Endirim!",
+      "100 Günlük Geri Qaytarma!",
+      "175$+ Pulsuz Çatdırılma!",
+      "Həmişə Zülmsüz!"
+    ],
+    "whyUsTitle": "Arzuladığınız Daxildən Gələn Parıltı",
+    "whyUsDesc": "Dərinizin ehtiyac duyduğu hər şey — gündəlik qayğınıza uyğunlaşdırılmış.",
+    "thisItem": "Bu məhsul",
+    "size": "Ölçü",
+    "color": "Rəng",
+    "quantity": "Miqdar",
+    "viewFullDetails": "Tam detallara bax",
+    "outOfStock": "Stokda yoxdur",
+    "quickView": "Tez baxış",
+    "adding": "Əlavə edilir...",
+    "noSizesAvailable": "Ölçü mövcud deyil",
+    "noColorsAvailable": "Rəng mövcud deyil"
+  },
+  "AccountPage": {
+    "sidebar": {
+      "profile": "Profilim",
+      "orders": "Sifarişlər",
+      "wishlist": "Arzu siyahısı",
+      "basket": "Səbət",
+      "settings": "Parametrlər",
+      "signOut": "Çıxış",
+      "memberSince": "Üzv olduğu tarix"
+    },
+    "profile": {
+      "title": "Profilim",
+      "subtitle": "Şəxsi məlumatlarınızı idarə edin",
+      "editProfile": "Profili redaktə et",
+      "cancel": "Ləğv et",
+      "saveChanges": "Dəyişiklikləri yadda saxla",
+      "successMessage": "✓ Profil uğurla yeniləndi",
+      "avatar": "Şəkli dəyiş",
+      "personalInfo": "Şəxsi məlumatlar",
+      "fullName": "Ad və soyad",
+      "emailAddress": "E-poçt ünvanı",
+      "phoneNumber": "Telefon nömrəsi",
+      "birthday": "Doğum tarixi",
+      "gender": "Cins",
+      "genderOptions": {
+        "female": "Qadın",
+        "male": "Kişi",
+        "other": "Qeyd etmək istəmirəm"
+      },
+      "savedAddresses": "Yadda saxlanmış ünvanlar",
+      "addNew": "+ Yeni əlavə et",
+      "default": "Əsas",
+      "edit": "Redaktə et",
+      "remove": "Sil",
+      "addressLabelHome": "Ev",
+      "addressLabelWork": "İş",
+      "addressLabelOther": "Digər"
+    },
+    "orders": {
+      "title": "Sifarişlərim",
+      "emptyTitle": "Hələ sifariş yoxdur",
+      "emptyDesc": "Sifariş verdikdə, burada görünəcək",
+      "orderDetails": "Sifariş Təfərrüatları",
+      "orderSummary": "Sifariş Xülasəsi",
+      "shippingAddress": "Çatdırılma Ünvanı",
+      "paymentInfo": "Ödəniş Məlumatları",
+      "paymentMethod": "Ödəniş Metodu",
+      "paymentStatus": "Ödəniş Statusu",
+      "currentStatus": "Hazırkı Status",
+      "placedOn": "Verilmə Tarixi",
+      "trackingNumber": "İzləmə Nömrəsi",
+      "estimatedDelivery": "Təxmini Çatdırılma",
+      "deliveryNote": "Sifarişiniz göndərildikdə izləmə məlumatlarını e-poçtla alacaqsınız",
+      "couponApplied": "Kupon Tətbiq Edilib",
+      "items": "Məhsullar",
+      "size": "Ölçü",
+      "color": "Rəng",
+      "quantity": "Say",
+      "each": "ədəd",
+      "orderNotes": "Sifariş Qeydləri",
+      "close": "Bağla",
+      "viewDetails": "Ətraflı Bax",
+      "subtotal": "Ara cəmi",
+      "discount": "Endirim",
+      "shipping": "Çatdırılma",
+      "free": "Pulsuz",
+      "total": "Cəmi",
+      "reorder": "Təkrar Sifariş Et",
+      "trackOrder": "Sifarişi İzlə",
+      "cancelOrder": "Sifarişi Ləğv Et",
+      "qty": "Say",
+      "status": {
+        "paid": "Ödənilib",
+        "getting_ready": "Hazırlanır",
+        "shipped": "Göndərilib",
+        "delivered": "Çatdırılıb",
+        "cancelled": "Ləğv Edilib"
+      }
+    },
+    "wishlist": {
+      "title": "Arzu siyahısı",
+      "savedItems": "saxlanılan məhsul",
+      "outOfStock": "Stokda yoxdur",
+      "addToCart": "Səbətə əlavə et",
+      "emptyTitle": "Arzu siyahınız boşdur",
+      "emptyDesc": "Bəyəndiyiniz məhsulları sonra tapmaq üçün saxlayın",
+      "exploreProducts": "Məhsulları kəşf edin"
+    },
+    "basket": {
+      "title": "Səbətim",
+      "items": "məhsul",
+      "orderSummary": "Sifarişin xülasəsi",
+      "subtotal": "Ara cəmi",
+      "discount": "Endirim",
+      "shipping": "Çatdırılma",
+      "free": "Pulsuz",
+      "total": "Ümumi",
+      "promoPlaceholder": "Promo kod",
+      "apply": "Tətbiq et",
+      "promoApplied": "✓ Promo kod tətbiq edildi!",
+      "checkout": "Ödənişə keç",
+      "continueShopping": "Alış-verişə davam et",
+      "emptyTitle": "Səbətiniz boşdur",
+      "emptyDesc": "Başlamaq üçün məhsul əlavə edin",
+      "shopNow": "İndi alış-veriş et",
+      "size": "Ölçü",
+      "color": "Rəng"
+    },
+    "settings": {
+      "title": "Parametrlər",
+      "subtitle": "Hesab parametrlərini idarə edin",
+      "notifications": {
+        "title": "Bildirişlər",
+        "orders": "Sifariş yeniləmələri",
+        "ordersDesc": "Çatdırılma bildirişləri",
+        "shipping": "Çatdırılma",
+        "shippingDesc": "Göndərişləriniz haqqında məlumat",
+        "promotions": "Endirim və təkliflər",
+        "promotionsDesc": "Endirimlər, satışlar və xüsusi tədbirlər",
+        "newsletter": "Bülleten",
+        "newsletterDesc": "Həftəlik gözəllik məsləhətləri və yeni məhsullar",
+        "sms": "SMS bildirişlər",
+        "smsDesc": "Sifariş yeniləmələri üçün SMS"
+      },
+      "password": {
+        "title": "Şifrəni dəyiş",
+        "current": "Hazırkı şifrə",
+        "new": "Yeni şifrə",
+        "confirm": "Yeni şifrəni təsdiqlə",
+        "update": "Şifrəni yenilə",
+        "successMessage": "Şifrə uğurla yeniləndi"
+      },
+      "language": {
+        "title": "Dil və region",
+        "label": "Dil"
+      },
+      "danger": {
+        "title": "Təhlükə zonası",
+        "deleteTitle": "Hesabı sil",
+        "deleteDesc": "Hesabınızı və bütün məlumatları tamamilə silin. Bu əməliyyat geri alına bilməz.",
+        "deleteBtn": "Hesabı sil",
+        "confirmTitle": "Əminsiniz?",
+        "confirmDesc": "Bu, hesabınızı, sifariş tarixçənizi, arzu siyahınızı və bütün şəxsi məlumatlarınızı tamamilə siləcək. Bu əməliyyat geri alına bilməz.",
+        "cancelBtn": "Ləğv et",
+        "confirmBtn": "Bəli, hesabımı sil"
+      }
+    }
+  },
+  "Navigation": {
+    "home": "Ana səhifə",
+    "shop": "Mağaza",
+    "shopItems": {
+      "allProducts": "Bütün Məhsullar",
+      "foundation": "Tonal Krem",
+      "lipColor": "Dodaq Rəngi",
+      "eye": "Göz",
+      "blushBronzer": "Yanaq & Bronzer"
+    },
+    "aboutUs": "Haqqımızda",
+    "blog": "Bloq",
+    "contactUs": "Bizimlə Əlaqə",
+    "faq": "Suallar",
+    "searchPlaceholder": "Məhsulları axtar..."
+  },
+  "Footer": {
+    "helpCustomers": "Müştərilərə Kömək",
+    "shopCategories": "Mağaza Kateqoriyaları",
+    "explorePurity": "Purity-ni Kəşf Et",
+    "subscribeTitle": "10% Endirimle Abunə Olun!",
+    "subscribeDesc": "Bütün yenilikləri birbaşa poçtunuza alın, üstəlik ilk sifarişinizdə 10% endirim.",
+    "emailPlaceholder": "E-poçtunuzu daxil edin... *",
+    "subscribeBtn": "Abunə ol",
+    "finePrint": "***Abunə olaraq qəbul edirsiniz",
+    "termsOfUse": "İstifadə Şərtlərini",
+    "and": "və",
+    "privacyPolicy": "Məxfilik Siyasətini.",
+    "viewOffers": "Xüsusi təkliflərimizə baxın.",
+    "claimOffers": "Təklifləri əldə edin.",
+    "categories": [
+      "Eksfoliasiya",
+      "Bədən və Əl",
+      "Ən Çox Satılanlar",
+      "Gözəllik Təklifləri",
+      "Onlayn Eksklüzivlər"
+    ],
+    "explore": [
+      "Haqqımızda",
+      "Bizimlə əlaqə",
+      "Blogumuzu",
+      "Çatdırılma Siyasəti",
+      "Xidmət Şərtləri"
+    ],
+    "country": "Azərbaycan (AZN ₼)",
+    "countryFlag": "🇦🇿",
+    "poweredBy": "Shopify tərəfindən",
+    "termsOfService": "Xidmət Şərtləri",
+    "shippingPolicy": "Çatdırılma Siyasəti"
+  },
+  "AuthPages": {
+    "login": {
+      "meta": {
+        "title": "Daxil Ol | Purity",
+        "description": "Sifarişlərinizə baxmaq, arzu siyahınızı idarə etmək və daha çoxu üçün Purity hesabınıza daxil olun."
+      },
+      "title": "Daxil ol",
+      "desc": "Sifariş tarixçənizə və digər fərdiləşdirilmiş xüsusiyyətlərə daxil olmaq üçün hesabınıza giriş edin.",
+      "email": "E-poçt *",
+      "password": "Şifrə *",
+      "security": "*Məlumatlarınız şifrələnmiş və qorunur.",
+      "signIn": "Daxil ol",
+      "noAccount": "Hesabınız yoxdur?",
+      "createAccount": "Hesab yarat",
+      "forgotPassword": "Şifrənizi unutmusunuz?",
+      "breadcrumb": "Hesab"
+    },
+    "register": {
+      "meta": {
+        "title": "Qeydiyyat | Purity",
+        "description": "Fərdiləşdirilmiş alış-veriş təcrübəsi üçün Purity hesabı yaradın."
+      },
+      "title": "Hesab Yarat",
+      "desc": "İcmamıza qoşulmaq və eksklüziv təkliflərə, mükafatlara və kontentə giriş əldə etmək üçün yeni hesab yaradın.",
+      "firstName": "Ad *",
+      "lastName": "Soyad *",
+      "email": "E-poçt *",
+      "password": "Şifrə *",
+      "security": "*Məlumatlarınız şifrələnmiş və qorunur.",
+      "createBtn": "Hesab Yarat",
+      "hasAccount": "Artıq hesabınız var?",
+      "login": "Daxil ol",
+      "breadcrumb": "Hesab Yarat"
+    },
+    "reset": {
+      "meta": {
+        "title": "Şifrəni Sıfırla | Purity",
+        "description": "Purity hesabınıza yenidən daxil olmaq üçün şifrənizi sıfırlayın."
+      },
+      "resetConfirmTitle": "Yeni Şifrə Yarat | Purity",
+      "resetConfirmDescription": "Purity hesabınız üçün yeni şifrə yaradın.",
+      "title": "Şifrəni sıfırla",
+      "desc": "Şifrənizi sıfırlamaq üçün təlimatlar almaq üçün e-poçtunuzu daxil edin.",
+      "email": "E-poçt *",
+      "submit": "Göndər",
+      "backToLogin": "Girişə qayıt",
+      "breadcrumb": "Hesab",
+      "successTitle": "E-poçtunuzu yoxlayın",
+      "successDesc": "Həmin e-poçt üçün hesab mövcuddursa, şifrə sıfırlama təlimatlarını göndərdik."
+    },
+    "google": {
+      "loginWithGoogle": "Google ilə daxil ol",
+      "registerWithGoogle": "Google ilə qeydiyyat",
+      "orDivider": "Və ya"
+    }
+  },
+  "CheckoutPage": {
+    "meta": {
+      "title": "Sifarişin Tamamlanması | Purity",
+      "description": "Təhlükəsiz ödənişlə sifarişinizi tamamlayın. 100$ üzəri sifarişlərdə pulsuz çatdırılma."
+    },
+    "title": "Ödəniş",
+    "breadcrumb": "Ödəniş",
+    "contact": {
+      "title": "Əlaqə Məlumatları",
+      "email": "E-poçt ünvanı",
+      "phone": "Telefon nömrəsi"
+    },
+    "shipping": {
+      "title": "Çatdırılma Ünvanı",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "address": "Ünvan",
+      "apartment": "Mənzil, ofis və s. (isteğe bağlı)",
+      "city": "Şəhər",
+      "country": "Ölkə",
+      "zip": "Poçt indeksi",
+      "countries": [
+        "Azərbaycan",
+        "ABŞ",
+        "Böyük Britaniya",
+        "Almaniya",
+        "Fransa",
+        "Türkiyə",
+        "Rusiya"
+      ]
+    },
+    "delivery": {
+      "title": "Çatdırılma Üsulu",
+      "standard": "Standart Çatdırılma",
+      "standardDesc": "5–7 iş günü",
+      "standardPrice": "Pulsuz",
+      "express": "Ekspress Çatdırılma",
+      "expressDesc": "2–3 iş günü",
+      "expressPrice": "$12.00"
+    },
+    "payment": {
+      "title": "Ödəniş",
+      "cardNumber": "Kart nömrəsi",
+      "cardName": "Kartdakı ad",
+      "expiry": "Son istifadə tarixi",
+      "cvv": "CVV",
+      "secure": "Ödəniş məlumatlarınız şifrələnmiş və təhlükəsizdir."
+    },
+    "summary": {
+      "title": "Sifariş Xülasəsi",
+      "subtotal": "Aralıq cəm",
+      "shipping": "Çatdırılma",
+      "free": "Pulsuz",
+      "discount": "Endirim",
+      "total": "Cəmi",
+      "promoPlaceholder": "Promo kod",
+      "apply": "Tətbiq et",
+      "promoApplied": "✓ Promo tətbiq edildi!",
+      "placeOrder": "Sifariş Ver",
+      "items": "məhsul",
+      "taxes": "Vergilər daxildir",
+      "processing": "Emal olunur..."
+    },
+    "orderSuccess": {
+      "meta": {
+        "title": "Sifariş Təsdiqləndi | Purity",
+        "description": "Sifarişiniz üçün təşəkkürlər! Təsdiq məlumatlarınız və izləmə detallarınız qısa müddətdə e-poçtla göndəriləcək."
+      },
+      "title": "Sifariş Təsdiqləndi!",
+      "desc": "Alışınız üçün təşəkkür edirik. Sifarişiniz qəbul edildi və emal olunur.",
+      "orderNumber": "Sifariş nömrəsi",
+      "estimatedDelivery": "Təxmini çatdırılma",
+      "viewOrders": "Sifarişlərimə Bax",
+      "continueShopping": "Alış-verişə davam et",
+      "whatHappensNext": "Bundan sonra nə baş verir?",
+      "steps": [
+        {
+          "title": "Sifariş Emalı",
+          "desc": "Məhsullarınızı göndərilməyə hazırlayırıq."
+        },
+        {
+          "title": "Göndərildi",
+          "desc": "E-poçt vasitəsilə izləmə nömrəsi alacaqsınız."
+        },
+        { "title": "Çatdırıldı", "desc": "Sifarişiniz qapınıza çatır." }
+      ]
+    },
+    "orderFail": {
+      "meta": {
+        "title": "Sifariş Uğursuz Oldu | Purity",
+        "description": "Sifarişiniz tamamlana bilmədi. Zəhmət olmasa yenidən cəhd edin və ya dəstək xidməti ilə əlaqə saxlayın."
+      },
+      "title": "Ödəniş Uğursuz Oldu",
+      "desc": "Ödənişinizi emal edə bilmədik. Məlumatlarınızı yoxlayın və yenidən cəhd edin.",
+      "tryAgain": "Yenidən Cəhd Et",
+      "viewOrders": "Sifarişlərimə Bax",
+      "reasons": "Uğursuzluğun ümumi səbəbləri:",
+      "reasonsList": [
+        "Yanlış kart məlumatları",
+        "Balans kifayət deyil",
+        "Kart bank tərəfindən rədd edildi",
+        "Ödəniş zamanı şəbəkə xətası"
+      ]
+    }
+  }
+}

@@ -1,0 +1,1058 @@
+{
+  "HomePage": {
+    "meta": {
+      "title": "Purity | Clean Beauty for Radiant Skin",
+      "description": "Discover Purity's clean beauty products for glowing, healthy skin. Natural ingredients, sustainable packaging, and results you can see."
+    },
+    "hero": {
+      "slides": [
+        {
+          "tag": "Sensitive Skin",
+          "titleLine1": "Calm Skin",
+          "titleLine2": "All Day ",
+          "titleItalic": "Hydration",
+          "desc": "Hyaluronic + Ceramides. Barrier-safe hydration.",
+          "btnText": "Shop Hydration",
+          "btnHref": "/shop"
+        },
+        {
+          "tag": "Oil Control",
+          "titleLine1": "Even Tone",
+          "titleLine2": "Botanic",
+          "titleItalic": "al Blend",
+          "desc": "Squalane + Black Tea. Oil-control even tone.",
+          "btnText": "Shop Oil Blend",
+          "btnHref": "/shop"
+        },
+        {
+          "tag": "Pore Care",
+          "titleLine1": "Clear Skin",
+          "titleLine2": "Pore Blu",
+          "titleItalic": "r Look",
+          "desc": "Niacinamide + Zinc. Oil control smooth look.",
+          "btnText": "Shop Pore Care",
+          "btnHref": "/shop"
+        }
+      ]
+    },
+    "marquee": {
+      "items": [
+        "Sustainable Beauty",
+        "Gentle Yet Effective",
+        "Clean Safe Ingredients",
+        "Deep Hydration Boost",
+        "Targeted Pore Care",
+        "Every Skin Type"
+      ]
+    },
+    "topSellers": {
+      "title": "Our Top Sellers",
+      "tabs": ["Best Seller", "What's Hot", "Value Sets"]
+    },
+    "skinConcerns": {
+      "tag": "Find Your Match",
+      "title": "Shop by Skin Concern",
+      "concerns": [
+        "Hydration",
+        "Brightening",
+        "Pore Care",
+        "Anti-Aging",
+        "Sensitive Skin",
+        "Oil Control"
+      ]
+    },
+    "testimonials": {
+      "tag": "Real Results",
+      "title": "What Our Customers Say"
+    },
+    "instagramTitle": "Follow Our Journey",
+    "cleanseYourSkin": {
+      "tag": "Simple Steps To",
+      "title": "Cleanse Your Skin",
+      "steps": [
+        "Step 1. Cleanser",
+        "Step 2. Toner",
+        "Step 3. Serum",
+        "Step 4. Treatment"
+      ]
+    },
+    "featuredBanner": {
+      "tag": "New Arrival",
+      "title": "The Glow Edit",
+      "desc": "Discover our newest collection—crafted for your skin, designed for your life.",
+      "btnText": "Explore Now"
+    },
+    "featuredBrands": {
+      "title": "Featured Brands",
+      "desc": "Explore logos of brands we sell—authentic, authorized, and available today."
+    },
+    "exclusiveDeals": {
+      "badge": "✦ Beauty Offers",
+      "title": "Get Exclusive Deals!",
+      "desc": "Subscribe to receive all our updates and offers and get a 10% discount on your first purchase.",
+      "signIn": "Sign In",
+      "createAccount": "Create Account"
+    },
+    "helpCenter": {
+      "tag": "Support Online",
+      "title": "Help Center!",
+      "desc": "Find quick solutions to your queries from product details, to returns and exchanges.",
+      "visitBtn": "Visit Help Center",
+      "faqs": [
+        {
+          "q": "How long does shipping take?",
+          "a": "Our orders typically arrive within 3–7 business days, depending on your location and chosen shipping method. Please note that holidays, weather conditions and peak shopping seasons can affect delivery times."
+        },
+        {
+          "q": "When will I get my money back?",
+          "a": "Refunds are processed within 5–10 business days after we receive your returned item. You'll receive a confirmation email once the refund has been issued."
+        },
+        {
+          "q": "How can I track my order?",
+          "a": "Once your order ships, you'll receive a tracking number via email. You can use this to track your package directly on the carrier's website."
+        },
+        {
+          "q": "Do you offer gift cards?",
+          "a": "Yes! We offer digital gift cards in various amounts. They can be purchased directly from our shop and are delivered via email."
+        },
+        {
+          "q": "Do you offer international shipping?",
+          "a": "Yes, we ship to most countries worldwide. International shipping times vary by destination, typically 7–14 business days."
+        }
+      ]
+    },
+    "findYourSolutions": {
+      "tag": "Glow Starts Here",
+      "title": "Find Your Solutions",
+      "iHave": "I have",
+      "skin": "skin",
+      "topConcernIs": "and my top skin concern is",
+      "seeBtn": "See My Solutions",
+      "skinTypeBtn": "What's my skin type?",
+      "skinTypes": ["Dry", "Balanced", "Sensitive", "Oily", "Combination"],
+      "concerns": {
+        "Dry": ["Intense Hydration", "Barrier Rescue", "Radiant Glow"],
+        "Balanced": ["Daily Essentials", "Natural Glow", "Smooth Shine"],
+        "Sensitive": ["Barrier Rescue", "Barrier Support", "Calm Pure"],
+        "Oily": ["Oil Control", "Pore Clarity", "Acne-Fighting"],
+        "Combination": ["Multi-Masking", "Pore Quench", "Hydra Balance"]
+      }
+    },
+    "spotless": {
+      "title": "Spotless in 1 Week",
+      "desc": "Powered by Anti-Aging Serum for visibly smoother, brighter skin. 🍀",
+      "viewBtn": "View Product",
+      "leftBenefits": ["Smooths Lines", "Collagen Boost", "Anti-Aging Shield"],
+      "rightBenefits": ["Brightens Skin", "48h Hydration", "Fast Absorption"]
+    },
+    "communityStories": {
+      "tag": "As Seen In",
+      "title": "Community Stories"
+    },
+    "whatTheyAreSaying": {
+      "tag": "Loved by 17k+ Customers",
+      "title": "What They're Saying"
+    },
+    "editorChoice": {
+      "tag": "Limited-Time Edit",
+      "title": "Editor's",
+      "titleHighlight": "Choice Set",
+      "addAllToCart": "Add all to Cart",
+      "viewGuide": "View Usage Guide",
+      "addToCart": "Add to Cart",
+      "color": "Color"
+    },
+    "exploreCollections": {
+      "tag": "Self Care Product",
+      "title": "Explore",
+      "titleHighlight": "Collections"
+    },
+    "chooseYourShade": {
+      "title": "Choose Your",
+      "titleHighlight": "Shade",
+      "skinTones": ["Fair Skin", "Light Skin", "Medium Skin", "Dark Skin"]
+    }
+  },
+  "AboutUs": {
+    "meta": {
+      "title": "About Us | Purity",
+      "description": "Learn about Purity's mission to create clean, effective skincare that nurtures both your skin and the planet."
+    },
+    "AboutBanner": {
+      "title": "Purity's Story",
+      "description": "Skincare that begins with intention and ends with trust—crafted gently, honestly, and with purpose in every drop."
+    },
+    "OurVision": {
+      "tag": "Our Philosophy",
+      "title": "Glow with Confidence",
+      "description": "Our clean formulas are designed to nourish, restore, and reveal your skin's natural glow—so confidence feels as effortless and radiant as true, timeless beauty itself.",
+      "body": "Every formula is intentional—gentle, effective, and thoughtful. From sourcing to packaging, nothing is rushed. We believe beauty should be personal, responsible, and timeless—crafted by design, not by trend.",
+      "badges": {
+        "crueltyFreeTitle": "Cruelty-Free",
+        "crueltyFreeDesc": "We're cruelty-free, always and forever, because we believe compassion is the true beauty.",
+        "parabenFreeTitle": "Paraben-Free",
+        "parabenFreeDesc": "Products paraben-free, always and forever, because we believe in clean, safe beauty for all.",
+        "earthTitle": "Earth-Conscious",
+        "earthDesc": "Our commitment to the planet is present in every step of our product's journey and process."
+      }
+    },
+    "OthersBought": {
+      "title": "Others also bought",
+      "description": "Check out similar products people are loving. Click to explore trending styles."
+    },
+    "Timeline": {
+      "tag": "Our History",
+      "title": "Our Story in Time",
+      "slides": [
+        {
+          "date": "05/2017",
+          "title": "Where It All Began",
+          "desc": "Purity began with one simple question: what does sensitive skin need most?"
+        },
+        {
+          "date": "08/2019",
+          "title": "A Studio of Our Own",
+          "desc": "From a small kitchen to our first lab, each batch was crafted with care and purpose—not mass production."
+        },
+        {
+          "date": "07/2021",
+          "title": "10,000 Strong",
+          "desc": "Our first 10,000 customers became believers, shaping Purity's soul."
+        },
+        {
+          "date": "01/2023",
+          "title": "Beyond Borders",
+          "desc": "We grew into global markets with a commitment to clean, sustainable beauty."
+        }
+      ]
+    },
+    "Quote": {
+      "text": "Each of our products is a harmony of science, nature, and artistry — redefining what modern beauty truly means.",
+      "author": "Ava Collins / CEO and Founder",
+      "marquee": [
+        { "text": "Your Beauty" },
+        { "text": "Care for Your Beauty" },
+        { "text": "Beauty You Collection" },
+        { "text": "Glow Every Day" },
+        { "text": "Pure Skin Ritual" },
+        { "text": "Radiant You" }
+      ]
+    },
+    "PromoGrids": {
+      "leftTitle": "True Beauty \n Guided by Intention",
+      "leftDesc": "We believe beauty isn't shaped by trends, but by truth—how it feels, how it's made, and why it matters. Every formula is led by care, crafted with purpose, and grounded in deep respect for your skin and the planet.",
+      "leftBtn": "Explore Products",
+      "rightTitle": "Cruelty-free \n with Every Drop",
+      "rightDesc": "We believe beauty should never come at the cost of compassion. That's why every formula is 100% cruelty-free—carefully crafted without testing, without harm, and without compromise.",
+      "rightBtn": "Our Promise"
+    },
+    "BlogLine": {
+      "tag": "Where Trust Begins",
+      "title": "Built to Earn Your Trust",
+      "cards": [
+        {
+          "title": "Sustainable by Design",
+          "description": "Designed with sustainability in mind, using clean formulas, ethical sourcing, and recyclable packaging to care for both skin and planet."
+        },
+        {
+          "title": "Universal Adaptability",
+          "description": "Developed to work across all skin types, delivering targeted care that adapts, protects, and promotes visible balance and healthy radiance."
+        },
+        {
+          "title": "Ultra Gentle Care",
+          "description": "Formulated to be clean and ultra gentle, rebalancing the skin barrier, soothing, hydrating, and revitalizing all skin types with lasting comfort."
+        }
+      ]
+    }
+  },
+  "ContactUsPage": {
+    "meta": {
+      "title": "Contact Us | Purity",
+      "description": "Get in touch with our team. We're here to help with any questions about our products or your order."
+    },
+    "Info": {
+      "title": "Contact Us",
+      "description": "Please use the below form. You can also call customer service on +1 (973) 3333-5555",
+      "boxTitle": "Got Help?",
+      "boxDesc": "Have a question? Please contact us using the customer support channels below.",
+      "supportTitle": "Support:",
+      "phone": "Phone: +1 (973) 435-3638",
+      "email": "Email: info@puritycosmetics.com",
+      "hours": "Opening hours: 8am to 7:30pm daily",
+      "followTitle": "Follow Us:"
+    },
+    "Form": {
+      "title": "Get in Touch",
+      "description": "Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.",
+      "namePlaceholder": "Name *",
+      "emailPlaceholder": "Email *",
+      "subjectPlaceholder": "Subject",
+      "commentPlaceholder": "Your comment *",
+      "submitBtn": "Submit",
+      "subjects": [
+        "General Enquiry",
+        "Order Support",
+        "Product Question",
+        "Returns & Refunds",
+        "Partnership",
+        "Other"
+      ]
+    }
+  },
+  "FAQPage": {
+    "meta": {
+      "title": "FAQ | Purity",
+      "description": "Find answers to commonly asked questions about our products, shipping, returns, and more."
+    },
+    "StickyFAQ": {
+      "badge": "Contact Us",
+      "title": "Still Looking?",
+      "description": "Have a question? Email us—we'll help fast.",
+      "namePlaceholder": "Name *",
+      "emailPlaceholder": "Email *",
+      "commentPlaceholder": "Your comment *",
+      "submitBtn": "Submit"
+    },
+    "Benefits": {
+      "shipping": {
+        "title": "Free Shipping",
+        "desc": "Enjoy free worldwide shipping and returns, with customs and duties taxes included."
+      },
+      "moneyBack": {
+        "title": "100—Day Money Back",
+        "desc": "Free returns within 100 days, please ensure the product is not damaged."
+      },
+      "support": {
+        "title": "Support Online",
+        "desc": "We support customers 24/7, send questions we will solve for you immediately."
+      }
+    },
+    "Sections": [
+      {
+        "title": "Shipping & Delivery",
+        "items": [
+          {
+            "question": "How long does shipping take?",
+            "answer": "Our orders typically arrive within 3–7 business days, depending on your location and chosen shipping method. Please note that holidays, weather conditions and peak shopping seasons can affect delivery times."
+          },
+          {
+            "question": "Can I change my shipping address?",
+            "answer": "Yes, you can update your shipping address within 24 hours of placing your order by contacting our support team directly via email or phone."
+          },
+          {
+            "question": "How can I track my order?",
+            "answer": "Once your order ships, you'll receive a tracking number via email. You can use it on our website or the carrier's site to follow your delivery in real time."
+          },
+          {
+            "question": "Do you offer international shipping?",
+            "answer": "Yes, we ship to over 50 countries. International delivery typically takes 7–14 business days depending on your location and local customs processing."
+          }
+        ]
+      },
+      {
+        "title": "Returns & Refunds",
+        "items": [
+          {
+            "question": "What is your return policy?",
+            "answer": "We accept returns within 30 days of delivery. Items must be unused, in their original packaging, and in the same condition you received them."
+          },
+          {
+            "question": "How do I start a return?",
+            "answer": "Contact our support team with your order number and reason for return. We'll send you a prepaid return label and instructions within 1–2 business days."
+          },
+          {
+            "question": "When will I receive my refund?",
+            "answer": "Once we receive and inspect your return, refunds are processed within 5–7 business days back to your original payment method."
+          },
+          {
+            "question": "Can I exchange a product?",
+            "answer": "Yes, exchanges are available for a different size or shade. Simply initiate a return and place a new order, or contact support for assistance."
+          }
+        ]
+      },
+      {
+        "title": "Products & Ingredients",
+        "items": [
+          {
+            "question": "Are your products cruelty-free?",
+            "answer": "Yes, all Purity products are 100% cruelty-free. We never test on animals at any stage of production, and we only partner with suppliers who share the same values."
+          },
+          {
+            "question": "Are the products suitable for sensitive skin?",
+            "answer": "Absolutely. Our formulas are dermatologist-tested and designed with sensitive skin in mind — free from harsh chemicals, parabens, and synthetic fragrances."
+          },
+          {
+            "question": "Where can I find the full ingredient list?",
+            "answer": "The full ingredient list for each product is available on its individual product page. You can also find it printed on the product packaging."
+          },
+          {
+            "question": "Are your products vegan?",
+            "answer": "The majority of our products are vegan. Each product page clearly indicates whether it is vegan-certified. We are continuously working to expand our vegan range."
+          }
+        ]
+      },
+      {
+        "title": "Orders & Payments",
+        "items": [
+          {
+            "question": "What payment methods do you accept?",
+            "answer": "We accept all major credit and debit cards (Visa, Mastercard, Amex), PayPal, Apple Pay, Google Pay, and Shop Pay."
+          },
+          {
+            "question": "Can I cancel or modify my order?",
+            "answer": "Orders can be cancelled or modified within 1 hour of placement. After that, they enter processing and can no longer be changed. Please contact us immediately if you need to make changes."
+          },
+          {
+            "question": "Is my payment information secure?",
+            "answer": "Yes. All transactions are encrypted with SSL technology. We do not store your card details — payments are processed securely through our certified payment providers."
+          },
+          {
+            "question": "Do you offer discounts or promo codes?",
+            "answer": "Yes! Subscribe to our newsletter for 10% off your first order. We also run seasonal promotions — follow us on social media to stay updated."
+          }
+        ]
+      },
+      {
+        "title": "Account & Privacy",
+        "items": [
+          {
+            "question": "Do I need an account to place an order?",
+            "answer": "No, you can check out as a guest. However, creating an account lets you track orders, save addresses, and access your order history easily."
+          },
+          {
+            "question": "How do I reset my password?",
+            "answer": "Click 'Forgot password' on the login page and enter your email address. You'll receive a reset link within a few minutes. Check your spam folder if you don't see it."
+          },
+          {
+            "question": "How is my personal data used?",
+            "answer": "We use your data only to process orders and improve your shopping experience. We never sell your data to third parties. Read our full Privacy Policy for details."
+          },
+          {
+            "question": "How do I delete my account?",
+            "answer": "You can request account deletion by contacting our support team. We'll process your request within 7 business days in accordance with applicable data protection laws."
+          }
+        ]
+      }
+    ]
+  },
+  "BlogPage": {
+    "meta": {
+      "title": "Blog | Purity",
+      "description": "Read our latest articles on skincare tips, ingredient guides, and beauty trends."
+    },
+    "grid": {
+      "title": "Beauty Inspirations",
+      "all": "All",
+      "categories": [
+        "All Posts",
+        "Gifting",
+        "Holidays",
+        "Self-Care",
+        "Tips",
+        "Editor's Pick"
+      ],
+      "viewDetails": "View Details",
+      "editorsPick": "✦ Editor's Pick"
+    },
+    "posts": [
+      {
+        "category": "Tips",
+        "title": "Get The Look: Glow in 3 Steps",
+        "date": "01 May 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Achieve a natural, radiant glow with just three simple steps using our bestselling skincare lineup.",
+        "href": "glow-in-3-steps"
+      },
+      {
+        "category": "Self-Care",
+        "title": "Beginner's Guide to Skin Cycling",
+        "date": "27 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Skin cycling is the new skincare trend everyone's talking about. Here's how to start.",
+        "href": "skin-cycling"
+      },
+      {
+        "category": "Tips",
+        "title": "Best Way to Layer Your Products",
+        "date": "26 Apr 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Layering your skincare correctly makes all the difference. Learn the right order for maximum results.",
+        "href": "layer-your-products"
+      },
+      {
+        "category": "Gifting",
+        "title": "Top Sets for Holiday Self-Care",
+        "date": "31 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "The holidays are hectic—but your self-care doesn't have to be.",
+        "href": "holiday-self-care"
+      },
+      {
+        "category": "Holidays",
+        "title": "Your Winter Skincare Routine",
+        "date": "20 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Cold weather calls for extra care. Build a winter routine that keeps your skin soft, hydrated, and glowing.",
+        "href": "winter-skincare"
+      },
+      {
+        "category": "Editor's Pick",
+        "title": "The Products We Can't Stop Using",
+        "date": "10 Mar 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Our editors share their all-time favourite Purity products that never leave their bathroom shelves.",
+        "href": "editors-picks"
+      },
+      {
+        "category": "Self-Care",
+        "title": "Morning Rituals That Actually Work",
+        "date": "05 Feb 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Start your day with intention. These simple morning skincare steps will transform how your skin looks and feels.",
+        "href": "morning-rituals"
+      },
+      {
+        "category": "Tips",
+        "title": "How to Read Skincare Labels",
+        "date": "28 Jan 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Confused by ingredient lists? We break down exactly what to look for and what to avoid on every label.",
+        "href": "read-skincare-labels"
+      },
+      {
+        "category": "Gifting",
+        "title": "Valentine's Day Beauty Gift Guide",
+        "date": "10 Jan 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "Show someone you care with a gift that feels luxurious, thoughtful, and genuinely good for their skin.",
+        "href": "valentines-gift-guide"
+      },
+      {
+        "category": "Holidays",
+        "title": "Summer Glow: Your Seasonal Switch",
+        "date": "02 Jan 2025",
+        "author": "Olivia Bennett",
+        "excerpt": "As the seasons change, so should your routine. Here's how to transition your skincare into summer mode.",
+        "href": "summer-glow-routine"
+      },
+      {
+        "category": "Editor's Pick",
+        "title": "5 Serums Worth the Splurge",
+        "date": "20 Dec 2024",
+        "author": "Olivia Bennett",
+        "excerpt": "Not all serums are created equal. Our editors tested dozens and these five came out on top every time.",
+        "href": "serums-worth-splurge"
+      },
+      {
+        "category": "Tips",
+        "title": "SPF Every Day: Here's Why",
+        "date": "12 Dec 2024",
+        "author": "Olivia Bennett",
+        "excerpt": "Sunscreen isn't just for sunny days. We explain why daily SPF is the single most important skincare step.",
+        "href": "spf-every-day"
+      }
+    ],
+    "featured": {
+      "category": "Gifting",
+      "title": "Top Sets for Holiday Self-Care",
+      "date": "31 Mar 2025",
+      "author": "Olivia Bennett",
+      "excerpt": "The holidays are hectic—but your self-care doesn't have to be. Whether you're winding down solo or gifting glow to someone...",
+      "href": "holiday-self-care"
+    }
+  },
+  "BlogDetail": {
+    "comments": "Comments",
+    "tags": "Tags:",
+    "share": "Share:",
+    "olderPost": "Older Post",
+    "newerPost": "Newer Post",
+    "tip": "Tip:",
+    "views": "views",
+    "beforeYouGo": {
+      "title": "Before You Go...",
+      "description": "Here are a few handpicked articles to inspire your next self-care moment."
+    },
+    "leaveComment": {
+      "title": "Leave a Comment",
+      "description": "Your email address will not be published. Required fields are marked *",
+      "namePlaceholder": "Name *",
+      "emailPlaceholder": "Email *",
+      "commentPlaceholder": "Write your comment here...",
+      "submitBtn": "Post Comment",
+      "submitting": "Submitting..."
+    }
+  },
+  "ShopPage": {
+    "meta": {
+      "title": "Shop | Purity Clean Beauty",
+      "description": "Shop our collection of clean beauty products. From serums to moisturizers, find your perfect skincare routine."
+    },
+    "banner": {
+      "breadcrumbHome": "Home",
+      "title": "Skincare",
+      "description": "Elevate your skincare routine with essentials that cleanse, treat, and nourish for radiant, healthy skin."
+    },
+    "filters": {
+      "availability": "Availability",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "price": "Price",
+      "highestPrice": "The highest price is $585.00",
+      "color": "Color",
+      "size": "Size",
+      "brand": "Brand",
+      "category": "Category",
+      "concern": "Concern",
+      "formulation": "Formulation",
+      "sale": "On Sale",
+      "saleDesc": "Show only discounted products",
+      "newArrivals": "New Arrivals",
+      "newArrivalsDesc": "Show only new products",
+      "clearAll": "Clear all filters"
+    },
+    "products": {
+      "count": "products",
+      "sortBy": "Sort by:",
+      "sortOptions": [
+        "Best selling",
+        "Price: Low to High",
+        "Price: High to Low",
+        "Newest",
+        "Top Rated"
+      ]
+    }
+  },
+  "ProductDetail": {
+    "taxesIncluded": "Taxes included.",
+    "shippingCalculated": "calculated at checkout.",
+    "shipping": "Shipping",
+    "inStock": "In Stock and ready to ship",
+    "addToCart": "Add to Cart",
+    "buyItNow": "Buy it now",
+    "freeShipping": "Free shipping $175+. View",
+    "shippingPolicy": "shipping policy",
+    "returns": "30 day returns. View",
+    "returnPolicy": "return policy",
+    "topBenefits": "Top Benefits",
+    "seeInAction": "See in Action",
+    "productInfo": "Product Info",
+    "howToUse": "How to Use",
+    "ingredients": "Ingredients",
+    "pairsWell": "Pairs well With",
+    "whatsInside": "What's Inside",
+    "glowIngredients": "Glow Ingredients",
+    "lovedByCustomers": "Loved by Customers",
+    "boughtTogether": "Bought Together",
+    "totalPrice": "Total Price",
+    "save": "Save",
+    "addToCartCount": "Add to Cart",
+    "compareWith": "Compare With",
+    "similarProducts": "Similar Products",
+    "price": "Price",
+    "ratings": "Ratings",
+    "ingredient": "Ingredient",
+    "availability": "Availability",
+    "inStockLabel": "In stock",
+    "customerReviews": "Customer Reviews",
+    "basedOn": "Based on",
+    "reviews": "reviews",
+    "outOf5": "out of 5",
+    "writeReview": "Write a review",
+    "cancelReview": "Cancel",
+    "mostRecent": "Most Recent",
+    "highestRated": "Highest Rated",
+    "lowestRated": "Lowest Rated",
+    "writeReviewTitle": "Write a Review",
+    "yourRating": "Your Rating",
+    "name": "Name",
+    "email": "Email",
+    "reviewTitle": "Review Title",
+    "reviewTitlePlaceholder": "Sum up your experience",
+    "yourReview": "Your Review",
+    "yourReviewPlaceholder": "Tell us what you think...",
+    "addPhotos": "Add Photos",
+    "photoLimit": "Up to 5 photos. JPG, PNG accepted.",
+    "photo": "Photo",
+    "submitReview": "Submit Review",
+    "cancel": "Cancel",
+    "ratingLabels": ["", "Poor", "Fair", "Good", "Very Good", "Excellent"],
+    "promoItems": [
+      "Black friday 75% Off!",
+      "100—Day money Back!",
+      "Free Shipping $175+!",
+      "Cruelty-Free Always!"
+    ],
+    "whyUsTitle": "The Inside Out Glow You Crave",
+    "whyUsDesc": "Everything your skin needs, shown in every touch — tailored to your daily care.",
+    "thisItem": "This item",
+    "size": "Size",
+    "color": "Color",
+    "quantity": "Quantity",
+    "viewFullDetails": "View full details",
+    "outOfStock": "Out of Stock",
+    "quickView": "Quick view",
+    "adding": "Adding...",
+    "noSizesAvailable": "No sizes available",
+    "noColorsAvailable": "No colors available"
+  },
+  "AccountPage": {
+    "sidebar": {
+      "profile": "My Profile",
+      "orders": "Orders",
+      "wishlist": "Wishlist",
+      "basket": "Basket",
+      "settings": "Settings",
+      "signOut": "Sign Out",
+      "memberSince": "Member since"
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Manage your personal information",
+      "editProfile": "Edit Profile",
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "successMessage": "✓ Profile updated successfully",
+      "avatar": "Change photo",
+      "personalInfo": "Personal Information",
+      "fullName": "Full Name",
+      "emailAddress": "Email Address",
+      "phoneNumber": "Phone Number",
+      "birthday": "Birthday",
+      "gender": "Gender",
+      "genderOptions": {
+        "female": "Female",
+        "male": "Male",
+        "other": "Prefer not to say"
+      },
+      "savedAddresses": "Saved Addresses",
+      "addNew": "+ Add new",
+      "default": "Default",
+      "edit": "Edit",
+      "remove": "Remove",
+      "addressLabelHome": "Home",
+      "addressLabelWork": "Work",
+      "addressLabelOther": "Other"
+    },
+    "orders": {
+      "title": "My Orders",
+      "emptyTitle": "No orders yet",
+      "emptyDesc": "When you place an order, it will appear here",
+      "orderDetails": "Order Details",
+      "orderSummary": "Order Summary",
+      "shippingAddress": "Shipping Address",
+      "paymentInfo": "Payment Information",
+      "paymentMethod": "Payment Method",
+      "paymentStatus": "Payment Status",
+      "currentStatus": "Current Status",
+      "placedOn": "Placed on",
+      "trackingNumber": "Tracking Number",
+      "estimatedDelivery": "Estimated Delivery",
+      "deliveryNote": "You'll receive tracking info via email when your order ships",
+      "couponApplied": "Coupon Applied",
+      "items": "Items",
+      "size": "Size",
+      "color": "Color",
+      "quantity": "Qty",
+      "each": "each",
+      "orderNotes": "Order Notes",
+      "close": "Close",
+      "viewDetails": "View Details",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "free": "Free",
+      "total": "Total",
+      "reorder": "Reorder",
+      "trackOrder": "Track Order",
+      "cancelOrder": "Cancel Order",
+      "qty": "Qty",
+      "status": {
+        "paid": "Paid",
+        "getting_ready": "Getting Ready",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      }
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "savedItems": "saved items",
+      "outOfStock": "Out of stock",
+      "addToCart": "Add to Cart",
+      "emptyTitle": "Your wishlist is empty",
+      "emptyDesc": "Save products you love to find them later",
+      "exploreProducts": "Explore Products"
+    },
+    "basket": {
+      "title": "My Basket",
+      "items": "items",
+      "orderSummary": "Order Summary",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "free": "Free",
+      "total": "Total",
+      "promoPlaceholder": "Promo code",
+      "apply": "Apply",
+      "promoApplied": "✓ Promo code applied!",
+      "checkout": "Checkout",
+      "continueShopping": "Continue shopping",
+      "emptyTitle": "Your basket is empty",
+      "emptyDesc": "Add some products to get started",
+      "shopNow": "Shop Now",
+      "size": "Size",
+      "color": "Color"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account preferences",
+      "notifications": {
+        "title": "Notifications",
+        "orders": "Order updates",
+        "ordersDesc": "Shipping and delivery notifications",
+        "shipping": "Shipping & Delivery",
+        "shippingDesc": "Get updates about your shipments",
+        "promotions": "Promotions & offers",
+        "promotionsDesc": "Discounts, sales and special events",
+        "newsletter": "Newsletter",
+        "newsletterDesc": "Weekly beauty tips and new arrivals",
+        "sms": "SMS notifications",
+        "smsDesc": "Text messages for order updates"
+      },
+      "password": {
+        "title": "Change Password",
+        "current": "Current password",
+        "new": "New password",
+        "confirm": "Confirm new password",
+        "update": "Update Password",
+        "successMessage": "Password updated successfully"
+      },
+      "language": {
+        "title": "Language & Region",
+        "label": "Display Language"
+      },
+      "danger": {
+        "title": "Danger Zone",
+        "deleteTitle": "Delete Account",
+        "deleteDesc": "Permanently delete your account and all data. This cannot be undone.",
+        "deleteBtn": "Delete Account",
+        "confirmTitle": "Are you absolutely sure?",
+        "confirmDesc": "This will permanently delete your account, order history, wishlist, and all personal data. This action cannot be reversed.",
+        "cancelBtn": "Cancel",
+        "confirmBtn": "Yes, Delete My Account"
+      }
+    }
+  },
+  "Navigation": {
+    "home": "Home",
+    "shop": "Shop",
+    "shopItems": {
+      "allProducts": "All Products",
+      "foundation": "Foundation",
+      "lipColor": "Lip Color",
+      "eye": "Eye",
+      "blushBronzer": "Blush & Bronzer"
+    },
+    "aboutUs": "About Us",
+    "blog": "Blog",
+    "contactUs": "Contact Us",
+    "faq": "FAQ",
+    "searchPlaceholder": "Search products..."
+  },
+  "Footer": {
+    "helpCustomers": "Help Customers",
+    "shopCategories": "Shop Categories",
+    "explorePurity": "Explore Purity",
+    "subscribeTitle": "Subscribe with 10% Off!",
+    "subscribeDesc": "Get all the good stuff straight to your inbox, plus 10% off your first order.",
+    "emailPlaceholder": "Enter your email... *",
+    "subscribeBtn": "Subscribe",
+    "finePrint": "***By subscribing you agree to the",
+    "termsOfUse": "Terms of Use",
+    "and": "and",
+    "privacyPolicy": "Privacy Policy.",
+    "viewOffers": "View our special offers.",
+    "claimOffers": "Claim Your Offers.",
+    "categories": [
+      "Exfoliation",
+      "Body and Hand",
+      "Best Sellers",
+      "Beauty Offers",
+      "Online Exclusives"
+    ],
+    "explore": [
+      "About Us",
+      "Contact Us",
+      "Our Blog",
+      "Shipping Policy",
+      "Terms of Service"
+    ],
+    "country": "United States (USD $)",
+    "countryFlag": "🇺🇸",
+    "poweredBy": "Powered by Shopify",
+    "termsOfService": "Terms of Service",
+    "shippingPolicy": "Shipping Policy"
+  },
+  "AuthPages": {
+    "login": {
+      "meta": {
+        "title": "Login | Purity",
+        "description": "Sign in to your Purity account to view orders, manage your wishlist, and more."
+      },
+      "title": "Login",
+      "desc": "Login to your account to access your order history and other personalized features.",
+      "email": "Email *",
+      "password": "Password *",
+      "security": "*Your information is securely encrypted and protected.",
+      "signIn": "Sign In",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create account",
+      "forgotPassword": "Forgot your password?",
+      "breadcrumb": "Account"
+    },
+    "register": {
+      "meta": {
+        "title": "Register | Purity",
+        "description": "Create a Purity account for a personalized shopping experience."
+      },
+      "title": "Create Account",
+      "desc": "Create a new account to join our community and get access to exclusive offers, rewards and content.",
+      "firstName": "First name *",
+      "lastName": "Last name *",
+      "email": "Email *",
+      "password": "Password *",
+      "security": "*Your information is securely encrypted and protected.",
+      "createBtn": "Create Account",
+      "hasAccount": "Already has an account?",
+      "login": "Login",
+      "breadcrumb": "Create Account"
+    },
+    "reset": {
+      "meta": {
+        "title": "Reset Password | Purity",
+        "description": "Reset your password to regain access to your Purity account."
+      },
+      "resetConfirmTitle": "Create New Password | Purity",
+      "resetConfirmDescription": "Create a new password for your Purity account.",
+      "title": "Reset password",
+      "desc": "Enter your e-mail below to receive instructions to reset your password.",
+      "email": "Email *",
+      "submit": "Submit",
+      "backToLogin": "Back to Login",
+      "breadcrumb": "Account",
+      "successTitle": "Check your email",
+      "successDesc": "If an account exists for that email, we've sent password reset instructions."
+    },
+    "google": {
+      "loginWithGoogle": "Login with Google",
+      "registerWithGoogle": "Register with Google",
+      "orDivider": "Or"
+    }
+  },
+  "CheckoutPage": {
+    "meta": {
+      "title": "Checkout | Purity",
+      "description": "Complete your purchase with our secure checkout. Free shipping on orders over $100."
+    },
+    "title": "Checkout",
+    "breadcrumb": "Checkout",
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email address",
+      "phone": "Phone number"
+    },
+    "shipping": {
+      "title": "Shipping Address",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "address": "Address",
+      "apartment": "Apartment, suite, etc. (optional)",
+      "city": "City",
+      "country": "Country",
+      "zip": "ZIP / Postal code",
+      "countries": [
+        "Azerbaijan",
+        "United States",
+        "United Kingdom",
+        "Germany",
+        "France",
+        "Turkey",
+        "Russia"
+      ]
+    },
+    "delivery": {
+      "title": "Delivery Method",
+      "standard": "Standard Delivery",
+      "standardDesc": "5–7 business days",
+      "standardPrice": "Free",
+      "express": "Express Delivery",
+      "expressDesc": "2–3 business days",
+      "expressPrice": "$12.00"
+    },
+    "payment": {
+      "title": "Payment",
+      "cardNumber": "Card number",
+      "cardName": "Name on card",
+      "expiry": "Expiry date",
+      "cvv": "CVV",
+      "secure": "Your payment info is encrypted and secure."
+    },
+    "summary": {
+      "title": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "free": "Free",
+      "discount": "Discount",
+      "total": "Total",
+      "promoPlaceholder": "Promo code",
+      "apply": "Apply",
+      "promoApplied": "✓ Promo applied!",
+      "placeOrder": "Place Order",
+      "items": "items",
+      "taxes": "Taxes included",
+      "processing": "Processing..."
+    },
+    "orderSuccess": {
+      "meta": {
+        "title": "Order Confirmed | Purity",
+        "description": "Thank you for your order! Your confirmation details and tracking information will be emailed shortly."
+      },
+      "title": "Order Confirmed!",
+      "desc": "Thank you for your purchase. Your order has been placed and is being processed.",
+      "orderNumber": "Order number",
+      "estimatedDelivery": "Estimated delivery",
+      "viewOrders": "View My Orders",
+      "continueShopping": "Continue Shopping",
+      "whatHappensNext": "What happens next?",
+      "steps": [
+        {
+          "title": "Order Processing",
+          "desc": "We're preparing your items for shipment."
+        },
+        {
+          "title": "Shipped",
+          "desc": "You'll receive a tracking number via email."
+        },
+        { "title": "Delivered", "desc": "Your order arrives at your door." }
+      ]
+    },
+    "orderFail": {
+      "meta": {
+        "title": "Order Failed | Purity",
+        "description": "Your order could not be processed. Please try again or contact support."
+      },
+      "title": "Payment Failed",
+      "desc": "We couldn't process your payment. Please check your details and try again.",
+      "tryAgain": "Try Again",
+      "viewOrders": "View My Orders",
+      "reasons": "Common reasons for failure:",
+      "reasonsList": [
+        "Incorrect card details",
+        "Insufficient funds",
+        "Card declined by bank",
+        "Network error during payment"
+      ]
+    }
+  }
+}
